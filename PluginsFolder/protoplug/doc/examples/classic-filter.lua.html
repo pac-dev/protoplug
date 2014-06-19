@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Example classic-filter.lua</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>classic-filter.lua</strong></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <pre>
+<span class="comment">--[[
+name: Classic Filter
+description: &gt;
+  Straightforward application of RBJ's cookbook filters. Formulae by
+  Robert Bristow-Johnson, implementation from Worp by Ico Doornekamp.
+author: osar.fr
+--]]</span>
+
+<span class="global">require</span> <span class="string">"include/protoplug"</span>
+<span class="keyword">local</span> cbFilter = <span class="global">require</span> <span class="string">"include/pac/cookbook filters"</span>
+<span class="keyword">local</span> filters = {}
+
+stereoFx.init()
+
+<span class="keyword">function</span> stereoFx.Channel:init()
+	<span class="comment">-- create per-channel fields (filters)
+</span>	self.filter = cbFilter
+	{
+		<span class="comment">-- initialize filters with current param values
+</span>		<span class="global">type</span> 	= params.Type.getValue();
+		f 		= params.Frequency.getValue()/<span class="number">2</span>;
+		gain 	= params.Gain.getValue();
+		Q 		= params.Resonance.getValue();
+	}
+	<span class="global">table</span>.insert(filters, self.filter)
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> stereoFx.Channel:processBlock(s, smax)
+	<span class="keyword">for</span> i = <span class="number">0</span>,smax <span class="keyword">do</span>
+		s[i] = self.filter.process(s[i])
+	<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">local</span> <span class="keyword">function</span> updateFilters(args)
+	<span class="keyword">for</span> _, f <span class="keyword">in</span> <span class="global">pairs</span>(filters) <span class="keyword">do</span>
+		f.update(args)
+	<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+params = plugin.manageParams {
+	Type = {
+		<span class="global">type</span> = <span class="string">"list"</span>;
+		values = {<span class="string">"hp"</span>; <span class="string">"lp"</span>; <span class="string">"bp"</span>; <span class="string">"bs"</span>; <span class="string">"ls"</span>; <span class="string">"hs"</span>; <span class="string">"ap"</span>; <span class="string">"eq"</span>};
+		default = <span class="string">"hp"</span>;
+		changed = <span class="keyword">function</span>(val) updateFilters{<span class="global">type</span>=val} <span class="keyword">end</span>;
+	};
+	Frequency = {
+		min = <span class="number">10</span>;
+		max = <span class="number">20000</span>;
+		default = <span class="number">440</span>;
+		changed = <span class="keyword">function</span>(val) updateFilters{f=val} <span class="keyword">end</span>;
+	};
+	Gain = {
+		min = -<span class="number">30</span>;
+		max = <span class="number">30</span>;
+		default = <span class="number">0</span>;
+		changed = <span class="keyword">function</span>(val) updateFilters{gain=val} <span class="keyword">end</span>;
+	};
+	Resonance = {
+		min = <span class="number">0.1</span>;
+		max = <span class="number">30</span>;
+		default = <span class="number">1</span>;
+		changed = <span class="keyword">function</span>(val) updateFilters{Q=val} <span class="keyword">end</span>;
+	};
+}
+
+<span class="comment">-- Reset the plugin parameters like this :
+</span><span class="comment">-- params.resetToDefaults()
+</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,0 +1,761 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module plugin</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Callback_functions">Callback functions </a></li>
+<li><a href="#Override_functions">Override functions </a></li>
+<li><a href="#Class_plugin_PositionInfo">Class plugin.PositionInfo </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>plugin</strong></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>plugin</code></h1>
+<p>Use <a href="../modules/plugin.html#">plugin</a>  to define the AU/VST audio plugin's behaviour.</p>
+<p>
+
+<p> The <a href="../modules/plugin.html#">plugin</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Callback_functions">Callback functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#manageParams"><span class="proto_prefix">plugin</span>.manageParams (paramList)</a></td>
+	<td class="summary">Automatically set up a list of parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#setParameter"><span class="proto_prefix">plugin</span>.setParameter (index, value)</a></td>
+	<td class="summary">Set (automate) a parameter's value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getParameter"><span class="proto_prefix">plugin</span>.getParameter (index)</a></td>
+	<td class="summary">Get a parameter's value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getCurrentPosition"><span class="proto_prefix">plugin</span>.getCurrentPosition ()</a></td>
+	<td class="summary">Get host position info, if available.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getSampleRate"><span class="proto_prefix">plugin</span>.getSampleRate ()</a></td>
+	<td class="summary">Get host samplerate.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#addHandler"><span class="proto_prefix">plugin</span>.addHandler (event, handler)</a></td>
+	<td class="summary">Add a handler for a VST/AU event.</td>
+	</tr>
+</table>
+<h2><a href="#Override_functions">Override functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#processBlock"><span class="proto_prefix">plugin</span>.processBlock (samples, smax, midiBuf)</a></td>
+	<td class="summary">Process Audio Block.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getParameterName"><span class="proto_prefix">plugin</span>.getParameterName (index)</a></td>
+	<td class="summary">Return the name of a parameter.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getParameterText"><span class="proto_prefix">plugin</span>.getParameterText (index)</a></td>
+	<td class="summary">Return the representation of a parameter's value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#paramChanged"><span class="proto_prefix">plugin</span>.paramChanged (index)</a></td>
+	<td class="summary">Handle parameter changes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getTailLengthSeconds"><span class="proto_prefix">plugin</span>.getTailLengthSeconds ()</a></td>
+	<td class="summary">Return the tail length in seconds (effects only).</td>
+	</tr>
+</table>
+<h2><a href="#Class_plugin_PositionInfo">Class plugin.PositionInfo </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.bpm"><span class="proto_prefix">plugin.PositionInfo</span>.bpm</a></td>
+	<td class="summary">Host tempo (beats per minute)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.timeSigNumerator"><span class="proto_prefix">plugin.PositionInfo</span>.timeSigNumerator</a></td>
+	<td class="summary">Time signature numerator ie.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.timeSigDenominator"><span class="proto_prefix">plugin.PositionInfo</span>.timeSigDenominator</a></td>
+	<td class="summary">Time signature denominator ie.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.timeInSamples"><span class="proto_prefix">plugin.PositionInfo</span>.timeInSamples</a></td>
+	<td class="summary">Current position on the host's timeline (samples)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.timeInSeconds"><span class="proto_prefix">plugin.PositionInfo</span>.timeInSeconds</a></td>
+	<td class="summary">Current position on the host's timeline (seconds)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.editOriginTime"><span class="proto_prefix">plugin.PositionInfo</span>.editOriginTime</a></td>
+	<td class="summary">Position of the start of the edit region on the host's timeline</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.ppqPosition"><span class="proto_prefix">plugin.PositionInfo</span>.ppqPosition</a></td>
+	<td class="summary">Current position on the host's timeline (pulses-per-quarter-note)</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.ppqPositionOfLastBarStart"><span class="proto_prefix">plugin.PositionInfo</span>.ppqPositionOfLastBarStart</a></td>
+	<td class="summary">Position of the last bar start (pulses-per-quarter-note).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.frameRate"><span class="proto_prefix">plugin.PositionInfo</span>.frameRate</a></td>
+	<td class="summary">Video frame rate</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.isPlaying"><span class="proto_prefix">plugin.PositionInfo</span>.isPlaying</a></td>
+	<td class="summary">Is playing</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.isRecording"><span class="proto_prefix">plugin.PositionInfo</span>.isRecording</a></td>
+	<td class="summary">Is recording</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.ppqLoopStart"><span class="proto_prefix">plugin.PositionInfo</span>.ppqLoopStart</a></td>
+	<td class="summary">Position of the loop start (pulses-per-quarter-note).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.ppqLoopEnd"><span class="proto_prefix">plugin.PositionInfo</span>.ppqLoopEnd</a></td>
+	<td class="summary">Position of the loop end (pulses-per-quarter-note).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#PositionInfo.isLooping"><span class="proto_prefix">plugin.PositionInfo</span>.isLooping</a></td>
+	<td class="summary">Is looping</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Callback_functions"></a>Callback functions </h2>
+
+ Functions that your script can call.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "manageParams"></a>
+    <strong><span class="proto_prefix">plugin</span>.manageParams (paramList)</strong>
+    </dt>
+    <dd>
+    Automatically set up a list of parameters.
+ Call this function with a table containing parameter definitions as argument, and
+ it will perform the repetitive task of defining all the parameter-related overrides.</p>
+
+<p> The format of the parameter list is demonstrated in <a href="../examples/classic-filter.lua.html#">classic-filter.lua</a>
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">paramList</span>
+         a table with parameter definitions (see example)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "setParameter"></a>
+    <strong><span class="proto_prefix">plugin</span>.setParameter (index, value)</strong>
+    </dt>
+    <dd>
+    Set (automate) a parameter's value.
+ The value must be normalized to be between 0 and 1.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         parameter index (0-126)
+        </li>
+        <li><span class="parameter">value</span>
+         parameter value (0-1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getParameter"></a>
+    <strong><span class="proto_prefix">plugin</span>.getParameter (index)</strong>
+    </dt>
+    <dd>
+    Get a parameter's value.
+ The values are between 0 and 1, but different minimums and maximums can
+ be easily simulated using <a href="../modules/plugin.html#manageParams">plugin.manageParams</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         parameter index (0-126)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getCurrentPosition"></a>
+    <strong><span class="proto_prefix">plugin</span>.getCurrentPosition ()</strong>
+    </dt>
+    <dd>
+    Get host position info, if available.
+ Only call this from within <a href="../modules/plugin.html#processBlock">processBlock</a>.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/plugin.html#plugin.PositionInfo">plugin.PositionInfo</a></span>
+        current position info, or <code>nil</code> depending on the host.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getSampleRate"></a>
+    <strong><span class="proto_prefix">plugin</span>.getSampleRate ()</strong>
+    </dt>
+    <dd>
+    Get host samplerate.
+ The value is unknown (<code>nil</code>) until the plugin <code>prepareToPlay</code> event has been emitted.
+ The value is always known in <a href="../modules/plugin.html#processBlock">processBlock</a>.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        current sampleratem or <code>nil</code> if not available yet.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/plugin.html#addHandler">plugin.addHandler</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "addHandler"></a>
+    <strong><span class="proto_prefix">plugin</span>.addHandler (event, handler)</strong>
+    </dt>
+    <dd>
+
+<p>Add a handler for a VST/AU event.
+ The following events are available :</p>
+
+<ul>
+    <li><code>"prepareToPlay"</code> - Emitted before the first call to <a href="../modules/plugin.html#processBlock">processBlock</a>, when the samplerate is known.</li>
+</ul>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the event to handle
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         a function to add the event's handlers
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/script.html#addHandler">script.addHandler</a></li>
+         <li><a href="../modules/gui.html#addHandler">gui.addHandler</a></li>
+    </ul>
+
+
+</dd>
+</dl>
+    <h2><a name="Override_functions"></a>Override functions </h2>
+
+ Define these functions and the host will call them.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "processBlock"></a>
+    <strong><span class="proto_prefix">plugin</span>.processBlock (samples, smax, midiBuf)</strong>
+    </dt>
+    <dd>
+    Process Audio Block.
+ Override this function to input and output audio and MIDI data.</p>
+
+<p> This override is handled automatically if <a href="../modules/stereoFx.html#">stereoFx</a> or <a href="../modules/polyGen.html#">polyGen</a> are used.
+ Use this function to handle the raw data instead.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">samples</span>
+         a C float** pointing to two channels of samples, serving as input and output
+        </li>
+        <li><span class="parameter">smax</span>
+         the maximum sample index (nSamples - 1)
+        </li>
+        <li><span class="parameter">midiBuf</span>
+            <span class="types"><a class="type" href="../modules/midi.html#midi.Buffer">midi.Buffer</a></span>
+         the MIDI data for this block, serving as input and output
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"> <span class="keyword">function</span> plugin.processBlock (samples, smax) <span class="comment">-- let's ignore midi for this example
+</span>     <span class="keyword">for</span> i = <span class="number">0</span>, smax <span class="keyword">do</span>
+         samples[<span class="number">0</span>][i] = sin(myTime) <span class="comment">-- left channel
+</span>         samples[<span class="number">1</span>][i] = sin(myTime) <span class="comment">-- right channel
+</span>         myTime = myTime + myDelta
+     <span class="keyword">end</span>
+ <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "getParameterName"></a>
+    <strong><span class="proto_prefix">plugin</span>.getParameterName (index)</strong>
+    </dt>
+    <dd>
+    Return the name of a parameter. </p>
+
+<p> This override is handled automatically if <a href="../modules/plugin.html#manageParams">manageParams</a> is used.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         parameter index (0-126)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the parameter's name
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getParameterText"></a>
+    <strong><span class="proto_prefix">plugin</span>.getParameterText (index)</strong>
+    </dt>
+    <dd>
+    Return the representation of a parameter's value.
+ Override this function to choose how each parameter's value should
+ be displayed by the host. The parameter's current value can be obtained
+ using <a href="../modules/plugin.html#getParameter">plugin.getParameter</a></p>
+
+<p> This override is handled automatically if <a href="../modules/plugin.html#manageParams">manageParams</a> is used.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         parameter index (0-126)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        a string representation of the parameter's current value
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "paramChanged"></a>
+    <strong><span class="proto_prefix">plugin</span>.paramChanged (index)</strong>
+    </dt>
+    <dd>
+    Handle parameter changes.
+ Override this function to do something when a parameter changes
+ The parameter's current value can be obtained using <a href="../modules/plugin.html#getParameter">plugin.getParameter</a></p>
+
+<p> This override is handled automatically if <a href="../modules/plugin.html#manageParams">manageParams</a> is used.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">index</span>
+         parameter index (0-126)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getTailLengthSeconds"></a>
+    <strong><span class="proto_prefix">plugin</span>.getTailLengthSeconds ()</strong>
+    </dt>
+    <dd>
+    Return the tail length in seconds (effects only).
+ Override this function to define the effect's audio tail length.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the tail length in seconds
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_plugin_PositionInfo"></a>Class plugin.PositionInfo </h2>
+
+ A container type for host-related information as returned by <a href="../modules/plugin.html#getCurrentPosition">plugin.getCurrentPosition</a></p>
+
+<p> Is a <a href="http://www.juce.com/api/structAudioPlayHead_1_1CurrentPositionInfo.html">JUCE AudioPlayHead::CurrentPositionInfo</a>
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "PositionInfo.bpm"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.bpm</strong>
+    </dt>
+    <dd>
+    Host tempo (beats per minute)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.timeSigNumerator"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.timeSigNumerator</strong>
+    </dt>
+    <dd>
+    Time signature numerator ie.  <em>3</em>/4
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.timeSigDenominator"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.timeSigDenominator</strong>
+    </dt>
+    <dd>
+    Time signature denominator ie.  3/<em>4</em>
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.timeInSamples"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.timeInSamples</strong>
+    </dt>
+    <dd>
+    Current position on the host's timeline (samples)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.timeInSeconds"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.timeInSeconds</strong>
+    </dt>
+    <dd>
+    Current position on the host's timeline (seconds)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.editOriginTime"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.editOriginTime</strong>
+    </dt>
+    <dd>
+    Position of the start of the edit region on the host's timeline
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.ppqPosition"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.ppqPosition</strong>
+    </dt>
+    <dd>
+    Current position on the host's timeline (pulses-per-quarter-note)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.ppqPositionOfLastBarStart"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.ppqPositionOfLastBarStart</strong>
+    </dt>
+    <dd>
+    Position of the last bar start (pulses-per-quarter-note).
+ (or zero if unavailable.)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.frameRate"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.frameRate</strong>
+    </dt>
+    <dd>
+    Video frame rate
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.isPlaying"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.isPlaying</strong>
+    </dt>
+    <dd>
+    Is playing
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.isRecording"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.isRecording</strong>
+    </dt>
+    <dd>
+    Is recording
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.ppqLoopStart"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.ppqLoopStart</strong>
+    </dt>
+    <dd>
+    Position of the loop start (pulses-per-quarter-note).
+ (or zero if unavailable.)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.ppqLoopEnd"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.ppqLoopEnd</strong>
+    </dt>
+    <dd>
+    Position of the loop end (pulses-per-quarter-note).
+ (or zero if unavailable.)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "PositionInfo.isLooping"></a>
+    <strong><span class="proto_prefix">plugin.PositionInfo</span>.isLooping</strong>
+    </dt>
+    <dd>
+    Is looping
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

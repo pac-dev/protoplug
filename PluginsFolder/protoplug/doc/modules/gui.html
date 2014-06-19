@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module gui</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Class_gui_MouseEvent">Class gui.MouseEvent </a></li>
+<li><a href="#Class_gui_MouseWheelDetails">Class gui.MouseWheelDetails </a></li>
+<li><a href="#Class_gui_KeyPress">Class gui.KeyPress </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><strong>gui</strong></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>gui</code></h1>
+<p>Use <a href="../modules/gui.html#">gui</a>  to define your script's custom graphical user interface.</p>
+<p>
+
+<p> Custom GUI example : <a href="../examples/sinemouse-demo.lua.html#">sinemouse-demo.lua</a></p>
+
+<p> The <a href="../modules/gui.html#">gui</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#addHandler"><span class="proto_prefix">gui</span>.addHandler (event, handler)</a></td>
+	<td class="summary">Add a handler for a GUI event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#paint"><span class="proto_prefix">gui</span>.paint (g)</a></td>
+	<td class="summary">Override to paint a custom GUI.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getComponent"><span class="proto_prefix">gui</span>.getComponent ()</a></td>
+	<td class="summary">Get GUI Component.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#FocusCause"><span class="proto_prefix">gui</span>.FocusCause</a></td>
+	<td class="summary">Focus change causes.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ModifierKeys"><span class="proto_prefix">gui</span>.ModifierKeys</a></td>
+	<td class="summary">Keyboard and mouse modifiers.</td>
+	</tr>
+</table>
+<h2><a href="#Class_gui_MouseEvent">Class gui.MouseEvent </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.x"><span class="proto_prefix">gui.MouseEvent</span>.x</a></td>
+	<td class="summary">X.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.y"><span class="proto_prefix">gui.MouseEvent</span>.y</a></td>
+	<td class="summary">Y.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.mods"><span class="proto_prefix">gui.MouseEvent</span>.mods</a></td>
+	<td class="summary">Modifier keys.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.eventComponent"><span class="proto_prefix">gui.MouseEvent</span>.eventComponent</a></td>
+	<td class="summary">Event component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.originalComponent"><span class="proto_prefix">gui.MouseEvent</span>.originalComponent</a></td>
+	<td class="summary">Original component.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.eventTime"><span class="proto_prefix">gui.MouseEvent</span>.eventTime</a></td>
+	<td class="summary">Time.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.mouseDownTime"><span class="proto_prefix">gui.MouseEvent</span>.mouseDownTime</a></td>
+	<td class="summary">Mouse down time.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.mouseDownPos"><span class="proto_prefix">gui.MouseEvent</span>.mouseDownPos</a></td>
+	<td class="summary">Mouse down position.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.numberOfClicks"><span class="proto_prefix">gui.MouseEvent</span>.numberOfClicks</a></td>
+	<td class="summary">Number of clicks.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseEvent.wasMovedSinceMouseDown"><span class="proto_prefix">gui.MouseEvent</span>.wasMovedSinceMouseDown</a></td>
+	<td class="summary">Was moved since mouse down.</td>
+	</tr>
+</table>
+<h2><a href="#Class_gui_MouseWheelDetails">Class gui.MouseWheelDetails </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#MouseWheelDetails.deltaX"><span class="proto_prefix">gui.MouseWheelDetails</span>.deltaX</a></td>
+	<td class="summary">X delta.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseWheelDetails.deltaY"><span class="proto_prefix">gui.MouseWheelDetails</span>.deltaY</a></td>
+	<td class="summary">Y delta.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseWheelDetails.isReversed"><span class="proto_prefix">gui.MouseWheelDetails</span>.isReversed</a></td>
+	<td class="summary">Is reversed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#MouseWheelDetails.isSmooth"><span class="proto_prefix">gui.MouseWheelDetails</span>.isSmooth</a></td>
+	<td class="summary">Is smooth.</td>
+	</tr>
+</table>
+<h2><a href="#Class_gui_KeyPress">Class gui.KeyPress </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#KeyPress.keyCode"><span class="proto_prefix">gui.KeyPress</span>.keyCode</a></td>
+	<td class="summary">Key code.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#KeyPress.mods"><span class="proto_prefix">gui.KeyPress</span>.mods</a></td>
+	<td class="summary">Modifier Keys.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#KeyPress.textCharacter"><span class="proto_prefix">gui.KeyPress</span>.textCharacter</a></td>
+	<td class="summary">Text character.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "addHandler"></a>
+    <strong><span class="proto_prefix">gui</span>.addHandler (event, handler)</strong>
+    </dt>
+    <dd>
+    Add a handler for a GUI event. </p>
+
+<p>Here's a list of the events and their parameters, showing how they
+should be received :</p>
+<pre><code>gui.addHandler("resized",               function() ... end)
+gui.addHandler("focusGained",           function(focusCause) ... end)
+gui.addHandler("focusLost",             function(focusCause) ... end)
+gui.addHandler("modifierKeysChanged",   function(modifierKeys) ... end)
+gui.addHandler("mouseMove",             function(mouseEvent) ... end)
+gui.addHandler("mouseEnter",            function(mouseEvent) ... end)
+gui.addHandler("mouseExit",             function(mouseEvent) ... end)
+gui.addHandler("mouseDown",             function(mouseEvent) ... end)
+gui.addHandler("mouseDrag",             function(mouseEvent) ... end)
+gui.addHandler("mouseUp",               function(mouseEvent) ... end)
+gui.addHandler("mouseDoubleClick",      function(mouseEvent) ... end)
+gui.addHandler("mouseWheelMove",        function(mouseEvent, mouseWheelDetails) ... end)
+gui.addHandler("keyPressed",            function(keyPress, srcComponent) ... end)
+gui.addHandler("keyStateChanged",       function(keyPress, srcComponent) ... end)
+</code></pre>
+<p>Parameters received by the event handlers are of
+type <a href="../modules/gui.html#FocusCause">FocusCause</a>, <a href="../modules/gui.html#ModifierKeys">ModifierKeys</a>, <a href="../modules/gui.html#gui.MouseEvent">MouseEvent</a>, <a href="../modules/gui.html#gui.MouseWheelDetails">MouseWheelDetails</a>,
+and <a href="../modules/gui.html#gui.KeyPress">KeyPress</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the event to handle
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         a function to add the event's handlers
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/script.html#addHandler">script.addHandler</a></li>
+         <li><a href="../modules/plugin.html#addHandler">plugin.addHandler</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "paint"></a>
+    <strong><span class="proto_prefix">gui</span>.paint (g)</strong>
+    </dt>
+    <dd>
+    Override to paint a custom GUI.
+ Define this function to paint something in the custom GUI space.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">g</span>
+            <span class="types"><a class="type" href="../classes/juce.Graphics.html#">juce.Graphics</a></span>
+         a JUCE graphics target
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getComponent"></a>
+    <strong><span class="proto_prefix">gui</span>.getComponent ()</strong>
+    </dt>
+    <dd>
+    Get GUI Component.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the current GUI component, or <code>nil</code> if the GUI
+ has not been opened yet.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "FocusCause"></a>
+    <strong><span class="proto_prefix">gui</span>.FocusCause</strong>
+    </dt>
+    <dd>
+    Focus change causes.
+ Values received by the <code>focusGained</code> and <code>focusLost</code> handlers.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">focusChangedByMouseClick</span>
+        0
+        </li>
+        <li><span class="parameter">focusChangedByTabKey</span>
+        1
+        </li>
+        <li><span class="parameter">focusChangedDirectly</span>
+        2
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../modules/gui.html#addHandler">gui.addHandler</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "ModifierKeys"></a>
+    <strong><span class="proto_prefix">gui</span>.ModifierKeys</strong>
+    </dt>
+    <dd>
+    Keyboard and mouse modifiers.
+ Contained in every <a href="../modules/gui.html#gui.MouseEvent">gui.MouseEvent</a> and received by the
+ <code>modifierKeysChanged</code> handler.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">noModifiers</span>
+        0
+        </li>
+        <li><span class="parameter">shiftModifier</span>
+        1
+        </li>
+        <li><span class="parameter">ctrlModifier</span>
+        2
+        </li>
+        <li><span class="parameter">altModifier</span>
+        4
+        </li>
+        <li><span class="parameter">leftButtonModifier</span>
+        16
+        </li>
+        <li><span class="parameter">rightButtonModifier</span>
+        32
+        </li>
+        <li><span class="parameter">middleButtonModifier</span>
+        64
+        </li>
+        <li><span class="parameter">commandModifier</span>
+        8
+        </li>
+        <li><span class="parameter">ctrlAltCommandModifiers</span>
+        14
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_gui_MouseEvent"></a>Class gui.MouseEvent </h2>
+
+ A mouse event as received by GUI handlers (see <a href="../modules/gui.html#addHandler">gui.addHandler</a>)
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "MouseEvent.x"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.x</strong>
+    </dt>
+    <dd>
+    X.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.y"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.y</strong>
+    </dt>
+    <dd>
+    Y.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.mods"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.mods</strong>
+    </dt>
+    <dd>
+    Modifier keys.
+ Values defined in <a href="../modules/gui.html#ModifierKeys">gui.ModifierKeys</a>
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.eventComponent"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.eventComponent</strong>
+    </dt>
+    <dd>
+    Event component.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.originalComponent"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.originalComponent</strong>
+    </dt>
+    <dd>
+    Original component.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.eventTime"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.eventTime</strong>
+    </dt>
+    <dd>
+    Time.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.mouseDownTime"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.mouseDownTime</strong>
+    </dt>
+    <dd>
+    Mouse down time.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.mouseDownPos"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.mouseDownPos</strong>
+    </dt>
+    <dd>
+    Mouse down position.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.numberOfClicks"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.numberOfClicks</strong>
+    </dt>
+    <dd>
+    Number of clicks.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseEvent.wasMovedSinceMouseDown"></a>
+    <strong><span class="proto_prefix">gui.MouseEvent</span>.wasMovedSinceMouseDown</strong>
+    </dt>
+    <dd>
+    Was moved since mouse down.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_gui_MouseWheelDetails"></a>Class gui.MouseWheelDetails </h2>
+
+ As received by the <code>mouseWheelMove</code> handler (see <a href="../modules/gui.html#addHandler">gui.addHandler</a>)
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "MouseWheelDetails.deltaX"></a>
+    <strong><span class="proto_prefix">gui.MouseWheelDetails</span>.deltaX</strong>
+    </dt>
+    <dd>
+    X delta.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseWheelDetails.deltaY"></a>
+    <strong><span class="proto_prefix">gui.MouseWheelDetails</span>.deltaY</strong>
+    </dt>
+    <dd>
+    Y delta.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseWheelDetails.isReversed"></a>
+    <strong><span class="proto_prefix">gui.MouseWheelDetails</span>.isReversed</strong>
+    </dt>
+    <dd>
+    Is reversed.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "MouseWheelDetails.isSmooth"></a>
+    <strong><span class="proto_prefix">gui.MouseWheelDetails</span>.isSmooth</strong>
+    </dt>
+    <dd>
+    Is smooth.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_gui_KeyPress"></a>Class gui.KeyPress </h2>
+
+ As received by the <code>keyPressed</code> and <code>keyStateChanged</code> handlers (see <a href="../modules/gui.html#addHandler">gui.addHandler</a>)
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "KeyPress.keyCode"></a>
+    <strong><span class="proto_prefix">gui.KeyPress</span>.keyCode</strong>
+    </dt>
+    <dd>
+    Key code.
+ (undecipherable for now)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "KeyPress.mods"></a>
+    <strong><span class="proto_prefix">gui.KeyPress</span>.mods</strong>
+    </dt>
+    <dd>
+    Modifier Keys.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "KeyPress.textCharacter"></a>
+    <strong><span class="proto_prefix">gui.KeyPress</span>.textCharacter</strong>
+    </dt>
+    <dd>
+    Text character.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

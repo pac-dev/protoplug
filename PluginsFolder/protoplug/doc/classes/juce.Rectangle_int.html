@@ -1,0 +1,383 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Class juce.Rectangle_int</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Constructors">Constructors</a></li>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><strong>juce.Rectangle_int</strong></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>juce.Rectangle_int</code></h1>
+<p>An integer (pixel-aligned) rectangle.</p>
+<p> Is converted to a <a href="http://www.juce.com/api/classRectangle.html">JUCE Rectangle</a></p>
+
+
+<h2><a href="#Constructors">Constructors</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.Rectangle_int"><span class="proto_prefix">juce</span>.Rectangle_int (x, y, w, h)</a></td>
+	<td class="summary">Constuctor with classical arguments.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.Rectangle_int"><span class="proto_prefix">juce</span>.Rectangle_int (args)</a></td>
+	<td class="summary">Constuctor with named arguments.</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int:toFloat"><span class="proto_prefix">juce.Rectangle_int</span>:toFloat ()</a></td>
+	<td class="summary">To float.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int:contains"><span class="proto_prefix">juce.Rectangle_int</span>:contains (point)</a></td>
+	<td class="summary">Contains.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int:getR"><span class="proto_prefix">juce.Rectangle_int</span>:getR ()</a></td>
+	<td class="summary">Get right.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int:getB"><span class="proto_prefix">juce.Rectangle_int</span>:getB ()</a></td>
+	<td class="summary">Get bottom.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.x"><span class="proto_prefix">juce.Rectangle_int</span>.x</a></td>
+	<td class="summary">Left position</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.y"><span class="proto_prefix">juce.Rectangle_int</span>.y</a></td>
+	<td class="summary">Top position</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.w"><span class="proto_prefix">juce.Rectangle_int</span>.w</a></td>
+	<td class="summary">Width</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Rectangle_int.h"><span class="proto_prefix">juce.Rectangle_int</span>.h</a></td>
+	<td class="summary">Height</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Constructors"></a>Constructors</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Rectangle_int.Rectangle_int"></a>
+    <strong><span class="proto_prefix">juce</span>.Rectangle_int (x, y, w, h)</strong>
+    </dt>
+    <dd>
+    Constuctor with classical arguments.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+         left position
+        </li>
+        <li><span class="parameter">y</span>
+         top position
+        </li>
+        <li><span class="parameter">w</span>
+         width
+        </li>
+        <li><span class="parameter">h</span>
+         height
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int.Rectangle_int"></a>
+    <strong><span class="proto_prefix">juce</span>.Rectangle_int (args)</strong>
+    </dt>
+    <dd>
+    Constuctor with named arguments.
+ Every field is optional.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">args</span>
+
+
+        <ul>
+        <li><span class="parameter">x</span>
+         left position
+        </li>
+        <li><span class="parameter">y</span>
+         top position
+        </li>
+        <li><span class="parameter">w</span>
+         width
+        </li>
+        <li><span class="parameter">h</span>
+         height
+        </li>
+        </li></ul>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Methods"></a>Methods</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Rectangle_int:toFloat"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>:toFloat ()</strong>
+    </dt>
+    <dd>
+    To float.
+ Convert to a sub-pixel rectangle
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">juce.Rectangle_float</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int:contains"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>:contains (point)</strong>
+    </dt>
+    <dd>
+    Contains.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">point</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the rectangle contains the point
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int:getR"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>:getR ()</strong>
+    </dt>
+    <dd>
+    Get right.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the rectangle's right position on the X axis
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int:getB"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>:getB ()</strong>
+    </dt>
+    <dd>
+    Get bottom.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the rectangle's bottom position on the Y axis
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Fields"></a>Fields</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Rectangle_int.x"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>.x</strong>
+    </dt>
+    <dd>
+    Left position
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int.y"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>.y</strong>
+    </dt>
+    <dd>
+    Top position
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int.w"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>.w</strong>
+    </dt>
+    <dd>
+    Width
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Rectangle_int.h"></a>
+    <strong><span class="proto_prefix">juce.Rectangle_int</span>.h</strong>
+    </dt>
+    <dd>
+    Height
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

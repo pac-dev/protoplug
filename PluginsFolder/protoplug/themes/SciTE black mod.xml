@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<theme>
+	<color target="Default" 	hex="FFeeeeee"/>
+	<color target="Background" 	hex="FF000000"/>
+	<color target="Highlight" 	hex="FF101050"/>
+	<color target="Margintext" 	hex="ff488f8f"/>
+	<color target="Marginback" 	hex="ff181818"/>
+	<color target="Caret"	 	hex="FFFFFFFF"/>
+	
+	<color target="Comment" 	hex="ff00FF00"/>
+	<color target="Integer" 	hex="ffFF00FF"/>
+	<color target="Float" 		hex="ffFF00FF"/>
+	<color target="Keyword" 	hex="ff40a0FF"/>
+	<color target="String" 		hex="ffFF9D00"/>
+	<color target="Operator" 	hex="ff989898"/>
+	<color target="Punctuation" hex="ff989898"/>
+	<color target="Bracket" 	hex="ff989898"/>
+	<color target="Error" 		hex="ff989898"/>
+	
+	<font priority="1" typeface="Lucida Console" size="15" hinted="true"/>
+</theme>

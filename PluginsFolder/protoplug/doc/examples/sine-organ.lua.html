@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Example sine-organ.lua</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+
+
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><strong>sine-organ.lua</strong></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+    <pre>
+<span class="comment">--[[
+name: sine organ
+description: A simple organ-like sinewave VST/AU.
+author: osar.fr
+--]]</span>
+
+<span class="global">require</span> <span class="string">"include/protoplug"</span>
+
+<span class="keyword">local</span> release = <span class="number">10000</span>
+<span class="keyword">local</span> decayRate = <span class="number">1</span>/release
+
+polyGen.initTracks(<span class="number">8</span>)
+
+<span class="keyword">function</span> polyGen.VTrack:init()
+	<span class="comment">-- create per-track fields here
+</span>	self.phase = <span class="number">0</span>
+	self.releasePos = release
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> polyGen.VTrack:addProcessBlock(samples, smax)
+	<span class="keyword">local</span> amp = <span class="number">1</span>
+	<span class="keyword">for</span> i = <span class="number">0</span>,smax <span class="keyword">do</span>
+		<span class="keyword">if</span> <span class="keyword">not</span> self.noteIsOn <span class="keyword">then</span>
+			<span class="comment">-- release is finished : idle track
+</span>			<span class="keyword">if</span> self.releasePos&gt;=release <span class="keyword">then</span> <span class="keyword">break</span> <span class="keyword">end</span>
+			<span class="comment">-- release is under way
+</span>			amp = <span class="number">1</span>-self.releasePos*decayRate
+			self.releasePos = self.releasePos+<span class="number">1</span>
+		<span class="keyword">end</span>
+		self.phase = self.phase + (self.noteFreq*<span class="global">math</span>.pi*<span class="number">2</span>)
+		<span class="comment">-- math.sin is slow but once per sample is no tragedy
+</span>		<span class="keyword">local</span> trackSample = <span class="global">math</span>.sin(self.phase)*amp*<span class="number">0.3</span>
+		samples[<span class="number">0</span>][i] = samples[<span class="number">0</span>][i] + trackSample <span class="comment">-- left
+</span>		samples[<span class="number">1</span>][i] = samples[<span class="number">1</span>][i] + trackSample <span class="comment">-- right
+</span>	<span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> polyGen.VTrack:noteOff(note, ev)
+	self.releasePos = <span class="number">0</span>
+<span class="keyword">end</span>
+
+<span class="keyword">function</span> polyGen.VTrack:noteOn(note, vel, ev)
+	<span class="comment">-- start the sinewave at 0 for a clickless attack
+</span>	self.phase = <span class="number">0</span>
+<span class="keyword">end</span></pre>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

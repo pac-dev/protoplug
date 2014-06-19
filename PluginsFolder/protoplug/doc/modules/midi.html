@@ -1,0 +1,862 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module midi</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_midi_Buffer">Class midi.Buffer </a></li>
+<li><a href="#Class_midi_Event">Class midi.Event </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><strong>midi</strong></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>midi</code></h1>
+<p><a href="../modules/midi.html#">midi</a>  contains MIDI-related classes and functions.</p>
+<p>
+
+<p> Example of receiving MIDI input : <a href="../examples/sine-organ.lua.html#">sine-organ.lua</a>.</p>
+
+<p> Example of producing MIDI output : <a href="../examples/midi-chordify.lua.html#">midi-chordify.lua</a>.</p>
+
+<p> The <a href="../modules/midi.html#">midi</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#noteToFreq"><span class="proto_prefix">midi</span>.noteToFreq (note)</a></td>
+	<td class="summary">Convert a MIDI note number to frequency.</td>
+	</tr>
+</table>
+<h2><a href="#Class_midi_Buffer">Class midi.Buffer </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Buffer:eachEvent"><span class="proto_prefix">midi.Buffer</span>:eachEvent ()</a></td>
+	<td class="summary">Iterate over each <a href="../modules/midi.html#midi.Event">midi.Event</a> in the buffer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Buffer:clear"><span class="proto_prefix">midi.Buffer</span>:clear ()</a></td>
+	<td class="summary">Remove all MIDI events from the buffer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Buffer:addEvent"><span class="proto_prefix">midi.Buffer</span>:addEvent (event)</a></td>
+	<td class="summary">Add a MIDI event.</td>
+	</tr>
+</table>
+<h2><a href="#Class_midi_Event">Class midi.Event </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#midi.Event:Event"><span class="proto_prefix">midi</span>.Event (other)</a></td>
+	<td class="summary">Constructor : copy another event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#midi.Event:Event"><span class="proto_prefix">midi</span>.Event (time, dataSize[, data])</a></td>
+	<td class="summary">Constructor : create a custom event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.noteOn"><span class="proto_prefix">midi.Event</span>.noteOn (channel, note, vel[, pos=0])</a></td>
+	<td class="summary">Constructor : note on.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.noteOff"><span class="proto_prefix">midi.Event</span>.noteOff (channel, note[, vel=0[, pos=0]])</a></td>
+	<td class="summary">Constructor : note off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.pitchBend"><span class="proto_prefix">midi.Event</span>.pitchBend (channel, pitch[, pos=0])</a></td>
+	<td class="summary">Constructor : pitch bend.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.control"><span class="proto_prefix">midi.Event</span>.control (channel, number, value[, pos=0])</a></td>
+	<td class="summary">Constructor : Control change.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getChannel"><span class="proto_prefix">midi.Event</span>:getChannel ()</a></td>
+	<td class="summary">Get channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:setChannel"><span class="proto_prefix">midi.Event</span>:setChannel (channel)</a></td>
+	<td class="summary">Set channel.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:isNoteOn"><span class="proto_prefix">midi.Event</span>:isNoteOn ()</a></td>
+	<td class="summary">Is a note on event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:isNoteOff"><span class="proto_prefix">midi.Event</span>:isNoteOff ()</a></td>
+	<td class="summary">Is a note off event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getNote"><span class="proto_prefix">midi.Event</span>:getNote ()</a></td>
+	<td class="summary">Get note.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:setNote"><span class="proto_prefix">midi.Event</span>:setNote (note)</a></td>
+	<td class="summary">Set note.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getVel"><span class="proto_prefix">midi.Event</span>:getVel ()</a></td>
+	<td class="summary">Get velocity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:setVel"><span class="proto_prefix">midi.Event</span>:setVel (vel)</a></td>
+	<td class="summary">Set velocity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:isPitchBend"><span class="proto_prefix">midi.Event</span>:isPitchBend ()</a></td>
+	<td class="summary">Is a pitch bend event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getPitchBendValue"><span class="proto_prefix">midi.Event</span>:getPitchBendValue ()</a></td>
+	<td class="summary">Get pitch bend value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:isControl"><span class="proto_prefix">midi.Event</span>:isControl ()</a></td>
+	<td class="summary">Is a Control Change event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getControlNumber"><span class="proto_prefix">midi.Event</span>:getControlNumber ()</a></td>
+	<td class="summary">Get control number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event:getControlValue"><span class="proto_prefix">midi.Event</span>:getControlValue ()</a></td>
+	<td class="summary">Get control value.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.time"><span class="proto_prefix">midi.Event</span>.time</a></td>
+	<td class="summary">Sample position relatively to the start of the block.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.dataSize"><span class="proto_prefix">midi.Event</span>.dataSize</a></td>
+	<td class="summary">Size of the MIDI message in bytes</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Event.data"><span class="proto_prefix">midi.Event</span>.data</a></td>
+	<td class="summary">The raw MIDI message
+ (<code>const uint8_t*</code> cdata)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "noteToFreq"></a>
+    <strong><span class="proto_prefix">midi</span>.noteToFreq (note)</strong>
+    </dt>
+    <dd>
+    Convert a MIDI note number to frequency.
+ Call this function to get a note's frequency.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">note</span>
+         the MIDI note (0-127)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the frequency in samples^-1
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_midi_Buffer"></a>Class midi.Buffer </h2>
+
+ A buffer containing midi events, as received by <a href="../modules/plugin.html#processBlock">plugin.processBlock</a>
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "Buffer:eachEvent"></a>
+    <strong><span class="proto_prefix">midi.Buffer</span>:eachEvent ()</strong>
+    </dt>
+    <dd>
+    Iterate over each <a href="../modules/midi.html#midi.Event">midi.Event</a> in the buffer.
+
+    </ul>
+
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">for</span> ev <span class="keyword">in</span> myBuffer:eachEvent() <span class="keyword">do</span> <span class="global">print</span>(ev:getNote()) <span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Buffer:clear"></a>
+    <strong><span class="proto_prefix">midi.Buffer</span>:clear ()</strong>
+    </dt>
+    <dd>
+    Remove all MIDI events from the buffer.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Buffer:addEvent"></a>
+    <strong><span class="proto_prefix">midi.Buffer</span>:addEvent (event)</strong>
+    </dt>
+    <dd>
+    Add a MIDI event.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_midi_Event"></a>Class midi.Event </h2>
+
+ A single midi event as returned by <a href="../modules/midi.html#Buffer:eachEvent">Buffer:eachEvent</a>
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "midi.Event:Event"></a>
+    <strong><span class="proto_prefix">midi</span>.Event (other)</strong>
+    </dt>
+    <dd>
+    Constructor : copy another event.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">other</span>
+            <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "midi.Event:Event"></a>
+    <strong><span class="proto_prefix">midi</span>.Event (time, dataSize[, data])</strong>
+    </dt>
+    <dd>
+    Constructor : create a custom event.
+ Create an event from given bytes (or zeros if not supplied)
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">time</span>
+
+
+
+        </li>
+        <li><span class="parameter">dataSize</span>
+
+
+
+        </li>
+        <li><span class="parameter">data</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">myEv = midi.Event(<span class="number">0</span>, <span class="number">3</span>, {<span class="number">0x90</span>, <span class="number">0x30</span>, <span class="number">0x7f</span>}) -- note on</pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "Event.noteOn"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.noteOn (channel, note, vel[, pos=0])</strong>
+    </dt>
+    <dd>
+    Constructor : note on.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel</span>
+         (1-16)
+        </li>
+        <li><span class="parameter">note</span>
+         (0-127)
+        </li>
+        <li><span class="parameter">vel</span>
+         (1-127)
+        </li>
+        <li><span class="parameter">pos</span>
+         sample offset
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.noteOff"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.noteOff (channel, note[, vel=0[, pos=0]])</strong>
+    </dt>
+    <dd>
+    Constructor : note off.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel</span>
+         (1-16)
+        </li>
+        <li><span class="parameter">note</span>
+         (0-127)
+        </li>
+        <li><span class="parameter">vel</span>
+         (0-127)
+         (<em>default</em> 0)
+        </li>
+        <li><span class="parameter">pos</span>
+         sample offset
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.pitchBend"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.pitchBend (channel, pitch[, pos=0])</strong>
+    </dt>
+    <dd>
+    Constructor : pitch bend.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel</span>
+         (1-16)
+        </li>
+        <li><span class="parameter">pitch</span>
+         bend value (0-16383)
+        </li>
+        <li><span class="parameter">pos</span>
+         sample offset
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.control"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.control (channel, number, value[, pos=0])</strong>
+    </dt>
+    <dd>
+    Constructor : Control change.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel</span>
+         (1-16)
+        </li>
+        <li><span class="parameter">number</span>
+         control number (0-247)
+        </li>
+        <li><span class="parameter">value</span>
+         control value (0-127)
+        </li>
+        <li><span class="parameter">pos</span>
+         sample offset
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../modules/midi.html#midi.Event">midi.Event</a></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getChannel"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getChannel ()</strong>
+    </dt>
+    <dd>
+    Get channel.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the MIDI channel (1-16)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:setChannel"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:setChannel (channel)</strong>
+    </dt>
+    <dd>
+    Set channel.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">channel</span>
+         the MIDI channel (1-16)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:isNoteOn"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:isNoteOn ()</strong>
+    </dt>
+    <dd>
+    Is a note on event.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether event is a note on.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:isNoteOff"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:isNoteOff ()</strong>
+    </dt>
+    <dd>
+    Is a note off event.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether event is a note off.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getNote"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getNote ()</strong>
+    </dt>
+    <dd>
+    Get note.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the MIDI note number (0-127)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:setNote"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:setNote (note)</strong>
+    </dt>
+    <dd>
+    Set note.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">note</span>
+         the MIDI note number (0-127)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getVel"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getVel ()</strong>
+    </dt>
+    <dd>
+    Get velocity.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        the MIDI velocity (1-127)
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:setVel"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:setVel (vel)</strong>
+    </dt>
+    <dd>
+    Set velocity.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">vel</span>
+         the MIDI velocity (1-127)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:isPitchBend"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:isPitchBend ()</strong>
+    </dt>
+    <dd>
+    Is a pitch bend event.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether event is a pitch bend on.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getPitchBendValue"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getPitchBendValue ()</strong>
+    </dt>
+    <dd>
+    Get pitch bend value.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        pitch bend value (0-16383).
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:isControl"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:isControl ()</strong>
+    </dt>
+    <dd>
+    Is a Control Change event.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether event is a control change.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getControlNumber"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getControlNumber ()</strong>
+    </dt>
+    <dd>
+    Get control number.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        control number (0-247).
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event:getControlValue"></a>
+    <strong><span class="proto_prefix">midi.Event</span>:getControlValue ()</strong>
+    </dt>
+    <dd>
+    Get control value.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+        control value (0-127).
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.time"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.time</strong>
+    </dt>
+    <dd>
+    Sample position relatively to the start of the block.
+ This value is often 0 because most hosts call <a href="../modules/plugin.html#processBlock">plugin.processBlock</a> at the
+ beginning of beats and beat divisions. It is never higher than the
+ current <a href="../modules/plugin.html#processBlock">plugin.processBlock</a>'s <code>smax</code> and any events created by the script
+ should respect this rule.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.dataSize"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.dataSize</strong>
+    </dt>
+    <dd>
+    Size of the MIDI message in bytes
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Event.data"></a>
+    <strong><span class="proto_prefix">midi.Event</span>.data</strong>
+    </dt>
+    <dd>
+    The raw MIDI message
+ (<code>const uint8_t*</code> cdata)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

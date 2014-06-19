@@ -1,0 +1,2073 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Class juce.Path</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Constructors">Constructors</a></li>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><strong>juce.Path</strong></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>juce.Path</code></h1>
+<p>Path.</p>
+<p> Is a pointer to a <a href="http://www.juce.com/api/classPath.html">JUCE Path</a>.</p>
+
+
+<h2><a href="#Constructors">Constructors</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path.Path"><span class="proto_prefix">juce</span>.Path ()</a></td>
+	<td class="summary">Constuctor</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getBounds"><span class="proto_prefix">juce.Path</span>:getBounds ()</a></td>
+	<td class="summary">Get bounds.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getBoundsTransformed"><span class="proto_prefix">juce.Path</span>:getBoundsTransformed (transform)</a></td>
+	<td class="summary">Get bounds transformed.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:contains"><span class="proto_prefix">juce.Path</span>:contains (pointX, pointY[, tolerance=1])</a></td>
+	<td class="summary">Contains.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:contains"><span class="proto_prefix">juce.Path</span>:contains (point[, tolerance=1])</a></td>
+	<td class="summary">Contains.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:intersectsLine"><span class="proto_prefix">juce.Path</span>:intersectsLine (line[, tolerance=1])</a></td>
+	<td class="summary">Intersects line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getClippedLine"><span class="proto_prefix">juce.Path</span>:getClippedLine (line, keepSectionOutsidePath)</a></td>
+	<td class="summary">Get clipped line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getLength"><span class="proto_prefix">juce.Path</span>:getLength<br> ([transform=juce.AffineTransform.identity])</a></td>
+	<td class="summary">Get length.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getPointAlongPath"><span class="proto_prefix">juce.Path</span>:getPointAlongPath<br> (distanceFromStart[, transform=juce.AffineTransform.identity])</a></td>
+	<td class="summary">Get point along path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getNearestPoint"><span class="proto_prefix">juce.Path</span>:getNearestPoint<br> (targetPoint[, transform=juce.AffineTransform.identity])</a></td>
+	<td class="summary">Get nearest point.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:clear"><span class="proto_prefix">juce.Path</span>:clear ()</a></td>
+	<td class="summary">Clear.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:startNewSubPath"><span class="proto_prefix">juce.Path</span>:startNewSubPath (startX, startY)</a></td>
+	<td class="summary">Start new sub path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:startNewSubPath"><span class="proto_prefix">juce.Path</span>:startNewSubPath (start)</a></td>
+	<td class="summary">Start new sub path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:closeSubPath"><span class="proto_prefix">juce.Path</span>:closeSubPath ()</a></td>
+	<td class="summary">Close sub path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:lineTo"><span class="proto_prefix">juce.Path</span>:lineTo (endX, endY)</a></td>
+	<td class="summary">Line to.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:lineTo"><span class="proto_prefix">juce.Path</span>:lineTo (endpoint)</a></td>
+	<td class="summary">Line to.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:quadraticTo"><span class="proto_prefix">juce.Path</span>:quadraticTo<br> (controlPointX, controlPointY, endPointX, endPointY)</a></td>
+	<td class="summary">Quadratic to.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:quadraticTo2"><span class="proto_prefix">juce.Path</span>:quadraticTo2 (controlPoint, endPoint)</a></td>
+	<td class="summary">Quadratic to2.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:cubicTo"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:cubicTo<br> (controlPoint1X, controlPoint1Y, controlPoint2X, controlPoint2Y, endPointX, endPointY)</span></a></td>
+	<td class="summary">Cubic to.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:cubicTo"><span class="proto_prefix">juce.Path</span>:cubicTo (controlPoint1, controlPoint2, endPoint)</a></td>
+	<td class="summary">Cubic to.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getCurrentPosition"><span class="proto_prefix">juce.Path</span>:getCurrentPosition ()</a></td>
+	<td class="summary">Get current position.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRectangle"><span class="proto_prefix">juce.Path</span>:addRectangle (x, y, width, height)</a></td>
+	<td class="summary">Add rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRectangle"><span class="proto_prefix">juce.Path</span>:addRectangle (rectangle)</a></td>
+	<td class="summary">Add rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRoundedRectangle"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSize)</a></td>
+	<td class="summary">Add rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRoundedRectangle"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSizeX, cornerSizeY)</a></td>
+	<td class="summary">Add rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRoundedRectangle"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSizeX, cornerSizeY, curveTopLeft, curveTopRight, curveBottomLeft, curveBottomRight)</span></a></td>
+	<td class="summary">Add rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRoundedRectangle"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (rectangle, cornerSizeX, cornerSizeY)</a></td>
+	<td class="summary">Add rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addRoundedRectangle"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle (rectangle, cornerSize)</a></td>
+	<td class="summary">Add rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addTriangle"><span class="proto_prefix">juce.Path</span>:addTriangle (x1, y1, x2, y2, x3, y3)</a></td>
+	<td class="summary">Add triangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addQuadrilateral"><span class="proto_prefix">juce.Path</span>:addQuadrilateral (x1, y1, x2, y2, x3, y3, x4, y4)</a></td>
+	<td class="summary">Add quadrilateral.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addEllipse"><span class="proto_prefix">juce.Path</span>:addEllipse (x, y, width, height)</a></td>
+	<td class="summary">Add ellipse.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addArc"><span class="proto_prefix">juce.Path</span>:addArc<br> (x, y, width, height, fromRadians, toRadians[, startAsNewSubPath=false])</a></td>
+	<td class="summary">Add arc.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addCentredArc"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addCentredArc<br> (centreX, centreY, radiusX, radiusY, rotationOfEllipse, fromRadians, toRadians[, startAsNewSubPath=false])</span></a></td>
+	<td class="summary">Add centred arc.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addPieSegment"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addPieSegment<br> (x, y, width, height, fromRadians, toRadians[, innerCircleProportionalSize=0])</span></a></td>
+	<td class="summary">Add pie segment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addLineSegment"><span class="proto_prefix">juce.Path</span>:addLineSegment (line, lineThickness)</a></td>
+	<td class="summary">Add line segment.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addArrow"><span class="proto_prefix">juce.Path</span>:addArrow<br> (line, lineThickness, arrowheadWidth, arrowheadLength)</a></td>
+	<td class="summary">Add arrow.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addPolygon"><span class="proto_prefix">juce.Path</span>:addPolygon<br> (centre, numberOfSides, radius[, startAngle=0])</a></td>
+	<td class="summary">Add polygon.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addStar"><span class="proto_prefix">juce.Path</span>:addStar<br> (centre, numberOfPoints, innerRadius, outerRadius[, startAngle=0])</a></td>
+	<td class="summary">Add star.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addBubble"><span class="proto_prefix">juce.Path</span>:addBubble<br> (bodyArea, maximumArea, arrowTipPosition, cornerSize, arrowBaseWidth)</a></td>
+	<td class="summary">Add bubble.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:addPath"><span class="proto_prefix">juce.Path</span>:addPath<br> (pathToAppend[, transform=juce.AffineTransform.identity])</a></td>
+	<td class="summary">Add path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:applyTransform"><span class="proto_prefix">juce.Path</span>:applyTransform (transform)</a></td>
+	<td class="summary">Apply transform.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:scaleToFit"><span class="proto_prefix">juce.Path</span>:scaleToFit<br> (x, y, width, height, preserveProportions)</a></td>
+	<td class="summary">Scale to fit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getTransformToScaleToFit"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:getTransformToScaleToFit<br> (x, y, width, height, preserveProportions[, justification=Justification.centred])</span></a></td>
+	<td class="summary">Get transform to scale to fit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:getTransformToScaleToFit"><span class="wrapman"><span class="proto_prefix">juce.Path</span>:getTransformToScaleToFit<br> (area, preserveProportions[, justification=Justification.centred])</span></a></td>
+	<td class="summary">Get transform to scale to fit.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:createPathWithRoundedCorners"><span class="proto_prefix">juce.Path</span>:createPathWithRoundedCorners (cornerRadius)</a></td>
+	<td class="summary">Create path with rounded corners.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:setUsingNonZeroWinding"><span class="proto_prefix">juce.Path</span>:setUsingNonZeroWinding (isNonZeroWinding)</a></td>
+	<td class="summary">Set using non zero winding.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path:isUsingNonZeroWinding"><span class="proto_prefix">juce.Path</span>:isUsingNonZeroWinding ()</a></td>
+	<td class="summary">Is using non zero winding.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path.JointStyle"><span class="proto_prefix">juce.Path</span>.JointStyle</a></td>
+	<td class="summary">Joint styles.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Path.EndCapStyle"><span class="proto_prefix">juce.Path</span>.EndCapStyle</a></td>
+	<td class="summary">End cap styles.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Constructors"></a>Constructors</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Path.Path"></a>
+    <strong><span class="proto_prefix">juce</span>.Path ()</strong>
+    </dt>
+    <dd>
+    Constuctor
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Methods"></a>Methods</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Path:getBounds"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getBounds ()</strong>
+    </dt>
+    <dd>
+    Get bounds.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Rectangle_float</span></span>
+        rectangle containing the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getBoundsTransformed"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getBoundsTransformed (transform)</strong>
+    </dt>
+    <dd>
+    Get bounds transformed.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Rectangle_float</span></span>
+        rectangle containing the transformed path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:contains"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:contains (pointX, pointY[, tolerance=1])</strong>
+    </dt>
+    <dd>
+    Contains.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pointX</span>
+
+
+
+        </li>
+        <li><span class="parameter">pointY</span>
+
+
+
+        </li>
+        <li><span class="parameter">tolerance</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the path contains the point
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/juce.Path.html#juce.Path:closeSubPath">closeSubPath</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:contains"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:contains (point[, tolerance=1])</strong>
+    </dt>
+    <dd>
+    Contains.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">point</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">tolerance</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the path contains the point
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../classes/juce.Path.html#juce.Path:closeSubPath">closeSubPath</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:intersectsLine"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:intersectsLine (line[, tolerance=1])</strong>
+    </dt>
+    <dd>
+    Intersects line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">tolerance</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the path intersects the line
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getClippedLine"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getClippedLine (line, keepSectionOutsidePath)</strong>
+    </dt>
+    <dd>
+    Get clipped line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">keepSectionOutsidePath</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line_float</a></span>
+        the line clipped by the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getLength"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getLength<br> ([transform=juce.AffineTransform.identity])</strong>
+    </dt>
+    <dd>
+    Get length.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+         (<em>default</em> juce.AffineTransform.identity)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        length of the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getPointAlongPath"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getPointAlongPath<br> (distanceFromStart[, transform=juce.AffineTransform.identity])</strong>
+    </dt>
+    <dd>
+    Get point along path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">distanceFromStart</span>
+
+
+
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+         (<em>default</em> juce.AffineTransform.identity)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">Point_float</span></span>
+        the point on the path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getNearestPoint"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getNearestPoint<br> (targetPoint[, transform=juce.AffineTransform.identity])</strong>
+    </dt>
+    <dd>
+    Get nearest point.
+ Get the nearest on-path point to an arbitrary point, and
+ the distance between the points
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">targetPoint</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+         (<em>default</em> juce.AffineTransform.identity)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        distance</li>
+        <li>
+           <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+        pointOnPath</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:clear"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:clear ()</strong>
+    </dt>
+    <dd>
+    Clear.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:startNewSubPath"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:startNewSubPath (startX, startY)</strong>
+    </dt>
+    <dd>
+    Start new sub path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">startX</span>
+
+
+
+        </li>
+        <li><span class="parameter">startY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:startNewSubPath"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:startNewSubPath (start)</strong>
+    </dt>
+    <dd>
+    Start new sub path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">start</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:closeSubPath"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:closeSubPath ()</strong>
+    </dt>
+    <dd>
+    Close sub path.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:lineTo"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:lineTo (endX, endY)</strong>
+    </dt>
+    <dd>
+    Line to.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">endX</span>
+
+
+
+        </li>
+        <li><span class="parameter">endY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:lineTo"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:lineTo (endpoint)</strong>
+    </dt>
+    <dd>
+    Line to.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">endpoint</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:quadraticTo"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:quadraticTo<br> (controlPointX, controlPointY, endPointX, endPointY)</strong>
+    </dt>
+    <dd>
+    Quadratic to.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">controlPointX</span>
+
+
+
+        </li>
+        <li><span class="parameter">controlPointY</span>
+
+
+
+        </li>
+        <li><span class="parameter">endPointX</span>
+
+
+
+        </li>
+        <li><span class="parameter">endPointY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:quadraticTo2"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:quadraticTo2 (controlPoint, endPoint)</strong>
+    </dt>
+    <dd>
+    Quadratic to2.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">controlPoint</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">endPoint</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:cubicTo"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:cubicTo<br> (controlPoint1X, controlPoint1Y, controlPoint2X, controlPoint2Y, endPointX, endPointY)</span></strong>
+    </dt>
+    <dd>
+    Cubic to.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">controlPoint1X</span>
+
+
+
+        </li>
+        <li><span class="parameter">controlPoint1Y</span>
+
+
+
+        </li>
+        <li><span class="parameter">controlPoint2X</span>
+
+
+
+        </li>
+        <li><span class="parameter">controlPoint2Y</span>
+
+
+
+        </li>
+        <li><span class="parameter">endPointX</span>
+
+
+
+        </li>
+        <li><span class="parameter">endPointY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:cubicTo"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:cubicTo (controlPoint1, controlPoint2, endPoint)</strong>
+    </dt>
+    <dd>
+    Cubic to.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">controlPoint1</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">controlPoint2</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">endPoint</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getCurrentPosition"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:getCurrentPosition ()</strong>
+    </dt>
+    <dd>
+    Get current position.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+        the current path construction position
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRectangle (x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Add rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRectangle (rectangle)</strong>
+    </dt>
+    <dd>
+    Add rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rectangle</span>
+            <span class="types"><span class="type">juce.Rectangle_float</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSize)</strong>
+    </dt>
+    <dd>
+    Add rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSizeX, cornerSizeY)</strong>
+    </dt>
+    <dd>
+    Add rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeX</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRoundedRectangle"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (x, y, width, height, cornerSizeX, cornerSizeY, curveTopLeft, curveTopRight, curveBottomLeft, curveBottomRight)</span></strong>
+    </dt>
+    <dd>
+    Add rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeX</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeY</span>
+
+
+
+        </li>
+        <li><span class="parameter">curveTopLeft</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">curveTopRight</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">curveBottomLeft</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">curveBottomRight</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRoundedRectangle<br> (rectangle, cornerSizeX, cornerSizeY)</strong>
+    </dt>
+    <dd>
+    Add rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rectangle</span>
+            <span class="types"><span class="type">juce.Rectangle_float</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeX</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSizeY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addRoundedRectangle (rectangle, cornerSize)</strong>
+    </dt>
+    <dd>
+    Add rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">rectangle</span>
+            <span class="types"><span class="type">juce.Rectangle_float</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addTriangle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addTriangle (x1, y1, x2, y2, x3, y3)</strong>
+    </dt>
+    <dd>
+    Add triangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x1</span>
+
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+
+
+
+        </li>
+        <li><span class="parameter">x2</span>
+
+
+
+        </li>
+        <li><span class="parameter">y2</span>
+
+
+
+        </li>
+        <li><span class="parameter">x3</span>
+
+
+
+        </li>
+        <li><span class="parameter">y3</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addQuadrilateral"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addQuadrilateral (x1, y1, x2, y2, x3, y3, x4, y4)</strong>
+    </dt>
+    <dd>
+    Add quadrilateral.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x1</span>
+
+
+
+        </li>
+        <li><span class="parameter">y1</span>
+
+
+
+        </li>
+        <li><span class="parameter">x2</span>
+
+
+
+        </li>
+        <li><span class="parameter">y2</span>
+
+
+
+        </li>
+        <li><span class="parameter">x3</span>
+
+
+
+        </li>
+        <li><span class="parameter">y3</span>
+
+
+
+        </li>
+        <li><span class="parameter">x4</span>
+
+
+
+        </li>
+        <li><span class="parameter">y4</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addEllipse"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addEllipse (x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Add ellipse.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addArc"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addArc<br> (x, y, width, height, fromRadians, toRadians[, startAsNewSubPath=false])</strong>
+    </dt>
+    <dd>
+    Add arc.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">fromRadians</span>
+         the start angle, clockwise from the top
+        </li>
+        <li><span class="parameter">toRadians</span>
+         the end angle
+        </li>
+        <li><span class="parameter">startAsNewSubPath</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addCentredArc"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addCentredArc<br> (centreX, centreY, radiusX, radiusY, rotationOfEllipse, fromRadians, toRadians[, startAsNewSubPath=false])</span></strong>
+    </dt>
+    <dd>
+    Add centred arc.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">centreX</span>
+
+
+
+        </li>
+        <li><span class="parameter">centreY</span>
+
+
+
+        </li>
+        <li><span class="parameter">radiusX</span>
+
+
+
+        </li>
+        <li><span class="parameter">radiusY</span>
+
+
+
+        </li>
+        <li><span class="parameter">rotationOfEllipse</span>
+         the ellipse inclination
+        </li>
+        <li><span class="parameter">fromRadians</span>
+         the start angle, clockwise from the top
+        </li>
+        <li><span class="parameter">toRadians</span>
+         the end angle
+        </li>
+        <li><span class="parameter">startAsNewSubPath</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addPieSegment"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:addPieSegment<br> (x, y, width, height, fromRadians, toRadians[, innerCircleProportionalSize=0])</span></strong>
+    </dt>
+    <dd>
+    Add pie segment.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">fromRadians</span>
+         the start angle, clockwise from the top
+        </li>
+        <li><span class="parameter">toRadians</span>
+         the end angle
+        </li>
+        <li><span class="parameter">innerCircleProportionalSize</span>
+         band proportion size, if specified
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addLineSegment"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addLineSegment (line, lineThickness)</strong>
+    </dt>
+    <dd>
+    Add line segment.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addArrow"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addArrow<br> (line, lineThickness, arrowheadWidth, arrowheadLength)</strong>
+    </dt>
+    <dd>
+    Add arrow.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowheadWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowheadLength</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addPolygon"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addPolygon<br> (centre, numberOfSides, radius[, startAngle=0])</strong>
+    </dt>
+    <dd>
+    Add polygon.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">centre</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">numberOfSides</span>
+
+
+
+        </li>
+        <li><span class="parameter">radius</span>
+
+
+
+        </li>
+        <li><span class="parameter">startAngle</span>
+
+
+
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addStar"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addStar<br> (centre, numberOfPoints, innerRadius, outerRadius[, startAngle=0])</strong>
+    </dt>
+    <dd>
+    Add star.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">centre</span>
+            <span class="types"><a class="type" href="../classes/juce.Point.html#">juce.Point</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">numberOfPoints</span>
+
+
+
+        </li>
+        <li><span class="parameter">innerRadius</span>
+
+
+
+        </li>
+        <li><span class="parameter">outerRadius</span>
+
+
+
+        </li>
+        <li><span class="parameter">startAngle</span>
+
+
+
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addBubble"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addBubble<br> (bodyArea, maximumArea, arrowTipPosition, cornerSize, arrowBaseWidth)</strong>
+    </dt>
+    <dd>
+    Add bubble.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">bodyArea</span>
+
+
+
+        </li>
+        <li><span class="parameter">maximumArea</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowTipPosition</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowBaseWidth</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:addPath"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:addPath<br> (pathToAppend[, transform=juce.AffineTransform.identity])</strong>
+    </dt>
+    <dd>
+    Add path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">pathToAppend</span>
+
+
+
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+         (<em>default</em> juce.AffineTransform.identity)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:applyTransform"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:applyTransform (transform)</strong>
+    </dt>
+    <dd>
+    Apply transform.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:scaleToFit"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:scaleToFit<br> (x, y, width, height, preserveProportions)</strong>
+    </dt>
+    <dd>
+    Scale to fit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">preserveProportions</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getTransformToScaleToFit"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:getTransformToScaleToFit<br> (x, y, width, height, preserveProportions[, justification=Justification.centred])</span></strong>
+    </dt>
+    <dd>
+    Get transform to scale to fit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">preserveProportions</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+         (<em>default</em> Justification.centred)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+        the required transform
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:getTransformToScaleToFit"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Path</span>:getTransformToScaleToFit<br> (area, preserveProportions[, justification=Justification.centred])</span></strong>
+    </dt>
+    <dd>
+    Get transform to scale to fit.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_float</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">preserveProportions</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+         (<em>default</em> Justification.centred)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+        the required transform
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:createPathWithRoundedCorners"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:createPathWithRoundedCorners (cornerRadius)</strong>
+    </dt>
+    <dd>
+    Create path with rounded corners.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">cornerRadius</span>
+
+
+
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="../classes/juce.Path.html#">juce.Path</a></span>
+        the rounded path
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:setUsingNonZeroWinding"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:setUsingNonZeroWinding (isNonZeroWinding)</strong>
+    </dt>
+    <dd>
+    Set using non zero winding.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">isNonZeroWinding</span>
+            <span class="types"><span class="type">boolean</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path:isUsingNonZeroWinding"></a>
+    <strong><span class="proto_prefix">juce.Path</span>:isUsingNonZeroWinding ()</strong>
+    </dt>
+    <dd>
+    Is using non zero winding.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the path is using non-zero winding
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Path.JointStyle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>.JointStyle</strong>
+    </dt>
+    <dd>
+    Joint styles.
+ for use with <a href="../classes/juce.Graphics.html#juce.Graphics:strokePath">juce.Graphics.strokePath</a>
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">mitered</span>
+
+
+
+        </li>
+        <li><span class="parameter">curved</span>
+
+
+
+        </li>
+        <li><span class="parameter">beveled</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Path.EndCapStyle"></a>
+    <strong><span class="proto_prefix">juce.Path</span>.EndCapStyle</strong>
+    </dt>
+    <dd>
+    End cap styles.
+ for use with <a href="../classes/juce.Graphics.html#juce.Graphics:strokePath">juce.Graphics.strokePath</a>
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">butt</span>
+
+
+
+        </li>
+        <li><span class="parameter">square</span>
+
+
+
+        </li>
+        <li><span class="parameter">rounded</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

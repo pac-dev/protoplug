@@ -1,0 +1,273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module script</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><strong>script</strong></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>script</code></h1>
+<p>Use <a href="../modules/script.html#">script</a>  to handle script-related events.</p>
+<p>
+
+<p> The <a href="../modules/script.html#">script</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#addHandler"><span class="proto_prefix">script</span>.addHandler (event, handler)</a></td>
+	<td class="summary">Add a handler for a script event.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#saveData"><span class="proto_prefix">script</span>.saveData ()</a></td>
+	<td class="summary">Save script data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadData"><span class="proto_prefix">script</span>.loadData (data)</a></td>
+	<td class="summary">Load script data.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ffiLoad"><span class="proto_prefix">script</span>.ffiLoad (libName[, ...])</a></td>
+	<td class="summary">Load shared libraries.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "addHandler"></a>
+    <strong><span class="proto_prefix">script</span>.addHandler (event, handler)</strong>
+    </dt>
+    <dd>
+
+<p>Add a handler for a script event.
+ The following events are available :</p>
+
+<ul>
+    <li><code>"init"</code> - Emitted after the script has been compiled and run.</li>
+    <li><code>"preClose"</code> - Emitted before the script state gets destroyed.</li>
+</ul>
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the event to handle
+        </li>
+        <li><span class="parameter">handler</span>
+            <span class="types"><span class="type">function</span></span>
+         a function to add the event's handlers
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="../modules/plugin.html#addHandler">plugin.addHandler</a></li>
+         <li><a href="../modules/gui.html#addHandler">gui.addHandler</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "saveData"></a>
+    <strong><span class="proto_prefix">script</span>.saveData ()</strong>
+    </dt>
+    <dd>
+    Save script data.
+ Override this function to save any custom data.</p>
+
+<p> This gets called :
+ - when the host saves the plugin's state (eg. when saving a project)
+ - right before the script is recompiled, to keep custom data across compilations.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        the data to be saved
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "loadData"></a>
+    <strong><span class="proto_prefix">script</span>.loadData (data)</strong>
+    </dt>
+    <dd>
+    Load script data.
+ Override this function to load any custom data.
+ Be warned that the data might originate from another script, so it's a good
+ idea to start the data with a header confirming the format.</p>
+
+<p> This gets called :
+ - when the host loads the plugin's state (eg. when loading a project)
+ - right after the script is recompiled, to keep custom data across compilations.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">data</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         the data to be loaded
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ffiLoad"></a>
+    <strong><span class="proto_prefix">script</span>.ffiLoad (libName[, ...])</strong>
+    </dt>
+    <dd>
+    Load shared libraries.
+ Protoplug scripts should use this wrapper function instead of LuaJIT's
+ <a href="http://luajit.org/ext_ffi_api.html#ffi_load">ffi.load</a>.
+ It has the same behaviour as <code>ffi.load</code>, but it adds <code>protoplug/lib</code> as a
+ search path, and can accept multiple arguments to test for different
+ library names. The names are tested from left to right until one load
+ successfully. If none of them work, an error is raised.</p>
+<pre><code>sdl = script.ffiLoad("sdl")
+</code></pre>
+<p> This looks for <code>libsdl.so</code> or <code>sdl.dll</code> in protoplug's lib folder and
+ in the system paths. </p>
+
+<pre><code>fftw = script.ffiLoad("libfftw3.so.3", "libfftw3-3.dll")
+</code></pre>
+<p> This looks for the supplied names in the same locations as above. This is
+ necessary for libs like FFTW, that have has platform-dependent names.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">libName</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">...</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+         alternate names for the same library
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        The library's ffi namespace
+    </ol>
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

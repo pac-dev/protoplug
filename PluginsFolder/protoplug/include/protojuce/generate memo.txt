@@ -1,0 +1,140 @@
+Some notes on creating the c++ export header, the c ffi import header, and the lua wrapper from JUCE library code. It's a mix of manual labor and notepad++ regular expression replacements, which was probably faster than doing everything manually or making a full parser and code generator. And it starts with the GNU C preprocessor :
+
+========== JUCE header to c++ export header =========
+
+cpp -P juce_path.h
+
+manually remove unwanted code, paste PROTO_API in front of desired functions.
+
+Add "self" :
+PROTO_API (.*?)\((.*?)\{(.*?)\}
+->
+PROTO_API \1\(pPath self, \2\{\3\}
+
+pPath self, )
+(normal mode)->
+pPath self)
+
+
+Prefix and create exported function bodies :
+PROTO_API (.*?) (.*?)\(pPath self(.*?)\)\r\n\{\r\n\r\n\}
+->
+PROTO_API \1 Path_\2\(\3\)\r\n\{\r\n\treturn self.p->\2\(\3\)\r\n\}
+
+(, 
+(normal mode)->
+(
+
+Remove "return" from void function bodies :
+PROTO_API void (.*?)return 
+->
+PROTO_API void \1
+
+Add "self" in definition arguments :
+PROTO_API (.*?)\(
+(disable . matches newline)->
+PROTO_API (.*?)\(pPath self, 
+
+, )
+)
+
+add the ; which i forgot :
+)\r\n}
+);\r\n}
+
+Start removing types from function call arguments :
+\{([^\}]*?)const (.*?)\}
+(repeat until none left)->
+\{\1\2\}
+
+Remove default parameter values from call arguments :
+\{([^\}]*?) = (.*?)([,\)])(.*?)\}
+->
+\{\1\3\4\}
+
+More removing types and replacing them with conversions (repeat until done) :
+\{([^\}]*?)AffineTransform& (.*?)([,)])(.*?)\}
+(repeat until none left)->
+\{\1\2\.toJuceAff\(\)\3\4\}
+
+\{([^\}]*?)Point<float> (.*?)([,)])(.*?)\}
+\{\1\2\.toJucePoint\(\)\3\4\}
+
+Remove basic types from function call argument lists :
+\{([^\}]*?)float (.*?)\}
+\{\1\2\}
+
+Replace classes by structs in definition argument lists (and return type) :
+PROTO_API ([^\)]*?)const AffineTransform& (.*?)\)
+PROTO_API \1exAffineTransform \2\)
+
+PROTO_API ([^\)]*?)const Point<float> (.*?)\)
+PROTO_API \1exPoint_float \2\)
+
+
+========== c++ export header to c ffi import header =========
+Remove ex, eg. exPoint_int -> Point_int :
+' ex'
+' '
+
+Remove bodies (mwaha) :
+PROTO_API (.*?)\)(.*?)\}\r\n
+\1\);\r\n
+
+Remove default values :
+ = (.*?)([),])
+\2
+
+
+========== c ffi import header to lua wrapper =========
+
+Remove all parameter types : last param :
+,([^\),]*?) ([^ ]*?)\)
+, \2\)
+
+Remove all paramter types : middle params in a line :
+, ([^\), ]*?) ([^ ]*?),
+, \2\,
+
+Remove all paramter types : middle params after newline :
+\r\n([ ]+)(.*?) (.*?),
+\r\n\1\3,
+
+Wrap it !
+\r\n\r\n([^\r\n]*?) Path_(.*?)\((.*?)\);
+\2 = function \(\3\)\r\n\treturn\1 protolib\.Path_\2\(\3\)\r\nend;\r\n\r\n
+
+'returnvoid '
+''
+
+return(.*?) 
+return 
+
+
+
+
+
+ldoc madness (gradually remove parameters) : 
+\r\n\t\t(.*?) = function (\(self,
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?),
+[ \r\n\t]*?([^\) \r\n\t].*?)\))
+
+\r\n\t\t--- \1\.
+\r\n\t\t-- @param \3
+\r\n\t\t-- @param \4
+\r\n\t\t-- @param \5
+\r\n\t\t-- @param \6
+\r\n\t\t-- @param \7
+\r\n\t\t-- @param \8
+\r\n\t\t-- @param \9
+\r\n\t\t-- @param ${10}
+\r\n\t\t-- @param ${11}
+\r\n\t\t-- @function \1
+\r\n\t\t\1 = function \2

@@ -1,0 +1,312 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Class juce.FillType</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Constructors">Constructors</a></li>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Predefined_values">Predefined values</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><strong>juce.FillType</strong></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>juce.FillType</code></h1>
+<p>Fill Type.</p>
+<p> Is a pointer to a <a href="http://www.juce.com/api/classFillType.html">JUCE FillType</a>.
+ Can be used by <a href="../classes/juce.Graphics.html#">juce.Graphics</a> for fill operations.</p>
+
+
+<h2><a href="#Constructors">Constructors</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.FillType"><span class="proto_prefix">juce</span>.FillType (Colour)</a></td>
+	<td class="summary">Constuct from a <a href="../classes/juce.Colour.html#">juce.Colour</a>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.FillType"><span class="proto_prefix">juce</span>.FillType (Gradient)</a></td>
+	<td class="summary">Constuct from a <a href="../classes/juce.ColourGradient.html#">juce.ColourGradient</a>.</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType:setOpacity"><span class="proto_prefix">juce.FillType</span>:setOpacity (newOpacity)</a></td>
+	<td class="summary">Set Overall Opacity.</td>
+	</tr>
+</table>
+<h2><a href="#Predefined_values">Predefined values</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.black"><span class="proto_prefix">juce.FillType</span>.black</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.white"><span class="proto_prefix">juce.FillType</span>.white</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.red"><span class="proto_prefix">juce.FillType</span>.red</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.green"><span class="proto_prefix">juce.FillType</span>.green</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.FillType.blue"><span class="proto_prefix">juce.FillType</span>.blue</a></td>
+	<td class="summary">
+
+</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Constructors"></a>Constructors</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.FillType.FillType"></a>
+    <strong><span class="proto_prefix">juce</span>.FillType (Colour)</strong>
+    </dt>
+    <dd>
+    Constuct from a <a href="../classes/juce.Colour.html#">juce.Colour</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">Colour</span>
+            <span class="types"><a class="type" href="../classes/juce.Colour.html#">juce.Colour</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.FillType.FillType"></a>
+    <strong><span class="proto_prefix">juce</span>.FillType (Gradient)</strong>
+    </dt>
+    <dd>
+    Constuct from a <a href="../classes/juce.ColourGradient.html#">juce.ColourGradient</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">Gradient</span>
+            <span class="types"><a class="type" href="../classes/juce.ColourGradient.html#">juce.ColourGradient</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Methods"></a>Methods</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.FillType:setOpacity"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>:setOpacity (newOpacity)</strong>
+    </dt>
+    <dd>
+    Set Overall Opacity.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newOpacity</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Predefined_values"></a>Predefined values</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.FillType.black"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>.black</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.FillType.white"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>.white</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.FillType.red"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>.red</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.FillType.green"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>.green</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.FillType.blue"></a>
+    <strong><span class="proto_prefix">juce.FillType</span>.blue</strong>
+    </dt>
+    <dd>
+
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

@@ -1,0 +1,2217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Class juce.Graphics</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Constructors">Constructors</a></li>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Tables">Tables</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><strong>juce.Graphics</strong></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>juce.Graphics</code></h1>
+<p>Graphics drawing target.</p>
+<p> Is a pointer to a <a href="http://www.juce.com/api/classGraphics.html">JUCE Graphics</a> object.
+ Received in <a href="../modules/gui.html#paint">gui.paint</a> as an argument.</p>
+
+
+<h2><a href="#Constructors">Constructors</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics.Graphics"><span class="proto_prefix">juce</span>.Graphics (imageToDrawOnto)</a></td>
+	<td class="summary">Constuct from a <a href="../classes/juce.Image.html#">juce.Image</a>.</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setColour"><span class="proto_prefix">juce.Graphics</span>:setColour (newColour)</a></td>
+	<td class="summary">Set working colour.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setOpacity"><span class="proto_prefix">juce.Graphics</span>:setOpacity (newOpacity)</a></td>
+	<td class="summary">Set working opacity.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setGradientFill"><span class="proto_prefix">juce.Graphics</span>:setGradientFill (gradient)</a></td>
+	<td class="summary">Set working Gradient.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setTiledImageFill"><span class="proto_prefix">juce.Graphics</span>:setTiledImageFill<br> (imageToUse, anchorX, anchorY, opacity)</a></td>
+	<td class="summary">Set Tiled Image Fill.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setFillType"><span class="proto_prefix">juce.Graphics</span>:setFillType (newFill)</a></td>
+	<td class="summary">Set Fill.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setFont"><span class="proto_prefix">juce.Graphics</span>:setFont (newFont)</a></td>
+	<td class="summary">Set Font.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setFont"><span class="proto_prefix">juce.Graphics</span>:setFont (newFontHeight)</a></td>
+	<td class="summary">Set Font.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:getCurrentFont"><span class="proto_prefix">juce.Graphics</span>:getCurrentFont ()</a></td>
+	<td class="summary">Get Current Font.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawSingleLineText"><span class="proto_prefix">juce.Graphics</span>:drawSingleLineText<br> (text, startX, baselineY[, justification=Justification.left])</a></td>
+	<td class="summary">Draw single line of text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawMultiLineText"><span class="proto_prefix">juce.Graphics</span>:drawMultiLineText<br> (text, startX, baselineY, maximumLineWidth)</a></td>
+	<td class="summary">Draw multiline text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawText"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawText<br> (x, y, width, height[, justification=Justification.left[, useEllipsesIfTooBig=false]])</span></a></td>
+	<td class="summary">Draw text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawText"><span class="proto_prefix">juce.Graphics</span>:drawText<br> (area[, justification=Justification.left[, useEllipsesIfTooBig=false]])</a></td>
+	<td class="summary">Draw text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawFittedText"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawFittedText<br> (x, y, width, height, justification, maximumNumberOfLines[, minimumHorizontalScale=0.7])</span></a></td>
+	<td class="summary">Draw fitted text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawFittedText"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawFittedText<br> (area, justification, maximumNumberOfLines[, minimumHorizontalScale=0.7])</span></a></td>
+	<td class="summary">Draw fitted text.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillAll"><span class="proto_prefix">juce.Graphics</span>:fillAll ([colourToUse])</a></td>
+	<td class="summary">Fill the entire graphics target.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillRect"><span class="proto_prefix">juce.Graphics</span>:fillRect (x, y, width, height)</a></td>
+	<td class="summary">Fill rectangle with current fill type.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillRect"><span class="proto_prefix">juce.Graphics</span>:fillRect (area)</a></td>
+	<td class="summary">Fill rectangle with current fill type.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillRect_float"><span class="proto_prefix">juce.Graphics</span>:fillRect_float (x, y, width, height)</a></td>
+	<td class="summary">Fill rectangle (sub-pixel accuracy).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillRoundedRectangle"><span class="proto_prefix">juce.Graphics</span>:fillRoundedRectangle<br> (x, y, width, height, cornerSize)</a></td>
+	<td class="summary">Fill rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillRoundedRectangle"><span class="proto_prefix">juce.Graphics</span>:fillRoundedRectangle (area, cornerSize)</a></td>
+	<td class="summary">Fill rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillCheckerBoard"><span class="proto_prefix">juce.Graphics</span>:fillCheckerBoard<br> (area, checkWidth, checkHeight, colour1, colour2)</a></td>
+	<td class="summary">Fill <em>chequerboard</em>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRect"><span class="proto_prefix">juce.Graphics</span>:drawRect<br> (x, y, width, height[, lineThickness=1])</a></td>
+	<td class="summary">Draw rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRect"><span class="proto_prefix">juce.Graphics</span>:drawRect (area[, lineThickness=1])</a></td>
+	<td class="summary">Draw rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRect_float"><span class="proto_prefix">juce.Graphics</span>:drawRect_float<br> (x, y, width, height[, lineThickness=1])</a></td>
+	<td class="summary">Draw rect (sub-pixel accuracy).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRect_float"><span class="proto_prefix">juce.Graphics</span>:drawRect_float (area[, lineThickness=1])</a></td>
+	<td class="summary">Draw rect (sub-pixel accuracy).</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRoundedRectangle"><span class="proto_prefix">juce.Graphics</span>:drawRoundedRectangle<br> (x, y, width, height, cornerSize[, lineThickness=1])</a></td>
+	<td class="summary">Draw rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawRoundedRectangle"><span class="proto_prefix">juce.Graphics</span>:drawRoundedRectangle<br> (area, cornerSize[, lineThickness=1])</a></td>
+	<td class="summary">Draw rounded rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setPixel"><span class="proto_prefix">juce.Graphics</span>:setPixel (x, y)</a></td>
+	<td class="summary">Set pixel with current colour.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillEllipse"><span class="proto_prefix">juce.Graphics</span>:fillEllipse (x, y, width, height)</a></td>
+	<td class="summary">Fill ellipse with current fill.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawEllipse"><span class="proto_prefix">juce.Graphics</span>:drawEllipse<br> (x, y, width, height[, lineThickness=1])</a></td>
+	<td class="summary">Draw ellipse with current colour.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawLine"><span class="proto_prefix">juce.Graphics</span>:drawLine<br> (startX, startY, endX, endY[, lineThickness=1])</a></td>
+	<td class="summary">Draw line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawLine"><span class="proto_prefix">juce.Graphics</span>:drawLine (line[, lineThickness=1])</a></td>
+	<td class="summary">Draw line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawDashedLine"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawDashedLine<br> (line, dashLengths, numDashLengths[, lineThickness=1[, dashIndexToStartFrom=0]])</span></a></td>
+	<td class="summary">Draw dashed line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawVerticalLine"><span class="proto_prefix">juce.Graphics</span>:drawVerticalLine (x, top, bottom)</a></td>
+	<td class="summary">Draw vertical line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawHorizontalLine"><span class="proto_prefix">juce.Graphics</span>:drawHorizontalLine (y, left, right)</a></td>
+	<td class="summary">Draw horizontal line.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:fillPath"><span class="proto_prefix">juce.Graphics</span>:fillPath<br> (path[, transform=juce.AffineTransform.identity])</a></td>
+	<td class="summary">Fill path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:strokePath"><span class="proto_prefix">juce.Graphics</span>:strokePath (path[, args])</a></td>
+	<td class="summary">Stroke path.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawArrow"><span class="proto_prefix">juce.Graphics</span>:drawArrow<br> (line, lineThickness, arrowheadWidth, arrowheadLength)</a></td>
+	<td class="summary">Draw arrow.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setImageResamplingQuality"><span class="proto_prefix">juce.Graphics</span>:setImageResamplingQuality (newQuality)</a></td>
+	<td class="summary">Set image resampling quality.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawImageAt"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageAt<br> (imageToDraw, topLeftX, topLeftY[, fillAlphaChannelWithCurrentBrush=false])</span></a></td>
+	<td class="summary">Draw unscaled image at location.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawImage"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImage<br> (imageToDraw, destX, destY, destWidth, destHeight, sourceX, sourceY, sourceWidth, sourceHeight[, fillAlphaChannelWithCurrentBrush=false])</span></a></td>
+	<td class="summary">Draw a portion of an image, stretched into a target rectangle.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawImageTransformed"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageTransformed<br> (imageToDraw, transform[, fillAlphaChannelWithCurrentBrush=false])</span></a></td>
+	<td class="summary">Draw transformed image.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:drawImageWithin"><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageWithin<br> (imageToDraw, destX, destY, destWidth, destHeight[, placementWithinTarget=juce.RectanglePlacement.centred[, fillAlphaChannelWithCurrentBrush=false]])</span></a></td>
+	<td class="summary">Draw image within.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:getClipBounds"><span class="proto_prefix">juce.Graphics</span>:getClipBounds ()</a></td>
+	<td class="summary">Get clip bounds.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:clipRegionIntersects"><span class="proto_prefix">juce.Graphics</span>:clipRegionIntersects ()</a></td>
+	<td class="summary">Clip region intersects.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:isClipEmpty"><span class="proto_prefix">juce.Graphics</span>:isClipEmpty ()</a></td>
+	<td class="summary">Is clipping region empty.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:saveState"><span class="proto_prefix">juce.Graphics</span>:saveState ()</a></td>
+	<td class="summary">Save state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:restoreState"><span class="proto_prefix">juce.Graphics</span>:restoreState ()</a></td>
+	<td class="summary">Restore state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:beginTransparencyLayer"><span class="proto_prefix">juce.Graphics</span>:beginTransparencyLayer ()</a></td>
+	<td class="summary">Begin transparency layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:endTransparencyLayer"><span class="proto_prefix">juce.Graphics</span>:endTransparencyLayer ()</a></td>
+	<td class="summary">End transparency layer.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:setOrigin"><span class="proto_prefix">juce.Graphics</span>:setOrigin (newOriginX, newOriginY)</a></td>
+	<td class="summary">Set origin.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:addTransform"><span class="proto_prefix">juce.Graphics</span>:addTransform (transform)</a></td>
+	<td class="summary">Add a transformation matrix.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:resetToDefaultState"><span class="proto_prefix">juce.Graphics</span>:resetToDefaultState ()</a></td>
+	<td class="summary">Reset to default state.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics:isVectorDevice"><span class="proto_prefix">juce.Graphics</span>:isVectorDevice ()</a></td>
+	<td class="summary">Is vector device.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.Graphics.ResamplingQuality"><span class="proto_prefix">juce.Graphics</span>.ResamplingQuality</a></td>
+	<td class="summary">Resampling qualities.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Constructors"></a>Constructors</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Graphics.Graphics"></a>
+    <strong><span class="proto_prefix">juce</span>.Graphics (imageToDrawOnto)</strong>
+    </dt>
+    <dd>
+    Constuct from a <a href="../classes/juce.Image.html#">juce.Image</a>.
+ Use this constructor to draw directly onto an <a href="../classes/juce.Image.html#">juce.Image</a> in memory.</p>
+
+<p> A typical use is to can create a <a href="../classes/juce.Image.html#">juce.Image</a> object and use it as a
+ backbuffer for pre-rendering graphics.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToDrawOnto</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Methods"></a>Methods</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Graphics:setColour"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setColour (newColour)</strong>
+    </dt>
+    <dd>
+    Set working colour.
+ Set the colour to be used for subsequent calls such as <a href="../classes/juce.Graphics.html#juce.Graphics:drawRect">drawRect</a> and <a href="../classes/juce.Graphics.html#juce.Graphics:drawText">drawText</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newColour</span>
+            <span class="types"><a class="type" href="../classes/juce.Colour.html#">juce.Colour</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setOpacity"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setOpacity (newOpacity)</strong>
+    </dt>
+    <dd>
+    Set working opacity.
+ Set the opacity to be used for subsequent calls.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newOpacity</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setGradientFill"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setGradientFill (gradient)</strong>
+    </dt>
+    <dd>
+    Set working Gradient.
+ Use a gradient as fill for subsequent calls such as <a href="../classes/juce.Graphics.html#juce.Graphics:fillRect">fillRect</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">gradient</span>
+            <span class="types"><a class="type" href="../classes/juce.ColourGradient.html#">juce.ColourGradient</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setTiledImageFill"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setTiledImageFill<br> (imageToUse, anchorX, anchorY, opacity)</strong>
+    </dt>
+    <dd>
+    Set Tiled Image Fill.
+ Use a tiled image as fill for subsequent calls such as <a href="../classes/juce.Graphics.html#juce.Graphics:fillRect">fillRect</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToUse</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">anchorX</span>
+
+
+
+        </li>
+        <li><span class="parameter">anchorY</span>
+
+
+
+        </li>
+        <li><span class="parameter">opacity</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setFillType"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setFillType (newFill)</strong>
+    </dt>
+    <dd>
+    Set Fill.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newFill</span>
+            <span class="types"><a class="type" href="../classes/juce.FillType.html#">juce.FillType</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setFont"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setFont (newFont)</strong>
+    </dt>
+    <dd>
+    Set Font.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newFont</span>
+            <span class="types"><a class="type" href="../classes/juce.Font.html#">juce.Font</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setFont"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setFont (newFontHeight)</strong>
+    </dt>
+    <dd>
+    Set Font.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newFontHeight</span>
+            <span class="types"><span class="type">number</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:getCurrentFont"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:getCurrentFont ()</strong>
+    </dt>
+    <dd>
+    Get Current Font.
+ treturn juce.Font the current font
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawSingleLineText"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawSingleLineText<br> (text, startX, baselineY[, justification=Justification.left])</strong>
+    </dt>
+    <dd>
+    Draw single line of text.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">startX</span>
+
+
+
+        </li>
+        <li><span class="parameter">baselineY</span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+         (<em>default</em> Justification.left)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawMultiLineText"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawMultiLineText<br> (text, startX, baselineY, maximumLineWidth)</strong>
+    </dt>
+    <dd>
+    Draw multiline text.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">text</span>
+            <span class="types"><a class="type" href="http://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">startX</span>
+
+
+
+        </li>
+        <li><span class="parameter">baselineY</span>
+
+
+
+        </li>
+        <li><span class="parameter">maximumLineWidth</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawText"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawText<br> (x, y, width, height[, justification=Justification.left[, useEllipsesIfTooBig=false]])</span></strong>
+    </dt>
+    <dd>
+    Draw text.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+         (<em>default</em> Justification.left)
+        </li>
+        <li><span class="parameter">useEllipsesIfTooBig</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawText"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawText<br> (area[, justification=Justification.left[, useEllipsesIfTooBig=false]])</strong>
+    </dt>
+    <dd>
+    Draw text.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+         (<em>default</em> Justification.left)
+        </li>
+        <li><span class="parameter">useEllipsesIfTooBig</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawFittedText"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawFittedText<br> (x, y, width, height, justification, maximumNumberOfLines[, minimumHorizontalScale=0.7])</span></strong>
+    </dt>
+    <dd>
+    Draw fitted text.
+ Awkwardly squishes the font (up to minimumHorizontalScale) if necessary.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">maximumNumberOfLines</span>
+
+
+
+        </li>
+        <li><span class="parameter">minimumHorizontalScale</span>
+
+
+
+         (<em>default</em> 0.7)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawFittedText"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawFittedText<br> (area, justification, maximumNumberOfLines[, minimumHorizontalScale=0.7])</span></strong>
+    </dt>
+    <dd>
+    Draw fitted text.
+ Awkwardly squishes the font (up to minimumHorizontalScale) if necessary.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">justification</span>
+            <span class="types"><a class="type" href="../classes/juce.Justification.html#">juce.Justification</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">maximumNumberOfLines</span>
+
+
+
+        </li>
+        <li><span class="parameter">minimumHorizontalScale</span>
+
+
+
+         (<em>default</em> 0.7)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillAll"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillAll ([colourToUse])</strong>
+    </dt>
+    <dd>
+    Fill the entire graphics target.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">colourToUse</span>
+            <span class="types"><a class="type" href="../classes/juce.Colour.html#">juce.Colour</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillRect"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillRect (x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Fill rectangle with current fill type.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillRect"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillRect (area)</strong>
+    </dt>
+    <dd>
+    Fill rectangle with current fill type.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillRect_float"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillRect_float (x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Fill rectangle (sub-pixel accuracy).
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillRoundedRectangle<br> (x, y, width, height, cornerSize)</strong>
+    </dt>
+    <dd>
+    Fill rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillRoundedRectangle (area, cornerSize)</strong>
+    </dt>
+    <dd>
+    Fill rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillCheckerBoard"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillCheckerBoard<br> (area, checkWidth, checkHeight, colour1, colour2)</strong>
+    </dt>
+    <dd>
+    Fill <em>chequerboard</em>.
+ (and i thought juce used British spelling)
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">checkWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">checkHeight</span>
+
+
+
+        </li>
+        <li><span class="parameter">colour1</span>
+            <span class="types"><a class="type" href="../classes/juce.Colour.html#">juce.Colour</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">colour2</span>
+            <span class="types"><a class="type" href="../classes/juce.Colour.html#">juce.Colour</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRect"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRect<br> (x, y, width, height[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRect"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRect (area[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRect_float"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRect_float<br> (x, y, width, height[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rect (sub-pixel accuracy).
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRect_float"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRect_float (area[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rect (sub-pixel accuracy).
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRoundedRectangle<br> (x, y, width, height, cornerSize[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawRoundedRectangle"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawRoundedRectangle<br> (area, cornerSize[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw rounded rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">area</span>
+            <span class="types"><span class="type">juce.Rectangle_int</span></span>
+
+
+
+        </li>
+        <li><span class="parameter">cornerSize</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setPixel"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setPixel (x, y)</strong>
+    </dt>
+    <dd>
+    Set pixel with current colour.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillEllipse"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillEllipse (x, y, width, height)</strong>
+    </dt>
+    <dd>
+    Fill ellipse with current fill.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawEllipse"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawEllipse<br> (x, y, width, height[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw ellipse with current colour.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">width</span>
+
+
+
+        </li>
+        <li><span class="parameter">height</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawLine"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawLine<br> (startX, startY, endX, endY[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">startX</span>
+
+
+
+        </li>
+        <li><span class="parameter">startY</span>
+
+
+
+        </li>
+        <li><span class="parameter">endX</span>
+
+
+
+        </li>
+        <li><span class="parameter">endY</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawLine"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawLine (line[, lineThickness=1])</strong>
+    </dt>
+    <dd>
+    Draw line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawDashedLine"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawDashedLine<br> (line, dashLengths, numDashLengths[, lineThickness=1[, dashIndexToStartFrom=0]])</span></strong>
+    </dt>
+    <dd>
+    Draw dashed line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">dashLengths</span>
+         (const float* ctype)
+        </li>
+        <li><span class="parameter">numDashLengths</span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+         (<em>default</em> 1)
+        </li>
+        <li><span class="parameter">dashIndexToStartFrom</span>
+
+
+
+         (<em>default</em> 0)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawVerticalLine"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawVerticalLine (x, top, bottom)</strong>
+    </dt>
+    <dd>
+    Draw vertical line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">x</span>
+
+
+
+        </li>
+        <li><span class="parameter">top</span>
+
+
+
+        </li>
+        <li><span class="parameter">bottom</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawHorizontalLine"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawHorizontalLine (y, left, right)</strong>
+    </dt>
+    <dd>
+    Draw horizontal line.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">y</span>
+
+
+
+        </li>
+        <li><span class="parameter">left</span>
+
+
+
+        </li>
+        <li><span class="parameter">right</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:fillPath"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:fillPath<br> (path[, transform=juce.AffineTransform.identity])</strong>
+    </dt>
+    <dd>
+    Fill path.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="../classes/juce.Path.html#">juce.Path</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+         (<em>default</em> juce.AffineTransform.identity)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:strokePath"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:strokePath (path[, args])</strong>
+    </dt>
+    <dd>
+    Stroke path.
+ All named arguments are optional
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">path</span>
+            <span class="types"><a class="type" href="../classes/juce.Path.html#">juce.Path</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">args</span>
+
+
+        <ul>
+        <li><span class="parameter">thickness</span>
+
+
+
+        </li>
+        <li><span class="parameter">jointStyle</span>
+            <span class="types"><a class="type" href="../classes/juce.Path.html#juce.Path.JointStyle">juce.Path.JointStyle</a></span>
+         <em>default</em> : juce.Path.JointStyle.mitered
+        </li>
+        <li><span class="parameter">endCapStyle</span>
+            <span class="types"><a class="type" href="../classes/juce.Path.html#juce.Path.EndCapStyle">juce.Path.EndCapStyle</a></span>
+         <em>default</em> : juce.Path.EndCapStyle.butt
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+         <em>default</em> : juce.AffineTransform.identity
+        </li>
+        </li></ul>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawArrow"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:drawArrow<br> (line, lineThickness, arrowheadWidth, arrowheadLength)</strong>
+    </dt>
+    <dd>
+    Draw arrow.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">line</span>
+            <span class="types"><a class="type" href="../classes/juce.Line.html#">juce.Line</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">lineThickness</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowheadWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">arrowheadLength</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setImageResamplingQuality"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setImageResamplingQuality (newQuality)</strong>
+    </dt>
+    <dd>
+    Set image resampling quality.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newQuality</span>
+            <span class="types"><a class="type" href="../classes/juce.Graphics.html#juce.Graphics.ResamplingQuality">juce.Graphics.ResamplingQuality</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawImageAt"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageAt<br> (imageToDraw, topLeftX, topLeftY[, fillAlphaChannelWithCurrentBrush=false])</span></strong>
+    </dt>
+    <dd>
+    Draw unscaled image at location.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToDraw</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">topLeftX</span>
+
+
+
+        </li>
+        <li><span class="parameter">topLeftY</span>
+
+
+
+        </li>
+        <li><span class="parameter">fillAlphaChannelWithCurrentBrush</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawImage"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImage<br> (imageToDraw, destX, destY, destWidth, destHeight, sourceX, sourceY, sourceWidth, sourceHeight[, fillAlphaChannelWithCurrentBrush=false])</span></strong>
+    </dt>
+    <dd>
+    Draw a portion of an image, stretched into a target rectangle.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToDraw</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">destX</span>
+
+
+
+        </li>
+        <li><span class="parameter">destY</span>
+
+
+
+        </li>
+        <li><span class="parameter">destWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">destHeight</span>
+
+
+
+        </li>
+        <li><span class="parameter">sourceX</span>
+
+
+
+        </li>
+        <li><span class="parameter">sourceY</span>
+
+
+
+        </li>
+        <li><span class="parameter">sourceWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">sourceHeight</span>
+
+
+
+        </li>
+        <li><span class="parameter">fillAlphaChannelWithCurrentBrush</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawImageTransformed"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageTransformed<br> (imageToDraw, transform[, fillAlphaChannelWithCurrentBrush=false])</span></strong>
+    </dt>
+    <dd>
+    Draw transformed image.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToDraw</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">fillAlphaChannelWithCurrentBrush</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:drawImageWithin"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.Graphics</span>:drawImageWithin<br> (imageToDraw, destX, destY, destWidth, destHeight[, placementWithinTarget=juce.RectanglePlacement.centred[, fillAlphaChannelWithCurrentBrush=false]])</span></strong>
+    </dt>
+    <dd>
+    Draw image within.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">imageToDraw</span>
+            <span class="types"><a class="type" href="../classes/juce.Image.html#">juce.Image</a></span>
+
+
+
+        </li>
+        <li><span class="parameter">destX</span>
+
+
+
+        </li>
+        <li><span class="parameter">destY</span>
+
+
+
+        </li>
+        <li><span class="parameter">destWidth</span>
+
+
+
+        </li>
+        <li><span class="parameter">destHeight</span>
+
+
+
+        </li>
+        <li><span class="parameter">placementWithinTarget</span>
+
+
+
+         (<em>default</em> juce.RectanglePlacement.centred)
+        </li>
+        <li><span class="parameter">fillAlphaChannelWithCurrentBrush</span>
+
+
+
+         (<em>default</em> false)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:getClipBounds"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:getClipBounds ()</strong>
+    </dt>
+    <dd>
+    Get clip bounds.
+ Get the portion of the graphics target that needs to be redrawn.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">juce.Rectangle_int</span></span>
+        Clipping area
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:clipRegionIntersects"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:clipRegionIntersects ()</strong>
+    </dt>
+    <dd>
+    Clip region intersects.
+ Check if a rectangle intersects with the redrawing region
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">juce.Rectangle_int</span></span>
+        Clipping area</li>
+        <li>
+           <span class="types"><span class="type">boolean</span></span>
+        intersection check</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:isClipEmpty"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:isClipEmpty ()</strong>
+    </dt>
+    <dd>
+    Is clipping region empty.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the redrawing area is empty
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:saveState"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:saveState ()</strong>
+    </dt>
+    <dd>
+    Save state.
+ Saves the current state of the graphics target on a stack.
+ This does not save the actual graphic's contents but its current
+ colour, transform, origin, etc.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:restoreState"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:restoreState ()</strong>
+    </dt>
+    <dd>
+    Restore state.
+ Restores a state of the graphics target from the stack.
+ Useful to cancel any previous uses
+ of <a href="../classes/juce.Graphics.html#juce.Graphics:addTransform">addTransform</a>, <a href="../classes/juce.Graphics.html#juce.Graphics:setColour">setColour</a>, etc.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:beginTransparencyLayer"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:beginTransparencyLayer ()</strong>
+    </dt>
+    <dd>
+    Begin transparency layer.
+ Saves the current state and begins drawing on a temporary layer,
+ to be applied with the specified final transparency.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:endTransparencyLayer"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:endTransparencyLayer ()</strong>
+    </dt>
+    <dd>
+    End transparency layer.
+ Applies the transparency layer that was started with <a href="../classes/juce.Graphics.html#juce.Graphics:beginTransparencyLayer">beginTransparencyLayer</a>.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:setOrigin"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:setOrigin (newOriginX, newOriginY)</strong>
+    </dt>
+    <dd>
+    Set origin.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">newOriginX</span>
+
+
+
+        </li>
+        <li><span class="parameter">newOriginY</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:addTransform"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:addTransform (transform)</strong>
+    </dt>
+    <dd>
+    Add a transformation matrix.
+ The matrix will be chained onto the current one, and affect all
+ subsequent graphics operations. Use <a href="../classes/juce.Graphics.html#juce.Graphics:saveState">saveState</a> and <a href="../classes/juce.Graphics.html#juce.Graphics:restoreState">restoreState</a>
+ to apply a temporary transform.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">transform</span>
+            <span class="types"><a class="type" href="../classes/juce.AffineTransform.html#">juce.AffineTransform</a></span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:resetToDefaultState"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:resetToDefaultState ()</strong>
+    </dt>
+    <dd>
+    Reset to default state.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.Graphics:isVectorDevice"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>:isVectorDevice ()</strong>
+    </dt>
+    <dd>
+    Is vector device.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        whether the target is a vector device.
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Tables"></a>Tables</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.Graphics.ResamplingQuality"></a>
+    <strong><span class="proto_prefix">juce.Graphics</span>.ResamplingQuality</strong>
+    </dt>
+    <dd>
+    Resampling qualities.
+
+    </ul>
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">low</span>
+
+
+
+        </li>
+        <li><span class="parameter">medium</span>
+
+
+
+        </li>
+        <li><span class="parameter">high</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

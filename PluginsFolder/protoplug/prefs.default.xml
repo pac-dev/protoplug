@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 
+	prefs.default.xml
+Protoplug doesn't actually use this file. If you want to customize 
+keyboard shorctus, make a copy of this file, call it "prefs.xml",
+and modify that file instead. Future releases of protoplug will
+only overwrite "prefs.default.xml" and you'll keep your custom settings.
+-->
+
+<KEYMAPPINGS basedOnDefaults="0">
+	<MAPPING commandId="10" description="Compile Now" key="ctrl + return"/>
+	<MAPPING commandId="30" description="Show Code"/>
+	<MAPPING commandId="31" description="Show Parameters"/>
+	<MAPPING commandId="32" description="Show Custom GUI"/>
+	<MAPPING commandId="40" description="Show Next" key="ctrl + tab"/>
+	<MAPPING commandId="41" description="Show Previous" key="ctrl + shift + tab"/>
+	<MAPPING commandId="50" description="Open"/>
+	<MAPPING commandId="51" description="Save As"/>
+	<MAPPING commandId="60" description="Pop Out"/>
+	<MAPPING commandId="61" description="Always On Top"/>
+	<MAPPING commandId="70" description="Help"/>
+	<MAPPING commandId="25" description="Find Selected" key="ctrl + F3"/>
+	<MAPPING commandId="26" description="Find Next" key="F3"/>
+	<MAPPING commandId="27" description="Find Previous" key="shift + F3"/>
+</KEYMAPPINGS>
+
+<!-- 
+	if you're using this as a reference, perhaps i should mention :
+	change font size 	:	ctrl + mouse wheel
+	and the JUCE editor shortcuts :
+	cut		:	ctrl + x
+	copy	:	ctrl + c
+	paste	:	ctrl + v
+	undo	:	ctrl + z
+	redo	:	ctrl + y
+	(not customisable as of this release)
+-->

@@ -1,0 +1,375 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module polyGen</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Class_polyGen_VTrack">Class polyGen.VTrack </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><strong>polyGen</strong></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>polyGen</code></h1>
+<p>Use this module to create a polyphonic generator with virtual tracks.</p>
+<p>
+
+<p> Example at <a href="../examples/sine-organ.lua.html#">sine-organ.lua</a>.</p>
+
+<p> This module facilitates the creation of polyphonic instruments. It acts
+ as a layer that covers the <a href="../modules/plugin.html#processBlock">plugin.processBlock</a> function, receives MIDI
+ notes and dispatches them to virtual tracks. The <a href="../modules/polyGen.html#polyGen.VTrack">polyGen.VTrack</a>  prototype
+ is exposed for you to define audio processing in a simple,
+ monophonic, per-note fashion. Initialize this module by calling <a href="../modules/polyGen.html#initTracks">polyGen.initTracks</a> .</p>
+
+<p> The <a href="../modules/polyGen.html#">polyGen</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#initTracks"><span class="proto_prefix">polyGen</span>.initTracks ([n=8])</a></td>
+	<td class="summary">Set up virtual tracks.</td>
+	</tr>
+</table>
+<h2><a href="#Class_polyGen_VTrack">Class polyGen.VTrack </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#VTrack:addProcessBlock"><span class="proto_prefix">polyGen.VTrack</span>:addProcessBlock (samples, smax)</a></td>
+	<td class="summary">Override to additively process an audio block.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack:noteOn"><span class="proto_prefix">polyGen.VTrack</span>:noteOn (note, vel)</a></td>
+	<td class="summary">Override to recieve note on.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack:noteOff"><span class="proto_prefix">polyGen.VTrack</span>:noteOff (note)</a></td>
+	<td class="summary">Override to recieve note off.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack:init"><span class="proto_prefix">polyGen.VTrack</span>:init ()</a></td>
+	<td class="summary">Override to allow initialisation.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack.i"><span class="proto_prefix">polyGen.VTrack</span>.i</a></td>
+	<td class="summary">Track number.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack.note"><span class="proto_prefix">polyGen.VTrack</span>.note</a></td>
+	<td class="summary">Current MIDI note.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack.noteFreq"><span class="proto_prefix">polyGen.VTrack</span>.noteFreq</a></td>
+	<td class="summary">Current note frequency.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack.notePeriod"><span class="proto_prefix">polyGen.VTrack</span>.notePeriod</a></td>
+	<td class="summary">Current note period.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#VTrack.noteIsOn"><span class="proto_prefix">polyGen.VTrack</span>.noteIsOn</a></td>
+	<td class="summary">Note is on.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "initTracks"></a>
+    <strong><span class="proto_prefix">polyGen</span>.initTracks ([n=8])</strong>
+    </dt>
+    <dd>
+    Set up virtual tracks.
+ This function must be called by any script that wishes to use this module.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">n</span>
+         the number of virtual tracks to use (aka. voices or polyphony)
+         (<em>default</em> 8)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_polyGen_VTrack"></a>Class polyGen.VTrack </h2>
+
+ Virtual track. A monophonic voice that defines the instrument's sound.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "VTrack:addProcessBlock"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>:addProcessBlock (samples, smax)</strong>
+    </dt>
+    <dd>
+    Override to additively process an audio block.
+ Define the output of a virtual track in this method.
+ Use <code>self.noteIsOn</code>, <code>self.noteFreq</code>, or any fields you defined to
+ determine current the state of the calling track.</p>
+
+<p> This method is called successively on every track,
+ which should <em>add</em> their output to <code>samples</code>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">samples</span>
+         a C <code>float**</code> pointing to two channels of samples to add to.
+        </li>
+        <li><span class="parameter">smax</span>
+         the maximum sample index (nSamples - 1)
+        </li>
+    </ul>
+
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="../examples/sine-organ.lua.html#">sine-organ.lua</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "VTrack:noteOn"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>:noteOn (note, vel)</strong>
+    </dt>
+    <dd>
+    Override to recieve note on.
+ Override this method to handle a note getting dispatched to a virtual track.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">note</span>
+         the MIDI note number (0-127)
+        </li>
+        <li><span class="parameter">vel</span>
+         the MIDI velocity (0-127)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack:noteOff"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>:noteOff (note)</strong>
+    </dt>
+    <dd>
+    Override to recieve note off.
+ Override this method to handle a note off on a virtual track.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">note</span>
+         a reminder of the MIDI note number
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack:init"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>:init ()</strong>
+    </dt>
+    <dd>
+    Override to allow initialisation.
+ Override this method to perform initialisation tasks on each track,
+ for example to create any per-track fields.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack.i"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>.i</strong>
+    </dt>
+    <dd>
+    Track number.
+ Use <code>self.i</code> to check which virtual track is being called.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack.note"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>.note</strong>
+    </dt>
+    <dd>
+    Current MIDI note.
+ The MIDI note number that is currently being played by this track,
+ or <code>-1</code> if in note off state.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack.noteFreq"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>.noteFreq</strong>
+    </dt>
+    <dd>
+    Current note frequency.
+ The note frequency that is currently being played by this track.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack.notePeriod"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>.notePeriod</strong>
+    </dt>
+    <dd>
+    Current note period.
+ <code>1/noteFreq</code>
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "VTrack.noteIsOn"></a>
+    <strong><span class="proto_prefix">polyGen.VTrack</span>.noteIsOn</strong>
+    </dt>
+    <dd>
+    Note is on.
+ Whether the track is playing a note (<code>boolean</code>).
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
