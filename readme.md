@@ -26,7 +26,7 @@ Installing - Making it Work
 
 **Linux :** protoplug is also a native Linux VST (`.so`). There is no standard install location for Linux VSTs, but you can copy the whole thing to `/usr/lib/vst` for example. 
 
-**OSX :** The OSX version is a polyglot AU/VST plugin. It's not available as 64-bit, as [LuaJIT doesn't support it properly] [2]. However, any advanced 64-bit host should still load the plugin in bridged mode. Otherwise, try launching the host in 32-bit mode.
+**Mac :** The precompiled version requires OS X 10.6 minimum. It's not available as 64-bit, as [LuaJIT doesn't support it properly] [2]. However, any advanced 64-bit host should still load the plugin in bridged mode. Otherwise, try launching the host in 32-bit mode. 
 
   [2]: http://luajit.org/install.html#embed
 

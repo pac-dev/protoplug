@@ -15,7 +15,7 @@ public:
 	}
 	void mouseWheelMove(const MouseEvent &e,const MouseWheelDetails &wheel)
 	{
-		if (wheel.deltaY != 0 && ModifierKeys::getCurrentModifiers() == ModifierKeys(ModifierKeys::ctrlModifier))
+		if (wheel.deltaY != 0 && ModifierKeys::getCurrentModifiers() == ModifierKeys(ModifierKeys::commandModifier))
 			setFontSize(getFont().getHeight()+(wheel.deltaY>0?1.f:-1.f));
 		else
 			CodeEditorComponent::mouseWheelMove(e, wheel);

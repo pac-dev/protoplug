@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workspace
+   version = "1.0">
+   <FileRef
+      location = "group:../../GenBuilds/Builds/MacOSX/protoplug_gen.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:ProtoplugGenFx/../../../FxBuilds/Builds/MacOSX/protoplug_fx.xcodeproj">
+   </FileRef>
+</Workspace>

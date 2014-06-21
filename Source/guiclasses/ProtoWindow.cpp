@@ -107,7 +107,7 @@ void ProtoWindow::readTheme(File f)
 {
 	if (!f.exists())
 		return;
-	editor.setFont(Font(Font::getDefaultMonospacedFontName(), 13, 0));
+	editor.setFont(Font(Font::getDefaultMonospacedFontName(), 14, 0));
 	ScopedPointer<XmlElement> root (XmlDocument(f).getDocumentElement());
 	if (!root)
 		return;
@@ -120,7 +120,7 @@ void ProtoWindow::readTheme(File f)
 #endif
 	String typeface = Font::getDefaultMonospacedFontName();
 	int typefacePriority = INT_MAX;
-	double height = 13;
+	double height = 14;
 	int style = 0;
 	bool hint = false;
 	int i;
@@ -158,7 +158,7 @@ void ProtoWindow::readTheme(File f)
 			if (i <= typefacePriority) {
 				typefacePriority = i;
 				typeface = s;
-				height = e->getDoubleAttribute("size", 12);
+				height = e->getDoubleAttribute("size", 14);
 				hint = e->getBoolAttribute("hinted");
 			}
 		}
