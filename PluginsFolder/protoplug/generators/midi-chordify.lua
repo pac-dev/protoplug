@@ -29,7 +29,7 @@ function plugin.processBlock(samples, smax, midiBuf)
 	end
 end
 
-local function chordOn(root)
+function chordOn(root)
 	for _, offset in ipairs(chordStructure) do
 		local newEv = midi.Event.noteOn(
 			root:getChannel(), 
@@ -39,7 +39,7 @@ local function chordOn(root)
 	end
 end
 
-local function chordOff(root)
+function chordOff(root)
 	for _, offset in ipairs(chordStructure) do
 		local newEv = midi.Event.noteOff(
 			root:getChannel(), 
