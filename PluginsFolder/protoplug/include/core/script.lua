@@ -29,7 +29,6 @@ end
 -- - right before the script is recompiled, to keep custom data across compilations.
 -- @treturn string the data to be saved
 -- @function script.saveData
-script_saveData = script.saveData
 
 --- Load script data.
 -- Override this function to load any custom data.
@@ -41,7 +40,6 @@ script_saveData = script.saveData
 -- - right after the script is recompiled, to keep custom data across compilations.
 -- @tparam string data the data to be loaded
 -- @function script.loadData
-script_loadData = script.loadData
 
 
 --- Load shared libraries.
@@ -116,6 +114,8 @@ function script_init()
 			v()
 		end
 	end
+	script_saveData = script.saveData
+	script_loadData = script.loadData
 end
 
 -- add handler to repaint gui after recompiling
