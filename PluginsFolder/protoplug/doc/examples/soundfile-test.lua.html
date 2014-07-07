@@ -92,10 +92,10 @@ author: osar.fr
 <span class="keyword">local</span> path = <span class="string">"C:\\temp\\pluck44.wav"</span>
 <span class="keyword">local</span> wave, len
 
-plugin.addHandler(<span class="string">'prepareToPlay'</span>, <span class="keyword">function</span>()
-	<span class="comment">-- use 'prepareToPlay', because the host sample rate must be known for
-</span>	<span class="comment">-- automatic samplerate conversion (see juce.AudioFormatReader:readToFloat)
-</span>	<span class="keyword">local</span> readr = juce.AudioFormatReader(path)
+<span class="comment">-- 'prepareToPlay' will be triggered when the host sample rate is known,
+</span><span class="comment">-- so we can load sound files with automatic sample rate conversion:
+</span>plugin.addHandler(<span class="string">'prepareToPlay'</span>, <span class="keyword">function</span>()
+	<span class="keyword">local</span> readr = juce.AudioFormatReader(path)
 	<span class="keyword">if</span> readr==<span class="keyword">nil</span> <span class="keyword">then</span> error (<span class="string">"can't open wave: "</span>..path) <span class="keyword">end</span>
 	wave, len = readr:readToFloat(<span class="number">2</span>) <span class="comment">-- require 2 channels
 </span><span class="keyword">end</span>)

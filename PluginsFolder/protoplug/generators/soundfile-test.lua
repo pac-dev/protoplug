@@ -9,9 +9,9 @@ require "include/protoplug"
 local path = "C:\\temp\\pluck44.wav"
 local wave, len
 
+-- 'prepareToPlay' will be triggered when the host sample rate is known, 
+-- so we can load sound files with automatic sample rate conversion:
 plugin.addHandler('prepareToPlay', function()
-	-- use 'prepareToPlay', because the host sample rate must be known for 
-	-- automatic samplerate conversion (see juce.AudioFormatReader:readToFloat)
 	local readr = juce.AudioFormatReader(path)
 	if readr==nil then error ("can't open wave: "..path) end
 	wave, len = readr:readToFloat(2) -- require 2 channels
