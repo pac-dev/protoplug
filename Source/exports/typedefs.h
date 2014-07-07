@@ -41,6 +41,16 @@ struct pColourGradient
 struct pImage
 { Image *i; };
 
+struct pAudioFormatReader
+{ 
+	AudioFormatReader *a;
+	double sampleRate;
+	unsigned int bitsPerSample;
+	int64 lengthInSamples;
+	unsigned int numChannels;
+	bool usesFloatingPointData;
+};
+
 struct pFont
 { Font *f; };
 
@@ -61,6 +71,12 @@ struct pAudioPlayHead
 
 
 
+
+struct exLagrangeInterpolator
+{
+    float lastInputSamples[5];
+    double subSamplePos;
+};
 
 struct exPoint_int
 {

@@ -3,8 +3,9 @@
 -- Received in @{gui.paint} as an argument.
 -- @classmod juce.Graphics
 
+local script = require "include/core/script"
 local util = require"include/luautil"
-util.requireCdef(protoplug_dir.."/include/protojuce/cdef/graphics.h")
+util.requireCdef(script.protoplugDir.."/include/protojuce/cdef/graphics.h")
 local Justification = require"include/protojuce/justification"
 local RectanglePlacement = require"include/protojuce/rectangleplacement"
 local AffineTransform = require"include/protojuce/affinetransform"

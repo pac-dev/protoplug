@@ -1,4 +1,4 @@
---- Use `script` to handle script-related events.
+--- Use `script` to handle script events, libraries and files.
 -- The `script` global is available to every protoplug script after including the 
 -- main protoplug header :
 -- 	require "include/protoplug"
@@ -98,6 +98,12 @@ function script.ffiLoad(...)
 	return ret and ret or error("could not find library "..
 		table.concat({...}, ", "))
 end
+
+--- Current protoplug directory.
+-- The full path of the `protoplug` directory currently being used. It should 
+-- be alongside the protoplug fx and gen dynamic libraries. 
+-- @predefined protoplugDir
+script.protoplugDir = protoplug_dir
 
 -- Wrap the raw global override called by protoplug
 function script_init()

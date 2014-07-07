@@ -8,6 +8,7 @@
 
 #include "exports/typedefs.h"
 
+#include "exports/pAudioFormatReader.h"
 #include "exports/pColourGradient.h"
 #include "exports/pComponent.h"
 #include "exports/pFillType.h"
@@ -15,6 +16,7 @@
 #include "exports/pGraphics.h"
 #include "exports/pImage.h"
 #include "exports/pImageFileFormat.h"
+#include "exports/pLagrangeInterpolator.h"
 #include "exports/pMidiBuffer.h"
 #include "exports/pPath.h"
 
@@ -34,7 +36,7 @@ have been the easier route, either way the end product is a little faster.
 
 In a nutshell :
 1. The required C++ juce functionality is wrapped into a C API and exported by 
-   protoplug. This is done in the ex<...>.h headers in the protoplug source.
+   protoplug. This is done by the headers in the "Exports" folder.
 
 2. This API is then imported into Lua using LuaJIT's FFI feature.
 

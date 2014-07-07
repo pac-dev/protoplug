@@ -168,12 +168,17 @@ plugin.getCurrentPosition = function ()
 end
 
 --- Get host samplerate.
--- The value is unknown (`nil`) until the plugin `prepareToPlay` event has been emitted.
--- The value is always known in @{processBlock}.
+-- The value is unknown until the plugin `prepareToPlay` event has been emitted.
+-- The value is always known in @{processBlock}. An error is caused if an 
+-- attempt is made to access the sample rate prematurely. 
 -- @see plugin.addHandler
--- @return current sampleratem or `nil` if not available yet.
+-- @return current samplerate.
 -- @function plugin.getSampleRate
 plugin.getSampleRate = function ()
+	if sampleRate == nil then 
+		error ("Trying to use sampleRate when it is not yet known. " ..
+		"Use plugin.addHandler('prepareToPlay',...) to initialize and use the samplerate. ")
+	end
 	return sampleRate
 end
 

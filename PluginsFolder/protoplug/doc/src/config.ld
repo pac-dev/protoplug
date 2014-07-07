@@ -69,6 +69,7 @@ examples = {
 	'../../generators/sine-organ.lua';
 	'../../generators/midi-chordify.lua';
 	'../../generators/sinemouse-demo.lua';
+	'../../generators/soundfile-test.lua';
 }
 
 format = 'markdown'

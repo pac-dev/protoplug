@@ -2,13 +2,16 @@
 -- a GUI module for protoplug that wraps some JUCE features
 
 local util = require"include/luautil"
+local script = require "include/core/script"
 
 -- module
 local J = {}
 
 -- todo relative, wat ?
-util.requireCdef(protoplug_dir.."/include/protojuce/cdef/typedefs.h")
+util.requireCdef(script.protoplugDir.."/include/protojuce/cdef/typedefs.h")
 
+J.AudioFormatReader	= require"include/protojuce/audioformatreader"
+J.LagrangeInterpolator= require"include/protojuce/lagrangeinterpolator"
 J.Colour 			= require"include/protojuce/colour"
 J.Path 				= require"include/protojuce/path"
 J.Graphics 			= require"include/protojuce/graphics"

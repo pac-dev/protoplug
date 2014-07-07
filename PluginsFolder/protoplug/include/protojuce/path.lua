@@ -2,10 +2,11 @@
 -- Is a pointer to a [JUCE Path](http://www.juce.com/api/classPath.html).
 -- @classmod juce.Path
 
+local script = require "include/core/script"
 local Point = require"include/protojuce/point"
 local AffineTransform = require"include/protojuce/affinetransform"
 local util = require"include/luautil"
-util.requireCdef(protoplug_dir.."/include/protojuce/cdef/path.h")
+util.requireCdef(script.protoplugDir.."/include/protojuce/cdef/path.h")
 
 --- Constuctor
 -- @within Constructors

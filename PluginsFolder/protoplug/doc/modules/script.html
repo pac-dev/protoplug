@@ -39,6 +39,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Functions">Functions</a></li>
+<li><a href="#Predefined_values">Predefined values</a></li>
 </ul>
 
 
@@ -54,6 +55,7 @@
 <h2>Classes</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
   <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.AudioFormatReader.html">juce.AudioFormatReader</a></li>
   <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
   <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
   <li><a href="../classes/juce.Component.html">juce.Component</a></li>
@@ -62,6 +64,7 @@
   <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
   <li><a href="../classes/juce.Image.html">juce.Image</a></li>
   <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.LagrangeInterpolator.html">juce.LagrangeInterpolator</a></li>
   <li><a href="../classes/juce.Line.html">juce.Line</a></li>
   <li><a href="../classes/juce.Path.html">juce.Path</a></li>
   <li><a href="../classes/juce.Point.html">juce.Point</a></li>
@@ -75,6 +78,7 @@
   <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
   <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
   <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+  <li><a href="../examples/soundfile-test.lua.html">soundfile-test.lua</a></li>
 </ul>
 
 </div>
@@ -82,7 +86,7 @@
 <div id="content">
 
 <h1>Module <code>script</code></h1>
-<p>Use <a href="../modules/script.html#">script</a>  to handle script-related events.</p>
+<p>Use <a href="../modules/script.html#">script</a>  to handle script events, libraries and files.</p>
 <p>
 
 <p> The <a href="../modules/script.html#">script</a>  global is available to every protoplug script after including the
@@ -109,6 +113,13 @@
 	<tr>
 	<td class="name" nowrap><a href="#ffiLoad"><span class="proto_prefix">script</span>.ffiLoad (libName[, ...])</a></td>
 	<td class="summary">Load shared libraries.</td>
+	</tr>
+</table>
+<h2><a href="#Predefined_values">Predefined values</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#protoplugDir"><span class="proto_prefix">script</span>.protoplugDir</a></td>
+	<td class="summary">Current protoplug directory.</td>
 	</tr>
 </table>
 
@@ -255,6 +266,26 @@
 
         The library's ffi namespace
     </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Predefined_values"></a>Predefined values</h2>
+    <dl class="function">
+    <dt>
+    <a name = "protoplugDir"></a>
+    <strong><span class="proto_prefix">script</span>.protoplugDir</strong>
+    </dt>
+    <dd>
+    Current protoplug directory.
+ The full path of the <code>protoplug</code> directory currently being used. It should
+ be alongside the protoplug fx and gen dynamic libraries.
+
+    </ul>
+
+
 
 
 

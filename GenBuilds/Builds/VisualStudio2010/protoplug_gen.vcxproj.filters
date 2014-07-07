@@ -1527,6 +1527,12 @@
     <ClInclude Include="..\..\..\Source\guiclasses\ProtoWindow.h">
       <Filter>protoplug_gen\Source\GUI Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\Source\Exports\pLagrangeInterpolator.h">
+      <Filter>protoplug_gen\Source\Exports</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\Exports\pAudioFormatReader.h">
+      <Filter>protoplug_gen\Source\Exports</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\Source\Exports\pColourGradient.h">
       <Filter>protoplug_gen\Source\Exports</Filter>
     </ClInclude>

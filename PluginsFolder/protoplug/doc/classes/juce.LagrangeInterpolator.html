@@ -3,7 +3,7 @@
 <html>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <head>
-    <title>protoplug: Class juce.Point</title>
+    <title>protoplug: Class juce.LagrangeInterpolator</title>
     <link rel="stylesheet" href="../ldoc.css" type="text/css" />
 </head>
 <body>
@@ -39,7 +39,7 @@
 <h2>Contents</h2>
 <ul>
 <li><a href="#Constructors">Constructors</a></li>
-<li><a href="#Fields">Fields</a></li>
+<li><a href="#Methods">Methods</a></li>
 </ul>
 
 
@@ -55,10 +55,10 @@
   <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
   <li><a href="../classes/juce.Image.html">juce.Image</a></li>
   <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
-  <li><a href="../classes/juce.LagrangeInterpolator.html">juce.LagrangeInterpolator</a></li>
+  <li><strong>juce.LagrangeInterpolator</strong></li>
   <li><a href="../classes/juce.Line.html">juce.Line</a></li>
   <li><a href="../classes/juce.Path.html">juce.Path</a></li>
-  <li><strong>juce.Point</strong></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
   <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
   <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
   <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
@@ -85,31 +85,23 @@
 
 <div id="content">
 
-<h1>Class <code>juce.Point</code></h1>
-<p>Point.</p>
-<p> Is converted to a <a href="http://www.juce.com/api/classPoint.html">JUCE Point</a></p>
+<h1>Class <code>juce.LagrangeInterpolator</code></h1>
+<p>Lagrange Interpolator.</p>
+<p> Is converted to a <a href="http://www.juce.com/api/classLagrangeInterpolator.html">JUCE LagrangeInterpolator</a></p>
 
 
 <h2><a href="#Constructors">Constructors</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#juce.Point.Point"><span class="proto_prefix">juce</span>.Point (x, y)</a></td>
-	<td class="summary">Constuctor</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#juce.Point.Point"><span class="proto_prefix">juce</span>.Point (args)</a></td>
-	<td class="summary">Constuctor</td>
+	<td class="name" nowrap><a href="#juce.LagrangeInterpolator.LagrangeInterpolator"><span class="proto_prefix">juce</span>.LagrangeInterpolator ()</a></td>
+	<td class="summary">Constuctor.</td>
 	</tr>
 </table>
-<h2><a href="#Fields">Fields</a></h2>
+<h2><a href="#Methods">Methods</a></h2>
 <table class="function_list">
 	<tr>
-	<td class="name" nowrap><a href="#juce.Point.x"><span class="proto_prefix">juce.Point</span>.x</a></td>
-	<td class="summary">Point X position</td>
-	</tr>
-	<tr>
-	<td class="name" nowrap><a href="#juce.Point.y"><span class="proto_prefix">juce.Point</span>.y</a></td>
-	<td class="summary">Point Y position</td>
+	<td class="name" nowrap><a href="#juce.LagrangeInterpolator:process"><span class="wrapman"><span class="proto_prefix">juce.LagrangeInterpolator</span>:process<br> (speedRatio, inputSamples, outputSamples, numOutputSamplesToProduce)</span></a></td>
+	<td class="summary">Interpolate.</td>
 	</tr>
 </table>
 
@@ -120,60 +112,14 @@
     <h2><a name="Constructors"></a>Constructors</h2>
     <dl class="function">
     <dt>
-    <a name = "juce.Point.Point"></a>
-    <strong><span class="proto_prefix">juce</span>.Point (x, y)</strong>
+    <a name = "juce.LagrangeInterpolator.LagrangeInterpolator"></a>
+    <strong><span class="proto_prefix">juce</span>.LagrangeInterpolator ()</strong>
     </dt>
     <dd>
-    Constuctor
+    Constuctor.
 
     </ul>
 
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">x</span>
-
-
-
-        </li>
-        <li><span class="parameter">y</span>
-
-
-
-        </li>
-    </ul>
-
-
-
-
-
-</dd>
-    <dt>
-    <a name = "juce.Point.Point"></a>
-    <strong><span class="proto_prefix">juce</span>.Point (args)</strong>
-    </dt>
-    <dd>
-    Constuctor
-
-    </ul>
-
-    <h3>Parameters:</h3>
-    <ul>
-        <li><span class="parameter">args</span>
-
-
-        <ul>
-        <li><span class="parameter">x</span>
-
-
-
-        </li>
-        <li><span class="parameter">y</span>
-
-
-
-        </li>
-        </li></ul>
-    </ul>
 
 
 
@@ -181,33 +127,41 @@
 
 </dd>
 </dl>
-    <h2><a name="Fields"></a>Fields</h2>
+    <h2><a name="Methods"></a>Methods</h2>
     <dl class="function">
     <dt>
-    <a name = "juce.Point.x"></a>
-    <strong><span class="proto_prefix">juce.Point</span>.x</strong>
+    <a name = "juce.LagrangeInterpolator:process"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.LagrangeInterpolator</span>:process<br> (speedRatio, inputSamples, outputSamples, numOutputSamplesToProduce)</span></strong>
     </dt>
     <dd>
-    Point X position
+    Interpolate.
 
     </ul>
 
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">speedRatio</span>
+         number of input samples per output sample (input/output)
+        </li>
+        <li><span class="parameter">inputSamples</span>
+         pointer to a cdata <code>float</code> array
+        </li>
+        <li><span class="parameter">outputSamples</span>
+         pointer to a cdata <code>float</code> array
+        </li>
+        <li><span class="parameter">numOutputSamplesToProduce</span>
 
 
 
-
-
-</dd>
-    <dt>
-    <a name = "juce.Point.y"></a>
-    <strong><span class="proto_prefix">juce.Point</span>.y</strong>
-    </dt>
-    <dd>
-    Point Y position
-
+        </li>
     </ul>
 
+    <h3>Returns:</h3>
+    <ol>
 
+           <span class="types"><span class="type">number</span></span>
+        number of input samples that were processed
+    </ol>
 
 
 

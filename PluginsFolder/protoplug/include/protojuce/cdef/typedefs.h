@@ -35,6 +35,22 @@ typedef struct pComponent
 
 // accessible structs that get converted to JUCE objects
 
+typedef struct pAudioFormatReader
+{ 
+	const void *pointer; 
+	const double sampleRate;
+	const unsigned int bitsPerSample;
+	const int64_t lengthInSamples;
+	const unsigned int numChannels;
+	const bool usesFloatingPointData;
+} pAudioFormatReader;
+
+typedef struct LagrangeInterpolator
+{
+    float lastInputSamples[5];
+    double subSamplePos;
+} LagrangeInterpolator;
+
 typedef struct Colour
 {
 	union

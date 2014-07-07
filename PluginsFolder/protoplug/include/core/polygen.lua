@@ -130,6 +130,10 @@ function polyGen.initTracks(n)
 		for msg in midiBuf:eachEvent() do
 			processMidiEvent(msg)
 		end
+		for i=0,smax do
+			samples[0][i] = 0
+			samples[1][i] = 0
+		end
 		for i=1,VTrack.numTracks do
 			if VTrack.addProcessBlock~=nil then
 				VTrack.tracks[i]:addProcessBlock(samples, smax)

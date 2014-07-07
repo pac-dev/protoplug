@@ -1,0 +1,389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Class juce.AudioFormatReader</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Constructors">Constructors</a></li>
+<li><a href="#Methods">Methods</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><strong>juce.AudioFormatReader</strong></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.LagrangeInterpolator.html">juce.LagrangeInterpolator</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+  <li><a href="../examples/soundfile-test.lua.html">soundfile-test.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Class <code>juce.AudioFormatReader</code></h1>
+<p>Class to read audio files.</p>
+<p> Example usage: <a href="../examples/soundfile-test.lua.html#">soundfile-test.lua</a>.</p>
+
+<p> Reads the formats that JUCE supports, namely: WAV, AIFF, Flac, Ogg-Vorbis, Windows Media codecs,
+ CoreAudio codecs, MP3. </p>
+
+<p> Is a pointer to a <a href="http://www.juce.com/api/classAudioFormatReader.html">JUCE AudioFormatReader</a>,
+ and wraps some <a href="http://www.juce.com/api/classAudioFormatManager.html">AudioFormatManager</a>
+ functionality. </p>
+
+
+<h2><a href="#Constructors">Constructors</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.AudioFormatReader"><span class="proto_prefix">juce</span>.AudioFormatReader (filename)</a></td>
+	<td class="summary">Load a sound file as an AudioFormatReader.</td>
+	</tr>
+</table>
+<h2><a href="#Methods">Methods</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader:read"><span class="wrapman"><span class="proto_prefix">juce.AudioFormatReader</span>:read<br> (destSamples, numDestChannels, startSampleInSource, numSamplesToRead[, fillLeftoverChannelsWithCopies=true])</span></a></td>
+	<td class="summary">Read samples.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader:readToFloat"><span class="proto_prefix">juce.AudioFormatReader</span>:readToFloat<br> ([nChannels=2[, resample=true]])</a></td>
+	<td class="summary">Read entire wave to float array.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader:readToDouble"><span class="proto_prefix">juce.AudioFormatReader</span>:readToDouble<br> ([nChannels=2[, resample=true]])</a></td>
+	<td class="summary">Read entire wave to double array.</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.sampleRate"><span class="proto_prefix">juce.AudioFormatReader</span>.sampleRate</a></td>
+	<td class="summary">Sample rate</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.bitsPerSample"><span class="proto_prefix">juce.AudioFormatReader</span>.bitsPerSample</a></td>
+	<td class="summary">Bits per sample</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.lengthInSamples"><span class="proto_prefix">juce.AudioFormatReader</span>.lengthInSamples</a></td>
+	<td class="summary">Length in samples</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.numChannels"><span class="proto_prefix">juce.AudioFormatReader</span>.numChannels</a></td>
+	<td class="summary">Number of channels</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#juce.AudioFormatReader.usesFloatingPointData"><span class="proto_prefix">juce.AudioFormatReader</span>.usesFloatingPointData</a></td>
+	<td class="summary">Uses floating point data (boolean)</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Constructors"></a>Constructors</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.AudioFormatReader.AudioFormatReader"></a>
+    <strong><span class="proto_prefix">juce</span>.AudioFormatReader (filename)</strong>
+    </dt>
+    <dd>
+    Load a sound file as an AudioFormatReader.
+ The path can be absolute or relative to the protoplug directory.
+ Returns <code>nil</code> if unsuccessful. The file will remain open until the
+ AudioFormatReader is unset or otherwise garbage-collected.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+
+
+
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Methods"></a>Methods</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.AudioFormatReader:read"></a>
+    <strong><span class="wrapman"><span class="proto_prefix">juce.AudioFormatReader</span>:read<br> (destSamples, numDestChannels, startSampleInSource, numSamplesToRead[, fillLeftoverChannelsWithCopies=true])</span></strong>
+    </dt>
+    <dd>
+    Read samples. <br/>
+ Copies a number of samples from the file into the provided array.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">destSamples</span>
+         a cdata array of pointers to buffers for each channel (<code>int * const *</code>)
+        </li>
+        <li><span class="parameter">numDestChannels</span>
+         the number of elements in <code>destSamples</code>
+        </li>
+        <li><span class="parameter">startSampleInSource</span>
+
+
+
+        </li>
+        <li><span class="parameter">numSamplesToRead</span>
+
+
+
+        </li>
+        <li><span class="parameter">fillLeftoverChannelsWithCopies</span>
+            <span class="types"><span class="type">boolean</span></span>
+         used if <code>destSamples</code> has more channels than the source.
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">boolean</span></span>
+        success
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader:readToFloat"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>:readToFloat<br> ([nChannels=2[, resample=true]])</strong>
+    </dt>
+    <dd>
+    Read entire wave to float array. <br/>
+ A simplified wrapper function for <a href="../classes/juce.AudioFormatReader.html#juce.AudioFormatReader:read">read</a>
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nChannels</span>
+         number of channels to be returned
+         (<em>default</em> 2)
+        </li>
+        <li><span class="parameter">resample</span>
+         whether to perform samplerate conversion to match the host's sample rate.
+ If <code>true</code>, the length of the returned array may not be the wave's original <a href="../classes/juce.AudioFormatReader.html#juce.AudioFormatReader.lengthInSamples">lengthInSamples</a> .
+ It will be given by the second returned value.
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        a two-dimensional cdata array of channels containing samples (<code>float [nChannels][nSamples]</code>)</li>
+        <li>
+        the number of samples in each channel of the returned array</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader:readToDouble"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>:readToDouble<br> ([nChannels=2[, resample=true]])</strong>
+    </dt>
+    <dd>
+    Read entire wave to double array. <br/>
+ This wraps <a href="../classes/juce.AudioFormatReader.html#juce.AudioFormatReader:readToFloat">readToFloat</a>  and returns an array containing <code>double</code>-precision numbers.
+ This takes twice as much space, but it may be faster to use, as this is the native Lua type.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">nChannels</span>
+         number of channels to be returned
+         (<em>default</em> 2)
+        </li>
+        <li><span class="parameter">resample</span>
+         whether to perform samplerate conversion to match the host's sample rate.
+ If <code>true</code>, the length of the returned array may not be the wave's original <a href="../classes/juce.AudioFormatReader.html#juce.AudioFormatReader.lengthInSamples">lengthInSamples</a> .
+ It will be given by the second returned value.
+         (<em>default</em> true)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+        a two-dimensional cdata array of channels containing samples (<code>double [nChannels][nSamples]</code>)</li>
+        <li>
+        the number of samples in each channel of the returned array</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Fields"></a>Fields</h2>
+    <dl class="function">
+    <dt>
+    <a name = "juce.AudioFormatReader.sampleRate"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>.sampleRate</strong>
+    </dt>
+    <dd>
+    Sample rate
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader.bitsPerSample"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>.bitsPerSample</strong>
+    </dt>
+    <dd>
+    Bits per sample
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader.lengthInSamples"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>.lengthInSamples</strong>
+    </dt>
+    <dd>
+    Length in samples
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader.numChannels"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>.numChannels</strong>
+    </dt>
+    <dd>
+    Number of channels
+
+    </ul>
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "juce.AudioFormatReader.usesFloatingPointData"></a>
+    <strong><span class="proto_prefix">juce.AudioFormatReader</span>.usesFloatingPointData</strong>
+    </dt>
+    <dd>
+    Uses floating point data (boolean)
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

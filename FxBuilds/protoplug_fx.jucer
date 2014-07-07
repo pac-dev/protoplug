@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.0.0"
+<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.1.0"
               bundleIdentifier="com.pac.protoplugfx" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="1" pluginName="Lua Protoplug Fx" pluginDesc="Lua Protoplug Effect"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgf"
@@ -32,6 +32,10 @@
         <FILE id="NHrswD" name="ProtoWindow.h" compile="0" resource="0" file="../Source/guiclasses/ProtoWindow.h"/>
       </GROUP>
       <GROUP id="{E75D37C8-5952-3ACC-E244-459A757FDFA8}" name="Exports">
+        <FILE id="zFhIYU" name="pLagrangeInterpolator.h" compile="0" resource="0"
+              file="../Source/exports/pLagrangeInterpolator.h"/>
+        <FILE id="lNqSpO" name="pAudioFormatReader.h" compile="0" resource="0"
+              file="../Source/exports/pAudioFormatReader.h"/>
         <FILE id="MJgBYQ" name="pColourGradient.h" compile="0" resource="0"
               file="../Source/Exports/pColourGradient.h"/>
         <FILE id="CzZhZW" name="pComponent.h" compile="0" resource="0" file="../Source/Exports/pComponent.h"/>

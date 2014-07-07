@@ -200,6 +200,7 @@ table.index td { text-align: left; vertical-align: top; }
     text-indent: -1em;
     display: block;
     margin: 3px 0px 0px 22px;
+	word-wrap: break-word;
 }
 
 #navigation li li a {
