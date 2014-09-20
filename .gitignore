@@ -1,3 +1,25 @@
+# protoplug: no binaries
+*.dll
+*.lib
+*.exp
+
+## Ignore Visual Studio temporary files & build results
+# User-specific files
+*.suo
+*.user
+# Build results
+Debug/
+Release/
+x64/
+Obj/
+# Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opensdf
+*.sdf
+*.cachefile
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
