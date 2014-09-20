@@ -26,6 +26,9 @@ ptr_lua_isstring	LuaState::lua_isstring			= 0;
 ptr_lua_isnumber	LuaState::lua_isnumber			= 0;
 ptr_lua_typename	LuaState::lua_typename			= 0;
 ptr_lua_newuserdata	LuaState::lua_newuserdata		= 0;
+#if REQUIRE_JIT
+ptr_luajit_setmode	LuaState::luajit_setmode		= 0;
+#endif
 
 LuaState::LuaState()
 {
@@ -63,6 +66,9 @@ LuaState::LuaState()
 		lua_isnumber		= ptr_lua_isnumber		(dll->getFunction("lua_isnumber"));
 		lua_typename		= ptr_lua_typename		(dll->getFunction("lua_typename"));
 		lua_newuserdata		= ptr_lua_newuserdata	(dll->getFunction("lua_newuserdata"));
+#if REQUIRE_JIT
+		luajit_setmode		= ptr_luajit_setmode	(dll->getFunction("luaJIT_setmode"));
+#endif
 	}
 	void *kk[22] = {
 		// cast required for some compilers
@@ -91,10 +97,19 @@ LuaState::LuaState()
 	for (int i=0; i<22; i++)
 		if (kk[i]==0) {
 			failed = 1;
-			errmsg = 	"Could not load " + libName + 
+			errmsg = 	"Error: Could not load " + libName + 
 						". Tried " + defaultPath + " and system path.";
 			return;
 		}
+#if REQUIRE_JIT
+	if (!luajit_setmode) {
+		failed = 1;
+		errmsg = 	"Error: linked with wrong " + libName + ". Library is Lua, but LuaJIT is required. " + 
+					"Please add the luajit library in the system path or at " + defaultPath;
+		// in windows the luajit dll is called lua51.dll, which is kind of odd
+		return;
+	}
+#endif
 	failed = 0;
 	l = (*luaL_newstate)();
 }
@@ -166,6 +181,11 @@ const char * LuaState::ltypename(int t)
 
 void * LuaState::newuserdata(size_t sz)
 { return (*lua_newuserdata)(l, sz);}
+
+#if REQUIRE_JIT
+int LuaState::jit_setmode(int idx, int mode)
+{ return (*luajit_setmode)(l, idx, mode);}
+#endif
 
 
 } // namespace protolua

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
+#define REQUIRE_JIT 1
 
 // lua types
 #define LUA_TNIL			0
@@ -57,6 +58,9 @@ typedef int			(*ptr_lua_isstring)			(lua_State *L, int idx);
 typedef int			(*ptr_lua_isnumber)			(lua_State *L, int idx);
 typedef const char* (*ptr_lua_typename)			(lua_State *L, int t);
 typedef void *		(*ptr_lua_newuserdata)		(lua_State *L, size_t sz);
+#if REQUIRE_JIT
+typedef int			(*ptr_luajit_setmode)		(lua_State *L, int idx, int mode);
+#endif
 
 
 // the purpose of this abominable class is to load a lua/luajit dynamic library
@@ -89,6 +93,9 @@ public:
 	int  isnumber(int idx);
 	const char * ltypename(int t);
 	void * newuserdata(size_t sz);
+#if REQUIRE_JIT
+	int jit_setmode(int idx, int mode);
+#endif
 
 	void setglobal(const char * n) {
 		setfield(LUA_GLOBALSINDEX, n);
@@ -136,6 +143,9 @@ public:
 	static ptr_lua_isnumber		lua_isnumber;
 	static ptr_lua_typename		lua_typename;
 	static ptr_lua_newuserdata	lua_newuserdata;
+#if REQUIRE_JIT
+	static ptr_luajit_setmode	luajit_setmode;
+#endif
 };
 
 }

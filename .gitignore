@@ -1,3 +1,6 @@
+# protoplug: user prefs
+current\ theme.txt
+
 # protoplug: no binaries
 *.dll
 *.lib
