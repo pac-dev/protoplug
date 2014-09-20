@@ -11,11 +11,11 @@
 #pragma once
 
 #include "typedefs.h"
-#include "../LuaState.h"
+#include "../ProtoplugDir.h"
 
 PROTO_API pAudioFormatReader AudioFormatReader_new(const char *filename)
 { 
-	File f = getProtoplugDir().getChildFile(filename);
+	File f = ProtoplugDir::Instance()->getDir().getChildFile(filename);
 	if (f == File::nonexistent)
 		f = File(filename);
 	AudioFormatManager afm;

@@ -16,18 +16,6 @@
 #define LUA_GLOBALSINDEX	(-10002)
 
 
-static File getProtoplugDir()
-{
-	File ret = File::getSpecialLocation(File::currentExecutableFile);
-	#if JUCE_MAC
-    //if (ret.getFullPathName().endsWith("/Contents/MacOS")) // assume OSX bundle format
-        return ret.getSiblingFile("../../../protoplug");
-	#else
-		return ret.getSiblingFile("protoplug");
-	#endif
-}
-
-
 namespace protolua
 {
 // from the lua headers :
@@ -70,7 +58,7 @@ typedef int			(*ptr_luajit_setmode)		(lua_State *L, int idx, int mode);
 class LuaState
 {
 public:
-	LuaState();
+	LuaState(File defaultDir);
 	~LuaState();
 	void openlibs();
 	int loadbuffer(const char *buff, size_t sz, const char *name);

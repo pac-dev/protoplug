@@ -30,7 +30,7 @@ ptr_lua_newuserdata	LuaState::lua_newuserdata		= 0;
 ptr_luajit_setmode	LuaState::luajit_setmode		= 0;
 #endif
 
-LuaState::LuaState()
+LuaState::LuaState(File defaultDir)
 {
 	l = 0;
 #if JUCE_WINDOWS
@@ -38,7 +38,7 @@ LuaState::LuaState()
 #else
 	String libName = "libluajit-5.1.so";
 #endif
-	String defaultPath = getProtoplugDir().getChildFile("lib/"+libName).getFullPathName();
+	String defaultPath = defaultDir.getChildFile(libName).getFullPathName();
 	if (!dll) {
 		dll = new DynamicLibrary();
 		if (!dll->open(defaultPath))

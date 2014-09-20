@@ -11,7 +11,7 @@ class AboutBox
 public:
 	static void launch(LuaProtoplugJuceAudioProcessor *processor, Component *colours)
 	{
-		protolua::LuaState ls;
+		protolua::LuaState ls(ProtoplugDir::Instance()->getLibDir());
 		if (!ls.failed) {
 			ls.openlibs();
 			const char versionScript[] = "return (_VERSION..'\\n'..jit.version)";

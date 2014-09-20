@@ -32,6 +32,7 @@ public:
 	String save();
 	void load(String loadData);
 	void preClose();
+	void initProtoplugDir();
 	
 	// Custom GUI component overrides :
 	void paint (Graphics& g);

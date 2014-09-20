@@ -192,6 +192,7 @@
     <ClCompile Include="..\..\..\Source\LuaState.cpp"/>
     <ClCompile Include="..\..\..\Source\PluginEditor.cpp"/>
     <ClCompile Include="..\..\..\Source\PluginProcessor.cpp"/>
+    <ClCompile Include="..\..\..\Source\ProtoplugDir.cpp"/>
     <ClCompile Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1278,6 +1279,7 @@
     <ClInclude Include="..\..\..\Source\PluginEditor.h"/>
     <ClInclude Include="..\..\..\Source\PluginProcessor.h"/>
     <ClInclude Include="..\..\..\Source\ProtoplugExports.h"/>
+    <ClInclude Include="..\..\..\Source\ProtoplugDir.h"/>
     <ClInclude Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_AudioDataConverters.h"/>
     <ClInclude Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_AudioSampleBuffer.h"/>
     <ClInclude Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_FloatVectorOperations.h"/>

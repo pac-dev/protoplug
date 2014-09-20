@@ -64,6 +64,7 @@ OBJECTS := \
   $(OBJDIR)/LuaState_47f359f3.o \
   $(OBJDIR)/PluginEditor_ef07f2fa.o \
   $(OBJDIR)/PluginProcessor_319d19ef.o \
+  $(OBJDIR)/ProtoplugDir_7e256231.o \
   $(OBJDIR)/BinaryData_ce4232d4.o \
   $(OBJDIR)/juce_audio_basics_8162c4a2.o \
   $(OBJDIR)/juce_audio_devices_396f78e0.o \
@@ -158,6 +159,11 @@ $(OBJDIR)/PluginEditor_ef07f2fa.o: ../../../Source/PluginEditor.cpp
 $(OBJDIR)/PluginProcessor_319d19ef.o: ../../../Source/PluginProcessor.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling PluginProcessor.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/ProtoplugDir_7e256231.o: ../../../Source/ProtoplugDir.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling ProtoplugDir.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 $(OBJDIR)/BinaryData_ce4232d4.o: ../../JuceLibraryCode/BinaryData.cpp

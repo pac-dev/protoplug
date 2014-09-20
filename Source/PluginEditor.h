@@ -23,9 +23,10 @@ public:
 
 private:
 	ProtoWindow content; // the actual gui is in there
-	ScopedPointer<ProtoPopout> docwin;
+	ScopedPointer<ProtoPopout> poppedWin;
 	TextButton yank;
 	TextButton popin;
+	TextButton locateFiles;
 };
 
 

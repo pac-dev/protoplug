@@ -10,6 +10,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "ProtoplugDir.h"
 
 
 //==============================================================================
@@ -143,10 +144,11 @@ void LuaProtoplugJuceAudioProcessor::setStateInformation (const void* data, int 
 	pi = (int*)pd;
 	int sz_script = *pi++;				// get size of code
 	char *pc = (char*)(pi);
-	luli->addToLog("Loading script...");
 	luli->code = pc;					// get code
+	luli->addToLog("Loaded uncompiled script");
 	luli->saveData = String::empty;
-	luli->compile();
+	if (ProtoplugDir::Instance()->found)
+		luli->compile();
 	
 	pc += sz_script;
 	pi = (int*)pc;

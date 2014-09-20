@@ -1,5 +1,6 @@
 #include "ProtoWindow.h"
 #include "../PluginProcessor.h"
+#include "../ProtoplugDir.h"
 #include "AboutBox.h"
 
 #ifdef _MSC_VER
@@ -33,7 +34,7 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 	panels[1] = &paramDock;
 	panels[2] = &guiDock;
 	processor = ownerFilter;
-	themeFolder = getProtoplugDir().getChildFile("themes").getFullPathName();
+	themeFolder = ProtoplugDir::Instance()->getDir().getChildFile("themes").getFullPathName();
     LookAndFeel::setDefaultLookAndFeel (&newFeel);
     addAndMakeVisible (&menubar);
     menubar.setEnabled (true);
@@ -43,11 +44,7 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
     addAndMakeVisible (&resizer);
 
 	// panel 1 : editor
-	String lastTheme = getProtoplugDir().getChildFile("themes/current theme.txt").loadFileAsString();
-	if (lastTheme.isNotEmpty() && File::isAbsolutePath(lastTheme))
-		readTheme(File(lastTheme));
-	if (processor->lastUIFontSize != -1)
-		editor.setFontSize(processor->lastUIFontSize);
+	// (moved to init folder)
     addChildComponent (&editor);
 	editor.loadContent(processor->luli->code);
 
@@ -72,7 +69,6 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 	addChildComponent(&compileButton);
 	compileButton.setColour(TextButton::buttonColourId, Colour(0xffff8d8d));
 	tooltip.setLookAndFeel(&newFeel);
-	//compile.sett
 	
 	// splitter						item	min		max		default
     horizontalLayout.setItemLayout (0,		-0.1,	-1.0,	processor->lastUISplit-20);		// top (code editor)
@@ -102,6 +98,18 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 #ifdef _MSC_VER
 #pragma warning(pop)
 #endif
+
+
+void ProtoWindow::initProtoplugDir()
+{
+	editor.loadContent(processor->luli->code);
+	themeFolder = ProtoplugDir::Instance()->getDir().getChildFile("themes").getFullPathName();
+	String lastTheme = ProtoplugDir::Instance()->getDir().getChildFile("themes/current theme.txt").loadFileAsString();
+	if (lastTheme.isNotEmpty() && File::isAbsolutePath(lastTheme))
+		readTheme(File(lastTheme));
+	if (processor->lastUIFontSize != -1)
+		editor.setFontSize(processor->lastUIFontSize);
+}
 
 void ProtoWindow::readTheme(File f)
 {
@@ -171,14 +179,14 @@ void ProtoWindow::readTheme(File f)
 	editor.setColourScheme(cs);
 	editor.setColour(ScrollBar::thumbColourId, editor.findColour(CodeEditorComponent::backgroundColourId).contrasting(0.25));
 
-	File lastTheme = getProtoplugDir().getChildFile("themes/current theme.txt");
+	File lastTheme = ProtoplugDir::Instance()->getDir().getChildFile("themes/current theme.txt");
     if (lastTheme.create().wasOk())
 		lastTheme.replaceWithText(f.getFullPathName());
 }
 
 void ProtoWindow::readPrefs()
 {
-	File f = getProtoplugDir().getChildFile("prefs.xml");
+	File f = ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml");
 	if (!f.exists())
 		return;
 	XmlElement *e = XmlDocument(f).getDocumentElement();
@@ -188,7 +196,7 @@ void ProtoWindow::readPrefs()
 	}
 	/*	// writePrefs()
 	XmlElement *e = commMgr.getKeyMappings()->createXml(false);
-	e->writeToFile(getProtoplugDir().getChildFile("prefs.xml"), String::empty);
+	e->writeToFile(ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml"), String::empty);
 	delete e;*/
 }
 
@@ -454,7 +462,7 @@ bool ProtoWindow::perform (const InvocationInfo& info)
 	{
 	case cmdCompile:	compile(); break;
 	case cmdStackDump:	processor->luli->stackDump(); break;
-	case cmdOpenProto:	getProtoplugDir().startAsProcess(); break;
+	case cmdOpenProto:	ProtoplugDir::Instance()->getDir().startAsProcess(); break;
 	case cmdShow0:		setActivePanel(0); break;
 	case cmdShow1:		setActivePanel(1); break;
 	case cmdShow2:		setActivePanel(2); break;
@@ -493,7 +501,7 @@ bool ProtoWindow::perform (const InvocationInfo& info)
 		break;
 	}
 	case cmdAPI: {
-		URL url("file:///"+getProtoplugDir().getChildFile("doc/index.html").getFullPathName());
+		URL url("file:///"+ProtoplugDir::Instance()->getDir().getChildFile("doc/index.html").getFullPathName());
 		url.launchInDefaultBrowser();
 		break;
 	}

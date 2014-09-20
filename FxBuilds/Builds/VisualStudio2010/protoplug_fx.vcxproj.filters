@@ -334,6 +334,9 @@
     <ClCompile Include="..\..\..\Source\PluginProcessor.cpp">
       <Filter>protoplug_fx\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Source\ProtoplugDir.cpp">
+      <Filter>protoplug_fx\Source</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_AudioDataConverters.cpp">
       <Filter>Juce Modules\juce_audio_basics\buffers</Filter>
     </ClCompile>
@@ -1591,6 +1594,9 @@
       <Filter>protoplug_fx\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\Source\ProtoplugExports.h">
+      <Filter>protoplug_fx\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Source\ProtoplugDir.h">
       <Filter>protoplug_fx\Source</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\JuceModules\juce_audio_basics\buffers\juce_AudioDataConverters.h">

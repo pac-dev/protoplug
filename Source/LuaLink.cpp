@@ -1,18 +1,13 @@
 #include "LuaLink.h"
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include "ProtoplugDir.h"
 #include <map>
 
 // exports for scripts
 extern "C" {
 #include "ProtoplugExports.h"
 }
-
-#ifdef _PROTOGEN
-#define LIB_PATH "generators"
-#else
-#define LIB_PATH "effects"
-#endif
 
 // could be avoided by namespacing every callback into a userdata (eg. theme api)
 std::map<protolua::lua_State*, LuaLink*> globalStates;
@@ -38,12 +33,18 @@ LuaLink::LuaLink(LuaProtoplugJuceAudioProcessor *_pfx)
 	pfx = _pfx;
 	customGui = 0;
 	
-	libFolder = getProtoplugDir().getChildFile(LIB_PATH).getFullPathName();
+	libFolder = ProtoplugDir::Instance()->getScriptsDir().getFullPathName();
 	code = File(libFolder).getChildFile("default.lua").loadFileAsString();
 }
 
 LuaLink::~LuaLink()
 {
+}
+
+void LuaLink::initProtoplugDir() {
+	libFolder = ProtoplugDir::Instance()->getScriptsDir().getFullPathName();
+	if (code.isEmpty())
+		code = File(libFolder).getChildFile("default.lua").loadFileAsString();
 }
 
 void LuaLink::addToLog(String buf) {
@@ -80,7 +81,7 @@ void LuaLink::compile() {
 		ls=0;
 	}
 
-	ls = new protolua::LuaState();
+	ls = new protolua::LuaState(ProtoplugDir::Instance()->getLibDir());
 	if (ls->failed) {
 		addToLog(ls->errmsg);
 		delete ls;
@@ -100,7 +101,7 @@ void LuaLink::compile() {
 	ls->setglobal("gui_component");
 	ls->pushstring(File::getSpecialLocation(File::currentExecutableFile).getFullPathName().getCharPointer().getAddress());
 	ls->setglobal("protoplug_path");
-	ls->pushstring(getProtoplugDir().getFullPathName().getCharPointer().getAddress());
+	ls->pushstring(ProtoplugDir::Instance()->getDir().getFullPathName().getCharPointer().getAddress());
 	ls->setglobal("protoplug_dir");
 	ls->pushnumber(1);
 	ls->setglobal("protoplug_version");
@@ -108,7 +109,7 @@ void LuaLink::compile() {
 	ls->setglobal("plugin_effect");
 
 	// add plugin location to the include paths
-	String addPath = getProtoplugDir().getFullPathName();
+	String addPath = ProtoplugDir::Instance()->getDir().getFullPathName();
 	ls->getglobal( "package" );
 	ls->getfield(-1, "path" );
 	String newpack, pack = ls->tolstring(-1,0 );

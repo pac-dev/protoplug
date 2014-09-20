@@ -53,6 +53,7 @@ public:
 	void buttonClicked (Button *b);
 	void codeDocumentTextInserted (const String &newText, int insertIndex);
 	void codeDocumentTextDeleted (int startIndex, int endIndex);
+	void initProtoplugDir();
 
 	void saveCode();
 	void compile();

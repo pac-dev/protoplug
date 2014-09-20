@@ -87,6 +87,9 @@
             file="../Source/PluginProcessor.h"/>
       <FILE id="PZOJMs" name="ProtoplugExports.h" compile="0" resource="0"
             file="../Source/ProtoplugExports.h"/>
+      <FILE id="N5JeTb" name="ProtoplugDir.h" compile="0" resource="0" file="../Source/ProtoplugDir.h"/>
+      <FILE id="sqlS3Z" name="ProtoplugDir.cpp" compile="1" resource="0"
+            file="../Source/ProtoplugDir.cpp"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
