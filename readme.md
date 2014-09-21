@@ -37,14 +37,14 @@ The source is C++ and only requires system headers. In the source's `MetaBuilds`
 
   [3]: http://www.juce.com/documentation/introjucer
   
-After compiling, you'll also need the [LuaJIT] [1] shared library installed on your system or in the `protoplug/lib` folder. The same goes for [FFTW] [4] if you want to load scripts that use that library. 
+After compiling, you'll also need the [LuaJIT] [1] shared library installed on your system or in the `ProtoplugFiles/lib` folder. The same goes for [FFTW] [4] if you want to load scripts that use that library. 
 
   [4]: http://fftw.org/
 
 **Linux :** The easiest is to grab the binaries above, but you can also compile it : 
 
 	tar zxf protoplug-1.0.0.tar.gz
-	cd protoplug-1.0.0/MetaBuilds/Linux
+	cd protoplug-1.0.0/Builds/multi/Linux
 	make
 
 You might get some missing includes. The required headers should be easy to obtain, for example on Debian 7 :
