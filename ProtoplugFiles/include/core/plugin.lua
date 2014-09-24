@@ -182,6 +182,13 @@ plugin.getSampleRate = function ()
 	return sampleRate
 end
 
+--- Check if the samplerate is known.
+-- @treturn boolean 
+-- @function plugin.isSampleRateKnown
+plugin.isSampleRateKnown = function ()
+	return (sampleRate ~= nil)
+end
+
 --- Add a handler for a VST/AU event.
 -- The following events are available :
 --

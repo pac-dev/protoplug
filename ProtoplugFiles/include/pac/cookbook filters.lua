@@ -39,7 +39,7 @@ local function Filter(params)
 				params[k] = v
 			end
 			if params.f < 10 then params.f = 10 end
-			if not plugin.getSampleRate() then return end
+			if not plugin.isSampleRateKnown() then return end
 			--print (
 			--	"type "..params.type..
 			--	", f "..params.f..
