@@ -6,6 +6,9 @@ current\ theme.txt
 *.lib
 *.exp
 
+# backups
+*.bak
+
 ## Ignore Visual Studio temporary files & build results
 # User-specific files
 *.suo

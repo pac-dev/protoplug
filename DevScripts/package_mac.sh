@@ -1,6 +1,6 @@
 #!/bin/bash
 VERSION=`cat resources/version.txt`
-FILELIST="../ProtoplugFiles
+FOLDERLIST="../ProtoplugFiles
 ../Bin/mac/Release/Lua Protoplug Fx.vst
 ../Bin/mac/Release/Lua Protoplug Fx.component
 ../Bin/mac/Release/Lua Protoplug Gen.vst
@@ -8,7 +8,19 @@ FILELIST="../ProtoplugFiles
 TDMG_SRC="resources/protoplug_template.dmg"
 TDMG_MOUNT="/Volumes/Lua Protoplug"
 TDMG_TMP="/tmp/protoplug_temp.dmg"
-TDMG_DST="../Bin/packaged/protoplug_$VERSION.dmg"
+TDMG_DST="../Bin/packaged/protoplug-$VERSION-osx.dmg"
+
+PACKAGELIBDIR="$HOME/Documents/ProtoplugFiles/lib/"
+PACKAGELIBS="libluajit-5.1.so libfftw3-3.so"
+
+echo "Packaging libs..."
+for PLIB in $PACKAGELIBS; do
+	if [ ! -f $PACKAGELIBDIR$PLIB ]; then 
+		echo -ne "\t FAILED: could not find $PACKAGELIBDIR$PLIB\n"
+		exit 1
+	fi
+	cp $PACKAGELIBDIR$PLIB ../ProtoplugFiles/lib
+done
 
 if [ -e $TDMG_TMP ]; then
 	umount "$TDMG_MOUNT" 2>/dev/null
@@ -41,10 +53,9 @@ echo
 
 echo "Copy to template"
 IFS=$'\n'
-for f in $FILELIST; do
+for f in $FOLDERLIST; do
 	cp -r "$f" "$TDMG_MOUNT"
 done
-#echo $VERSION > "$TDMG_MOUNT/VERSION.txt"
 	
 echo "Unmount"
 umount "$TDMG_MOUNT"
@@ -70,3 +81,5 @@ if [ $? -ne 0 ]; then
 	echo -ne "\t FAILED\n"
 	exit 1
 fi
+
+echo "Packaging successful."
