@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# exit if any command fails
+set -e
+
 VERSION=`cat resources/version.txt`
 JUCER="../../JUCE/extras/Introjucer/Builds/Linux/build/Introjucer"
 

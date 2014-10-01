@@ -1,7 +1,4 @@
-#ifndef PLUGINPROCESSOR_H_INCLUDED
-#define PLUGINPROCESSOR_H_INCLUDED
-
-
+#pragma once
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "LuaLink.h"
 
@@ -65,5 +62,3 @@ private:
 	ProtoWindow *lastOpenedEditor;
 	char *chunk;
 };
-
-#endif

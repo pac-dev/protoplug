@@ -1,5 +1,4 @@
-#ifndef PLUGINEDITOR_H_INCLUDED
-#define PLUGINEDITOR_H_INCLUDED
+#pragma once
 
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "PluginProcessor.h"
@@ -29,5 +28,3 @@ private:
 	TextButton locateFiles;
 };
 
-
-#endif  // PLUGINEDITOR_H_INCLUDED
