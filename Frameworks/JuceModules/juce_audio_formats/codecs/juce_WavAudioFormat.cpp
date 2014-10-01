@@ -927,12 +927,6 @@ public:
 
     ~WavAudioFormatWriter()
     {
-        if ((bytesWritten & 1) != 0) // pad to an even length
-        {
-            ++bytesWritten;
-            output->writeByte (0);
-        }
-
         writeHeader();
     }
 
@@ -972,6 +966,20 @@ public:
         return true;
     }
 
+    bool flush() override
+    {
+        const int64 lastWritePos = output->getPosition();
+        writeHeader();
+
+        if (output->setPosition (lastWritePos))
+            return true;
+
+        // if this fails, you've given it an output stream that can't seek! It needs
+        // to be able to seek back to write the header
+        jassertfalse;
+        return false;
+    }
+
 private:
     MemoryBlock tempBlock, bwavChunk, axmlChunk, smplChunk, instChunk, cueChunk, listChunk;
     uint64 lengthInSamples, bytesWritten;
@@ -983,11 +991,13 @@ private:
         switch (numChannels)
         {
             case 1:   return 0;
-            case 2:   return 1 + 2; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT
-            case 5:   return 1 + 2 + 4 + 16 + 32; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
-            case 6:   return 1 + 2 + 4 + 8 + 16 + 32; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
-            case 7:   return 1 + 2 + 4  + 16 + 32 + 512 + 1024; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER  | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT
-            case 8:   return 1 + 2 + 4 + 8 + 16 + 32 + 512 + 1024; // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT
+            case 2:   return 1 + 2;                                 // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT
+            case 3:   return 1 + 2 + 4;                             // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER
+            case 4:   return 1 + 2 + 16 + 32;                       // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
+            case 5:   return 1 + 2 + 4 + 16 + 32;                   // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
+            case 6:   return 1 + 2 + 4 + 8 + 16 + 32;               // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT
+            case 7:   return 1 + 2 + 4 + 16 + 32 + 512 + 1024;      // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT
+            case 8:   return 1 + 2 + 4 + 8 + 16 + 32 + 512 + 1024;  // SPEAKER_FRONT_LEFT | SPEAKER_FRONT_RIGHT | SPEAKER_FRONT_CENTER | SPEAKER_LOW_FREQUENCY | SPEAKER_BACK_LEFT | SPEAKER_BACK_RIGHT | SPEAKER_SIDE_LEFT | SPEAKER_SIDE_RIGHT
             default:  break;
         }
 
@@ -996,13 +1006,18 @@ private:
 
     void writeHeader()
     {
-        using namespace WavFileHelpers;
-        const bool seekedOk = output->setPosition (headerPosition);
-        (void) seekedOk;
+        if ((bytesWritten & 1) != 0) // pad to an even length
+            output->writeByte (0);
 
-        // if this fails, you've given it an output stream that can't seek! It needs
-        // to be able to seek back to write the header
-        jassert (seekedOk);
+        using namespace WavFileHelpers;
+
+        if (headerPosition != output->getPosition() && ! output->setPosition (headerPosition))
+        {
+            // if this fails, you've given it an output stream that can't seek! It needs to be
+            // able to seek back to go back and write the header after the data has been written.
+            jassertfalse;
+            return;
+        }
 
         const size_t bytesPerFrame = numChannels * bitsPerSample / 8;
         uint64 audioDataSize = bytesPerFrame * lengthInSamples;

@@ -57,6 +57,11 @@
  #undef KeyPress
 #endif
 
+#if ! JUCE_WINDOWS && ! JUCE_MAC
+ #undef JUCE_PLUGINHOST_VST3
+ #define JUCE_PLUGINHOST_VST3 0
+#endif
+
 //==============================================================================
 namespace juce
 {
@@ -70,6 +75,65 @@ static inline bool arrayContainsPlugin (const OwnedArray<PluginDescription>& lis
 
     return false;
 }
+
+#if JUCE_MAC
+//==============================================================================
+struct AutoResizingNSViewComponent  : public NSViewComponent,
+                                      private AsyncUpdater
+{
+    AutoResizingNSViewComponent() : recursive (false) {}
+
+    void childBoundsChanged (Component*) override
+    {
+        if (recursive)
+        {
+            triggerAsyncUpdate();
+        }
+        else
+        {
+            recursive = true;
+            resizeToFitView();
+            recursive = true;
+        }
+    }
+
+    void handleAsyncUpdate() override               { resizeToFitView(); }
+
+    bool recursive;
+};
+
+//==============================================================================
+struct AutoResizingNSViewComponentWithParent  : public AutoResizingNSViewComponent,
+                                                private Timer
+{
+    AutoResizingNSViewComponentWithParent()
+    {
+        NSView* v = [[NSView alloc] init];
+        setView (v);
+        [v release];
+
+        startTimer (30);
+    }
+
+    NSView* getChildView() const
+    {
+        if (NSView* parent = (NSView*) getView())
+            if ([[parent subviews] count] > 0)
+                return [[parent subviews] objectAtIndex: 0];
+
+        return nil;
+    }
+
+    void timerCallback() override
+    {
+        if (NSView* child = getChildView())
+        {
+            stopTimer();
+            setView (child);
+        }
+    }
+};
+#endif
 
 #if JUCE_CLANG
  #pragma clang diagnostic ignored "-Wdeprecated-declarations"

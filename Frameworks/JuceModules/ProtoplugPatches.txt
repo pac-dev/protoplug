@@ -7,7 +7,7 @@ in  juce_PopupMenu.cpp > class MouseSourceState > void timerCallback() (line 980
 		}
 this fixes the menu-behind-window-when-window-made-always-on-top-by-host glitch.
 
-in juce_VST_wrapper.cpp :
+in juce_VST_wrapper.cpp : (RESLOVED IN NEW VERSION)
 void registerMouseWheelHook()
 {/*
 	... (comment out everything)

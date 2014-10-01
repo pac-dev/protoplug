@@ -280,6 +280,12 @@ int64 File::getSize() const
     return juce_stat (fullPath, info) ? info.st_size : 0;
 }
 
+uint64 File::getFileIdentifier() const
+{
+    juce_statStruct info;
+    return juce_stat (fullPath, info) ? (uint64) info.st_ino : 0;
+}
+
 //==============================================================================
 bool File::hasWriteAccess() const
 {
@@ -391,13 +397,10 @@ void FileInputStream::openHandle()
         status = getResultForErrno();
 }
 
-void FileInputStream::closeHandle()
+FileInputStream::~FileInputStream()
 {
     if (fileHandle != 0)
-    {
         close (getFD (fileHandle));
-        fileHandle = 0;
-    }
 }
 
 size_t FileInputStream::readInternal (void* const buffer, const size_t numBytes)
@@ -834,12 +837,6 @@ extern "C" void* threadEntryProc (void* userData)
     JUCE_AUTORELEASEPOOL
     {
        #if JUCE_ANDROID
-        struct AndroidThreadScope
-        {
-            AndroidThreadScope()   { threadLocalJNIEnvHolder.attach(); }
-            ~AndroidThreadScope()  { threadLocalJNIEnvHolder.detach(); }
-        };
-
         const AndroidThreadScope androidEnv;
        #endif
 
@@ -996,6 +993,11 @@ public:
     ActiveProcess (const StringArray& arguments, int streamFlags)
         : childPID (0), pipeHandle (0), readHandle (0)
     {
+        // Looks like you're trying to launch a non-existent exe or a folder (perhaps on OSX
+        // you're trying to launch the .app folder rather than the actual binary inside it?)
+        jassert ((! arguments[0].containsChar ('/'))
+                  || File::getCurrentWorkingDirectory().getChildFile (arguments[0]).existsAsFile());
+
         int pipeHandles[2] = { 0 };
 
         if (pipe (pipeHandles) == 0)
@@ -1012,12 +1014,12 @@ public:
                 // we're the child process..
                 close (pipeHandles[0]);   // close the read handle
 
-                if ((streamFlags | wantStdOut) != 0)
+                if ((streamFlags & wantStdOut) != 0)
                     dup2 (pipeHandles[1], 1); // turns the pipe into stdout
                 else
                     close (STDOUT_FILENO);
 
-                if ((streamFlags | wantStdErr) != 0)
+                if ((streamFlags & wantStdErr) != 0)
                     dup2 (pipeHandles[1], 2);
                 else
                     close (STDERR_FILENO);
@@ -1027,7 +1029,7 @@ public:
                 Array<char*> argv;
                 for (int i = 0; i < arguments.size(); ++i)
                     if (arguments[i].isNotEmpty())
-                        argv.add (arguments[i].toUTF8().getAddress());
+                        argv.add (const_cast<char*> (arguments[i].toUTF8().getAddress()));
 
                 argv.add (nullptr);
 
@@ -1053,7 +1055,7 @@ public:
             close (pipeHandle);
     }
 
-    bool isRunning() const
+    bool isRunning() const noexcept
     {
         if (childPID != 0)
         {
@@ -1065,7 +1067,7 @@ public:
         return false;
     }
 
-    int read (void* const dest, const int numBytes)
+    int read (void* const dest, const int numBytes) noexcept
     {
         jassert (dest != nullptr);
 
@@ -1082,9 +1084,23 @@ public:
         return 0;
     }
 
-    bool killProcess() const
+    bool killProcess() const noexcept
     {
         return ::kill (childPID, SIGKILL) == 0;
+    }
+
+    uint32 getExitCode() const noexcept
+    {
+        if (childPID != 0)
+        {
+            int childState = 0;
+            const int pid = waitpid (childPID, &childState, WNOHANG);
+
+            if (pid >= 0 && WIFEXITED (childState))
+                return WEXITSTATUS (childState);
+        }
+
+        return 0;
     }
 
     int childPID;
@@ -1114,21 +1130,6 @@ bool ChildProcess::start (const StringArray& args, int streamFlags)
     return activeProcess != nullptr;
 }
 
-bool ChildProcess::isRunning() const
-{
-    return activeProcess != nullptr && activeProcess->isRunning();
-}
-
-int ChildProcess::readProcessOutput (void* dest, int numBytes)
-{
-    return activeProcess != nullptr ? activeProcess->read (dest, numBytes) : 0;
-}
-
-bool ChildProcess::kill()
-{
-    return activeProcess == nullptr || activeProcess->killProcess();
-}
-
 //==============================================================================
 struct HighResolutionTimer::Pimpl
 {
@@ -1143,16 +1144,25 @@ struct HighResolutionTimer::Pimpl
 
     void start (int newPeriod)
     {
-        periodMs = newPeriod;
-
-        if (thread == 0)
+        if (periodMs != newPeriod)
         {
-            shouldStop = false;
+            if (thread != pthread_self())
+            {
+                stop();
 
-            if (pthread_create (&thread, nullptr, timerThread, this) == 0)
-                setThreadToRealtime (thread, (uint64) newPeriod);
+                periodMs = newPeriod;
+                shouldStop = false;
+
+                if (pthread_create (&thread, nullptr, timerThread, this) == 0)
+                    setThreadToRealtime (thread, (uint64) newPeriod);
+                else
+                    jassertfalse;
+            }
             else
-                jassertfalse;
+            {
+                periodMs = newPeriod;
+                shouldStop = false;
+            }
         }
     }
 
@@ -1176,7 +1186,9 @@ private:
 
     static void* timerThread (void* param)
     {
-       #if ! JUCE_ANDROID
+       #if JUCE_ANDROID
+        const AndroidThreadScope androidEnv;
+       #else
         int dummy;
         pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, &dummy);
        #endif
@@ -1187,12 +1199,19 @@ private:
 
     void timerThread()
     {
-        Clock clock (periodMs);
+        int lastPeriod = periodMs;
+        Clock clock (lastPeriod);
 
         while (! shouldStop)
         {
             clock.wait();
             owner.hiResTimerCallback();
+
+            if (lastPeriod != periodMs)
+            {
+                lastPeriod = periodMs;
+                clock = Clock (lastPeriod);
+            }
         }
 
         periodMs = 0;
@@ -1206,7 +1225,7 @@ private:
         {
             mach_timebase_info_data_t timebase;
             (void) mach_timebase_info (&timebase);
-            delta = (((uint64_t) (millis * 1000000.0)) * timebase.numer) / timebase.denom;
+            delta = (((uint64_t) (millis * 1000000.0)) * timebase.denom) / timebase.numer;
             time = mach_absolute_time();
         }
 

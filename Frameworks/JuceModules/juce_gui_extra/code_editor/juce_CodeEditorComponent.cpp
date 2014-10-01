@@ -1552,9 +1552,9 @@ void CodeEditorComponent::clearCachedIterators (const int firstLineToBeInvalid)
 
 void CodeEditorComponent::updateCachedIterators (int maxLineNum)
 {
+	const int numLines = document.getNumLines();
     const int maxNumCachedPositions = 5000;
     const int linesBetweenCachedSources = jmax (10, document.getNumLines() / maxNumCachedPositions);
-	const int numLines = document.getNumLines();
 
     if (cachedIterators.size() == 0)
         cachedIterators.add (new CodeDocument::Iterator (document));
@@ -1570,7 +1570,7 @@ void CodeEditorComponent::updateCachedIterators (int maxLineNum)
 
             CodeDocument::Iterator* t = new CodeDocument::Iterator (last);
             cachedIterators.add (t);
-            const int targetLine = last.getLine() + linesBetweenCachedSources;
+			const int targetLine = last.getLine() + linesBetweenCachedSources;
 			if (targetLine >= numLines)
 				return;
 
@@ -1648,7 +1648,7 @@ void CodeEditorComponent::State::restoreState (CodeEditorComponent& editor) cons
 CodeEditorComponent::State::State (const String& s)
 {
     StringArray tokens;
-    tokens.addTokens (s, ":", String::empty);
+    tokens.addTokens (s, ":", StringRef());
 
     lastTopLine      = tokens[0].getIntValue();
     lastCaretPos     = tokens[1].getIntValue();

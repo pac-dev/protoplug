@@ -124,8 +124,7 @@ struct AAXClasses
             case 6:   return AAX_eStemFormat_5_1;
             case 7:   return AAX_eStemFormat_7_0_DTS;
             case 8:   return AAX_eStemFormat_7_1_DTS;
-
-            default:  jassertfalse; break; // hmm - not a valid number of chans..
+            default:  jassertfalse; break;
         }
 
         return AAX_eStemFormat_None;
@@ -139,40 +138,44 @@ struct AAXClasses
             case AAX_eStemFormat_Mono:      return 1;
             case AAX_eStemFormat_Stereo:    return 2;
             case AAX_eStemFormat_LCR:       return 3;
+            case AAX_eStemFormat_LCRS:
             case AAX_eStemFormat_Quad:      return 4;
             case AAX_eStemFormat_5_0:       return 5;
-            case AAX_eStemFormat_5_1:       return 6;
+            case AAX_eStemFormat_5_1:
+            case AAX_eStemFormat_6_0:       return 6;
+            case AAX_eStemFormat_6_1:
+            case AAX_eStemFormat_7_0_SDDS:
             case AAX_eStemFormat_7_0_DTS:   return 7;
+            case AAX_eStemFormat_7_1_SDDS:
             case AAX_eStemFormat_7_1_DTS:   return 8;
-            default:  jassertfalse; break; // hmm - not a valid number of chans..
+            default:                        jassertfalse; break;
         }
 
         return 0;
     }
 
-    //==============================================================================
-    struct JUCELibraryRefCount
+    static const char* getSpeakerArrangementString (AAX_EStemFormat format) noexcept
     {
-        JUCELibraryRefCount()    { if (getCount()++ == 0) initialise(); }
-        ~JUCELibraryRefCount()   { if (--getCount() == 0) shutdown(); }
-
-    private:
-        static void initialise()
+        switch (format)
         {
-            initialiseJuce_GUI();
+            case AAX_eStemFormat_Mono:      return "M";
+            case AAX_eStemFormat_Stereo:    return "L R";
+            case AAX_eStemFormat_LCR:       return "L C R";
+            case AAX_eStemFormat_LCRS:      return "L C R S";
+            case AAX_eStemFormat_Quad:      return "L R Ls Rs";
+            case AAX_eStemFormat_5_0:       return "L C R Ls Rs";
+            case AAX_eStemFormat_5_1:       return "L C R Ls Rs LFE";
+            case AAX_eStemFormat_6_0:       return "L C R Ls Cs Rs";
+            case AAX_eStemFormat_6_1:       return "L C R Ls Cs Rs LFE";
+            case AAX_eStemFormat_7_0_SDDS:  return "L Lc C Rc R Ls Rs";
+            case AAX_eStemFormat_7_1_SDDS:  return "L Lc C Rc R Ls Rs LFE";
+            case AAX_eStemFormat_7_0_DTS:   return "L C R Lss Rss Lsr Rsr";
+            case AAX_eStemFormat_7_1_DTS:   return "L C R Lss Rss Lsr Rsr LFE";
+            default:                        break;
         }
 
-        static void shutdown()
-        {
-            shutdownJuce_GUI();
-        }
-
-        int& getCount() noexcept
-        {
-            static int count = 0;
-            return count;
-        }
-    };
+        return nullptr;
+    }
 
     //==============================================================================
     class JuceAAX_Processor;
@@ -362,7 +365,7 @@ struct AAXClasses
 
         ScopedPointer<ContentWrapperComponent> component;
 
-        JUCELibraryRefCount juceCount;
+        ScopedJuceInitialiser_GUI libraryInitialiser;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JuceAAX_GUI)
     };
 
@@ -415,7 +418,7 @@ struct AAXClasses
             if (chunkID != juceChunkType)
                 return AAX_CEffectParameters::GetChunkSize (chunkID, oSize);
 
-            tempFilterData.setSize (0);
+            tempFilterData.reset();
             pluginInstance->getStateInformation (tempFilterData);
             *oSize = (uint32_t) tempFilterData.getSize();
             return AAX_SUCCESS;
@@ -431,7 +434,7 @@ struct AAXClasses
 
             oChunk->fSize = (int32_t) tempFilterData.getSize();
             tempFilterData.copyTo (oChunk->fData, 0, tempFilterData.getSize());
-            tempFilterData.setSize (0);
+            tempFilterData.reset();
 
             return AAX_SUCCESS;
         }
@@ -652,6 +655,7 @@ struct AAXClasses
 
         void audioProcessorChanged (AudioProcessor* processor) override
         {
+            ++mNumPlugInChanges;
             check (Controller()->SetSignalLatency (processor->getLatencySamples()));
         }
 
@@ -743,6 +747,9 @@ struct AAXClasses
 
             midiBuffer.clear();
 
+            (void) midiNodeIn;
+            (void) midiNodesOut;
+
            #if JucePlugin_WantsMidiInput
             {
                 AAX_CMidiStream* const midiStream = midiNodeIn->GetNodeBuffer();
@@ -828,14 +835,24 @@ struct AAXClasses
                 AAX_IParameter* parameter
                     = new AAX_CParameter<float> (IndexAsParamID (parameterIndex),
                                                  audioProcessor.getParameterName (parameterIndex, 31).toRawUTF8(),
-                                                 audioProcessor.getParameter (parameterIndex),
+                                                 audioProcessor.getParameterDefaultValue (parameterIndex),
                                                  AAX_CLinearTaperDelegate<float, 0>(),
                                                  AAX_CNumberDisplayDelegate<float, 3>(),
                                                  audioProcessor.isParameterAutomatable (parameterIndex));
 
                 parameter->AddShortenedName (audioProcessor.getParameterName (parameterIndex, 4).toRawUTF8());
-                parameter->SetNumberOfSteps ((uint32_t) audioProcessor.getParameterNumSteps (parameterIndex));
-                parameter->SetType (AAX_eParameterType_Continuous);
+
+                const int parameterNumSteps = audioProcessor.getParameterNumSteps (parameterIndex);
+                parameter->SetNumberOfSteps ((uint32_t) parameterNumSteps);
+                parameter->SetType (parameterNumSteps > 1000 ? AAX_eParameterType_Continuous
+                                                             : AAX_eParameterType_Discrete);
+
+                parameter->SetOrientation (audioProcessor.isParameterOrientationInverted (parameterIndex)
+                                            ? (AAX_eParameterOrientation_RightMinLeftMax | AAX_eParameterOrientation_TopMinBottomMax
+                                                | AAX_eParameterOrientation_RotarySingleDotMode | AAX_eParameterOrientation_RotaryRightMinLeftMax)
+                                            : (AAX_eParameterOrientation_LeftMinRightMax | AAX_eParameterOrientation_BottomMinTopMax
+                                                | AAX_eParameterOrientation_RotarySingleDotMode | AAX_eParameterOrientation_RotaryLeftMinRightMax));
+
                 mParameterManager.AddParameter (parameter);
             }
         }
@@ -852,13 +869,16 @@ struct AAXClasses
 
             AudioProcessor& audioProcessor = getPluginInstance();
 
+            audioProcessor.setSpeakerArrangement (getSpeakerArrangementString (inputStemFormat),
+                                                  getSpeakerArrangementString (outputStemFormat));
+
             audioProcessor.setPlayConfigDetails (numberOfInputChannels, numberOfOutputChannels, sampleRate, lastBufferSize);
             audioProcessor.prepareToPlay (sampleRate, lastBufferSize);
 
             check (Controller()->SetSignalLatency (audioProcessor.getLatencySamples()));
         }
 
-        JUCELibraryRefCount juceCount;
+        ScopedJuceInitialiser_GUI libraryInitialiser;
 
         ScopedPointer<AudioProcessor> pluginInstance;
         MidiBuffer midiBuffer;
@@ -928,6 +948,13 @@ struct AAXClasses
         // This value needs to match the RTAS wrapper's Type ID, so that
         // the host knows that the RTAS/AAX plugins are equivalent.
         properties->AddProperty (AAX_eProperty_PlugInID_Native,     'jcaa' + channelConfigIndex);
+        properties->AddProperty (AAX_eProperty_PlugInID_AudioSuite, 'jyaa' + channelConfigIndex);
+
+       #if JucePlugin_AAXDisableMultiMono
+        properties->AddProperty (AAX_eProperty_Constraint_MultiMonoSupport, false);
+       #else
+        properties->AddProperty (AAX_eProperty_Constraint_MultiMonoSupport, true);
+       #endif
 
         check (desc.AddProcessProc_Native (algorithmProcessCallback, properties));
     }
@@ -975,7 +1002,7 @@ struct AAXClasses
 AAX_Result JUCE_CDECL GetEffectDescriptions (AAX_ICollection*);
 AAX_Result JUCE_CDECL GetEffectDescriptions (AAX_ICollection* collection)
 {
-    AAXClasses::JUCELibraryRefCount libraryRefCount;
+    ScopedJuceInitialiser_GUI libraryInitialiser;
 
     if (AAX_IEffectDescriptor* const descriptor = collection->NewDescriptor())
     {

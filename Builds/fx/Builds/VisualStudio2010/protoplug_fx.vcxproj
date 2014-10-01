@@ -493,6 +493,9 @@
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_File.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileFilter.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileInputStream.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -503,6 +506,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_TemporaryFile.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_WildcardFileFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_core\network\juce_IPAddress.cpp">
@@ -668,6 +674,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_events\broadcasters\juce_ChangeBroadcaster.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_events\interprocess\juce_ConnectedChildProcess.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_events\interprocess\juce_InterprocessConnection.cpp">
@@ -1087,9 +1096,6 @@
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileChooserDialogBox.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileFilter.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileListComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1103,9 +1109,6 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_ImagePreviewComponent.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_WildcardFileFilter.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\commands\juce_ApplicationCommandInfo.cpp">
@@ -1244,6 +1247,7 @@
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\RTAS\juce_RTAS_Wrapper.cpp">
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp"/>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\VST\juce_VST_Wrapper.cpp"/>
   </ItemGroup>
   <ItemGroup>
@@ -1342,6 +1346,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\utility\juce_IncludeModuleHeaders.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\utility\juce_IncludeSystemHeaders.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\utility\juce_PluginHostType.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\utility\juce_WindowsHooks.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\juce_audio_plugin_client.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioPlayHead.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioPluginInstance.h"/>
@@ -1355,6 +1360,8 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format\juce_AudioPluginFormatManager.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_AudioUnitPluginFormat.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_LADSPAPluginFormat.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_VST3Common.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_VST3Headers.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_VST3PluginFormat.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_VSTMidiEventList.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format_types\juce_VSTPluginFormat.h"/>
@@ -1391,6 +1398,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_OptionalScopedPointer.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_ReferenceCountedObject.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_ScopedPointer.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_SharedResourcePointer.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_Singleton.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_WeakReference.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\containers\juce_AbstractFifo.h"/>
@@ -1429,11 +1437,13 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\time\juce_Time.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_DirectoryIterator.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_File.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileFilter.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileInputStream.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileOutputStream.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_FileSearchPath.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_MemoryMappedFile.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_TemporaryFile.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\files\juce_WildcardFileFilter.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\network\juce_IPAddress.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\network\juce_MACAddress.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\network\juce_NamedPipe.h"/>
@@ -1493,6 +1503,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\broadcasters\juce_ChangeBroadcaster.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\broadcasters\juce_ChangeListener.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\broadcasters\juce_ListenerList.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\interprocess\juce_ConnectedChildProcess.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\interprocess\juce_InterprocessConnection.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\interprocess\juce_InterprocessConnectionServer.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\native\juce_osx_MessageQueue.h"/>
@@ -1649,14 +1660,12 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileBrowserListener.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileChooser.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileChooserDialogBox.h"/>
-    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileFilter.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileListComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FilenameComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FilePreviewComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileSearchPathListComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_FileTreeComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_ImagePreviewComponent.h"/>
-    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\filebrowser\juce_WildcardFileFilter.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\commands\juce_ApplicationCommandID.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\commands\juce_ApplicationCommandInfo.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_basics\commands\juce_ApplicationCommandManager.h"/>

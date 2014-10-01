@@ -1230,7 +1230,12 @@ Typeface::Ptr Typeface::createSystemTypefaceFor (const Font& font)
 
 Typeface::Ptr Typeface::createSystemTypefaceFor (const void* data, size_t dataSize)
 {
+   #if JUCE_CORETEXT_AVAILABLE
     return new OSXTypeface (data, dataSize);
+   #else
+    jassertfalse; // You need CoreText enabled to use this feature!
+    return nullptr;
+   #endif
 }
 
 void Typeface::scanFolderForFonts (const File&)
@@ -1275,15 +1280,25 @@ Typeface::Ptr Font::getDefaultTypefaceForFont (const Font& font)
 }
 
 #if JUCE_CORETEXT_AVAILABLE
-static bool containsNoMemoryTypefaces (const AttributedString& text)
+static bool canAllTypefacesBeUsedInLayout (const AttributedString& text)
 {
     const int numCharacterAttributes = text.getNumAttributes();
 
     for (int i = 0; i < numCharacterAttributes; ++i)
+    {
         if (const Font* const f = text.getAttribute (i)->getFont())
+        {
             if (OSXTypeface* tf = dynamic_cast<OSXTypeface*> (f->getTypeface()))
+            {
                 if (tf->isMemoryFont)
                     return false;
+            }
+            else if (dynamic_cast<CustomTypeface*> (f->getTypeface()) != nullptr)
+            {
+                return false;
+            }
+        }
+    }
 
     return true;
 }
@@ -1294,7 +1309,7 @@ bool TextLayout::createNativeLayout (const AttributedString& text)
    #if JUCE_CORETEXT_AVAILABLE
     // Seems to be an unfathomable bug in CoreText which prevents the layout working with
     // typefaces that were loaded from memory, so have to fallback if we hit any of those..
-    if (containsNoMemoryTypefaces (text))
+    if (canAllTypefacesBeUsedInLayout (text))
     {
         CoreTextTypeLayout::createLayout (*this, text);
         return true;

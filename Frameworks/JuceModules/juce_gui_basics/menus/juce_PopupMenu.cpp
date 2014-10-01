@@ -979,15 +979,15 @@ public:
 
     void timerCallback() override
     {
-        if (window.windowIsStillValid()) {
-				window.toFront(false);
-				handleMousePosition (source.getScreenPosition());
-			}
+		if (window.windowIsStillValid()) {
+			window.toFront(false);
+            handleMousePosition (source.getScreenPosition().roundToInt());
+		}
     }
 
     bool isOver() const
     {
-        return window.reallyContains (window.getLocalPoint (nullptr, source.getScreenPosition()), true);
+        return window.reallyContains (window.getLocalPoint (nullptr, source.getScreenPosition()).roundToInt(), true);
     }
 
     MenuWindow& window;

@@ -78,6 +78,7 @@ OBJECTS := \
   $(OBJDIR)/juce_gui_extra_e3e4c5d5.o \
   $(OBJDIR)/juce_PluginUtilities_efbf1261.o \
   $(OBJDIR)/juce_VST_Wrapper_73fdde6a.o \
+  $(OBJDIR)/juce_VST3_Wrapper_759a2528.o \
 
 .PHONY: clean
 
@@ -229,6 +230,11 @@ $(OBJDIR)/juce_PluginUtilities_efbf1261.o: ../../../../Frameworks/JuceModules/ju
 $(OBJDIR)/juce_VST_Wrapper_73fdde6a.o: ../../../../Frameworks/JuceModules/juce_audio_plugin_client/VST/juce_VST_Wrapper.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling juce_VST_Wrapper.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/juce_VST3_Wrapper_759a2528.o: ../../../../Frameworks/JuceModules/juce_audio_plugin_client/VST3/juce_VST3_Wrapper.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling juce_VST3_Wrapper.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)
