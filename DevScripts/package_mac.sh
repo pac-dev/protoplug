@@ -14,12 +14,13 @@ PACKAGELIBDIR="$HOME/Documents/ProtoplugFiles/lib/"
 PACKAGELIBS="libluajit-5.1.so libfftw3-3.so"
 
 echo "Packaging libs..."
+mkdir -p ../ProtoplugFiles/lib
 for PLIB in $PACKAGELIBS; do
 	if [ ! -f $PACKAGELIBDIR$PLIB ]; then 
 		echo -ne "\t FAILED: could not find $PACKAGELIBDIR$PLIB\n"
 		exit 1
 	fi
-	cp $PACKAGELIBDIR$PLIB ../ProtoplugFiles/lib
+	cp $PACKAGELIBDIR$PLIB ../ProtoplugFiles/lib/$PLIB
 done
 
 if [ -e $TDMG_TMP ]; then
