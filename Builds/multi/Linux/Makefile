@@ -17,7 +17,6 @@ strip:
 	cd ../../gen/Builds/Linux && $(MAKE) strip
 
 # when changing these, check hardcoded relative symlinks below (rpmbuild compat)
-# and non-installRoot path written to txt
 TARGET_PATH1 = $(INSTALLROOT)/usr/local/lib/lxvst
 TARGET_PATH2 = $(INSTALLROOT)/usr/local/lib/vst
 PPGFILES_LOC = $(INSTALLROOT)/usr/share
@@ -28,8 +27,7 @@ install: $(BUILDDIR)/$(SO1) $(BUILDDIR)/$(SO2)
 	install -D $(BUILDDIR)/$(SO2) "$(TARGET_PATH1)"/$(SO2)
 	install -d $(PPGFILES_LOC)
 	cp -rf ../../../ProtoplugFiles $(PPGFILES_LOC)/
-	chmod -R +r $(PPGFILES_LOC)/ProtoplugFiles
-	echo  /usr/share/ProtoplugFiles > "$(TARGET_PATH1)"/ProtoplugFiles.txt
+	chmod -R u+rwX,go+rX,go-w $(PPGFILES_LOC)/ProtoplugFiles
 	install -d "$(TARGET_PATH2)"
 	cd "$(TARGET_PATH2)"; ln -sf ../lxvst/$(SO1) $(SO1)
 	cd "$(TARGET_PATH2)"; ln -sf ../lxvst/$(SO2) $(SO2)

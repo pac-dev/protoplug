@@ -111,7 +111,7 @@ void LuaProtoplugJuceAudioProcessorEditor::buttonClicked(Button *b)
 	else if (b==&locateFiles) {
 		FileChooser fileOpen(
 			"Where did you put my ProtoplugFiles directory:", 
-			ProtoplugDir::Instance()->getDir());
+			File::getSpecialLocation(File::currentApplicationFile).getParentDirectory());
 		if (fileOpen.browseForDirectory())
 		{
 			File chosen = fileOpen.getResult();
@@ -122,6 +122,7 @@ void LuaProtoplugJuceAudioProcessorEditor::buttonClicked(Button *b)
 					ProtoplugDir::Instance()->getDirTextFile().replaceWithText(chosen.getFullPathName());
 				setSize (670, 455);
 				processor->luli->initProtoplugDir();
+				locateFiles.setVisible(false);
 				addAndMakeVisible(&content);
 				content.takeFocus();
 				content.initProtoplugDir();

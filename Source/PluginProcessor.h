@@ -37,8 +37,9 @@ public:
 	const String getName() const							{ return JucePlugin_Name; }
 	int getNumParameters()									{ return NPARAMS; }
 	bool hasEditor() const									{ return true; }
-	int getNumPrograms()									{ return 0; }
-	int getCurrentProgram()									{ return 0; }
+	// leave 1 as per JuceVSTWrapper constructor requirement:
+	int getNumPrograms()									{ return 1; }
+	int getCurrentProgram()									{ return 1; }
 	void setCurrentProgram (int /*index*/)					{ }
 	const String getProgramName (int /*index*/)				{ return String::empty; }
 	void changeProgramName (int /*index*/, const String& /*newName*/)	{ }

@@ -35,14 +35,17 @@ LuaState::LuaState(File defaultDir)
 	l = 0;
 #if JUCE_WINDOWS
 	String libName = "lua51.dll";
+	String libName2 = "luajit.dll";
 #else
 	String libName = "libluajit-5.1.so";
+	String libName2 = "libluajit-5.1.so.2";
 #endif
 	String defaultPath = defaultDir.getChildFile(libName).getFullPathName();
 	if (!dll) {
 		dll = new DynamicLibrary();
 		if (!dll->open(defaultPath))
-			dll->open(libName);
+			if (!dll->open(libName2))
+				dll->open(libName);
 		// why
 		luaL_newstate		= ptr_luaL_newstate		(dll->getFunction("luaL_newstate"));
 		luaL_openlibs		= ptr_luaL_openlibs		(dll->getFunction("luaL_openlibs"));
@@ -102,11 +105,11 @@ LuaState::LuaState(File defaultDir)
 			return;
 		}
 #if REQUIRE_JIT
+	// in windows the luajit dll has the same name as plain lua, so do a sanity check
 	if (!luajit_setmode) {
 		failed = 1;
 		errmsg = 	"Error: linked with wrong " + libName + ". Library is Lua, but LuaJIT is required. " + 
 					"Please add the luajit library in the system path or at " + defaultPath;
-		// in windows the luajit dll is called lua51.dll, which is kind of odd
 		return;
 	}
 #endif
