@@ -2183,8 +2183,8 @@
 					"NDEBUG=1",
 					"_PROTOGEN=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.1.0",
-					"JUCE_APP_VERSION_HEX=0x10100", );
+					"JUCE_APP_VERSION=1.2.0",
+					"JUCE_APP_VERSION_HEX=0x10200", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
@@ -2214,8 +2214,8 @@
 					"DEBUG=1",
 					"_PROTOGEN=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.1.0",
-					"JUCE_APP_VERSION_HEX=0x10100", );
+					"JUCE_APP_VERSION=1.2.0",
+					"JUCE_APP_VERSION_HEX=0x10200", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = ("../../../../Frameworks/vstsdk2.4_minimal", "../../JuceLibraryCode", "../../../../Frameworks/JuceModules", "$(DEVELOPER_DIR)/Extras/CoreAudio/PublicUtility", "$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/Utility", "$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase", "$(inherited)");

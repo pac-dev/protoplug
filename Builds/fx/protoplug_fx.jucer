@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.1.0"
+<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.2.0"
               bundleIdentifier="com.pac.protoplugfx" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="1" pluginName="Lua Protoplug Fx" pluginDesc="Lua Protoplug Effect"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgf"
@@ -8,7 +8,7 @@
               pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="protoplug_fxAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.protoplug_fx"
               pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
-              companyName="osar.fr">
+              companyName="osar.fr" buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="urQWd4" name="protoplug_fx">
     <GROUP id="{1FCED3FA-32ED-7781-CAD3-EF328350EB7D}" name="Source">
       <GROUP id="{4CF632D6-F70A-6A7F-9D89-874B01728E9A}" name="GUI Classes">

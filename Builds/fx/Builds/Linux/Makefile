@@ -18,12 +18,12 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.1.0" -D "JUCE_APP_VERSION_HEX=0x10100" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
+  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.2.0" -D "JUCE_APP_VERSION_HEX=0x10200" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
   CFLAGS += $(CPPFLAGS) $(TARGET_ARCH) -g -ggdb -fPIC -O0
   CXXFLAGS += $(CFLAGS)
   LDFLAGS += $(TARGET_ARCH) -L$(BINDIR) -L$(LIBDIR) -shared -L/usr/X11R6/lib/ -lX11 -lXext -lXinerama -lasound -ldl -lfreetype -lpthread -lrt 
   LDDEPS :=
-  RESFLAGS :=  -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.1.0" -D "JUCE_APP_VERSION_HEX=0x10100" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
+  RESFLAGS :=  -D "LINUX=1" -D "DEBUG=1" -D "_DEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.2.0" -D "JUCE_APP_VERSION_HEX=0x10200" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
   TARGET := Lua\ Protoplug\ Fx.so
   BLDCMD = $(CXX) -o $(OUTDIR)/$(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
   CLEANCMD = rm -rf $(OUTDIR)/$(TARGET) $(OBJDIR)
@@ -39,12 +39,12 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=native
   endif
 
-  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.1.0" -D "JUCE_APP_VERSION_HEX=0x10100" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
+  CPPFLAGS := $(DEPFLAGS) -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.2.0" -D "JUCE_APP_VERSION_HEX=0x10200" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
   CFLAGS += $(CPPFLAGS) $(TARGET_ARCH) -fPIC -O3
   CXXFLAGS += $(CFLAGS)
   LDFLAGS += $(TARGET_ARCH) -L$(BINDIR) -L$(LIBDIR) -shared -fvisibility=hidden -L/usr/X11R6/lib/ -lX11 -lXext -lXinerama -lasound -ldl -lfreetype -lpthread -lrt 
   LDDEPS :=
-  RESFLAGS :=  -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.1.0" -D "JUCE_APP_VERSION_HEX=0x10100" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
+  RESFLAGS :=  -D "LINUX=1" -D "NDEBUG=1" -D "JUCER_LINUX_MAKE_7346DA2A=1" -D "JUCE_APP_VERSION=1.2.0" -D "JUCE_APP_VERSION_HEX=0x10200" -I /usr/include -I /usr/include/freetype2 -I ../../../../Frameworks/vstsdk2.4_minimal -I ../../JuceLibraryCode -I ../../../../Frameworks/JuceModules
   TARGET := Lua\ Protoplug\ Fx.so
   BLDCMD = $(CXX) -o $(OUTDIR)/$(TARGET) $(OBJECTS) $(LDFLAGS) $(RESOURCES) $(TARGET_ARCH)
   CLEANCMD = rm -rf $(OUTDIR)/$(TARGET) $(OBJDIR)
@@ -77,8 +77,8 @@ OBJECTS := \
   $(OBJDIR)/juce_gui_basics_e72eb50d.o \
   $(OBJDIR)/juce_gui_extra_e3e4c5d5.o \
   $(OBJDIR)/juce_PluginUtilities_efbf1261.o \
-  $(OBJDIR)/juce_VST3_Wrapper_759a2528.o \
   $(OBJDIR)/juce_VST_Wrapper_73fdde6a.o \
+  $(OBJDIR)/juce_VST3_Wrapper_759a2528.o \
 
 .PHONY: clean
 
@@ -227,14 +227,14 @@ $(OBJDIR)/juce_PluginUtilities_efbf1261.o: ../../../../Frameworks/JuceModules/ju
 	@echo "Compiling juce_PluginUtilities.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
-$(OBJDIR)/juce_VST3_Wrapper_759a2528.o: ../../../../Frameworks/JuceModules/juce_audio_plugin_client/VST3/juce_VST3_Wrapper.cpp
-	-@mkdir -p $(OBJDIR)
-	@echo "Compiling juce_VST3_Wrapper.cpp"
-	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
-
 $(OBJDIR)/juce_VST_Wrapper_73fdde6a.o: ../../../../Frameworks/JuceModules/juce_audio_plugin_client/VST/juce_VST_Wrapper.cpp
 	-@mkdir -p $(OBJDIR)
 	@echo "Compiling juce_VST_Wrapper.cpp"
+	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
+
+$(OBJDIR)/juce_VST3_Wrapper_759a2528.o: ../../../../Frameworks/JuceModules/juce_audio_plugin_client/VST3/juce_VST3_Wrapper.cpp
+	-@mkdir -p $(OBJDIR)
+	@echo "Compiling juce_VST3_Wrapper.cpp"
 	@$(CXX) $(CXXFLAGS) -o "$@" -c "$<"
 
 -include $(OBJECTS:%.o=%.d)

@@ -77,10 +77,10 @@
 		BAB36A860113E54E8ACC1AF1 = {isa = PBXBuildFile; fileRef = DE7B1DEE94B1836619BDD901; };
 		D4AE28D3D3FE003522AD6668 = {isa = PBXBuildFile; fileRef = E46C6D2A3873DF6D3B85ADF7; };
 		692A5A17E8E55CC970B05653 = {isa = PBXBuildFile; fileRef = AAA2074A17651BE15573DC71; settings = {COMPILER_FLAGS = "-w"; }; };
-		483B2DCC75920A4AAD3871C8 = {isa = PBXBuildFile; fileRef = C3B9671ED00E493E07A46ACD; };
-		16D38EDA1ABAE2E54C029A86 = {isa = PBXBuildFile; fileRef = FC8237FA1DE461D114AD5567; };
 		A406B50A10891873A2AD5D6D = {isa = PBXBuildFile; fileRef = 56C0D60ADA6228168E1727D0; };
 		17E35D8738ADD84060421D13 = {isa = PBXBuildFile; fileRef = 19747E3FF595DDDA80302F04; };
+		483B2DCC75920A4AAD3871C8 = {isa = PBXBuildFile; fileRef = C3B9671ED00E493E07A46ACD; };
+		16D38EDA1ABAE2E54C029A86 = {isa = PBXBuildFile; fileRef = FC8237FA1DE461D114AD5567; };
 		00C1E110609FECDF55CA4292 = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = "juce_ResizableCornerComponent.cpp"; path = "../../../../Frameworks/JuceModules/juce_gui_basics/layout/juce_ResizableCornerComponent.cpp"; sourceTree = "SOURCE_ROOT"; };
 		00E21F6FB9C91C39B0C71269 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_Reverb.h"; path = "../../../../Frameworks/JuceModules/juce_audio_basics/effects/juce_Reverb.h"; sourceTree = "SOURCE_ROOT"; };
 		00F116184D682B8E88622161 = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "juce_ToneGeneratorAudioSource.h"; path = "../../../../Frameworks/JuceModules/juce_audio_basics/sources/juce_ToneGeneratorAudioSource.h"; sourceTree = "SOURCE_ROOT"; };
@@ -1309,9 +1309,9 @@
 					90F2E8CD68D2C07F832A74AF,
 					A18E7D10A4D62AA7668E664E,
 					47C207C04B11F94A3101A210,
+					DC709804804C2C50FBC7FB18,
 					EA9E032507C30CD532DDDA14,
 					2477F806118A20386E94FFBB,
-					DC709804804C2C50FBC7FB18,
 					A592918D243EA5886703E087,
 					A40D4164FB6EB6890CD5E631,
 					DFA320997FB10FF6583DC38E,
@@ -2136,10 +2136,10 @@
 					DE7B1DEE94B1836619BDD901,
 					E46C6D2A3873DF6D3B85ADF7,
 					AAA2074A17651BE15573DC71,
-					C3B9671ED00E493E07A46ACD,
-					FC8237FA1DE461D114AD5567,
 					56C0D60ADA6228168E1727D0,
 					19747E3FF595DDDA80302F04,
+					C3B9671ED00E493E07A46ACD,
+					FC8237FA1DE461D114AD5567,
 					9590C12FB2AABDD63643CEE8, ); name = "Juce Library Code"; sourceTree = "<group>"; };
 		16C369F257C7E8CE7F35AEF9 = {isa = PBXGroup; children = (
 					02C7B08692034F935D5B3D1A,
@@ -2181,8 +2181,8 @@
 					"_NDEBUG=1",
 					"NDEBUG=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.1.0",
-					"JUCE_APP_VERSION_HEX=0x10100", );
+					"JUCE_APP_VERSION=1.2.0",
+					"JUCE_APP_VERSION_HEX=0x10200", );
 				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
@@ -2211,8 +2211,8 @@
 					"_DEBUG=1",
 					"DEBUG=1",
 					"JUCER_XCODE_MAC_F6D2F4CF=1",
-					"JUCE_APP_VERSION=1.1.0",
-					"JUCE_APP_VERSION_HEX=0x10100", );
+					"JUCE_APP_VERSION=1.2.0",
+					"JUCE_APP_VERSION_HEX=0x10200", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GENERATE_PKGINFO_FILE = YES;
 				HEADER_SEARCH_PATHS = ("../../../../Frameworks/vstsdk2.4_minimal", "../../JuceLibraryCode", "../../../../Frameworks/JuceModules", "$(DEVELOPER_DIR)/Extras/CoreAudio/PublicUtility", "$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/Utility", "$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase", "$(inherited)");
@@ -2220,7 +2220,6 @@
 				INSTALL_PATH = "$(HOME)/Library/Audio/Plug-Ins/Components/";
 				LIBRARY_STYLE = Bundle;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "-bundle";
 				OTHER_REZFLAGS = "-d ppc_$ppc -d i386_$i386 -d ppc64_$ppc64 -d x86_64_$x86_64 -I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers -I \"$(DEVELOPER_DIR)/Extras/CoreAudio/AudioUnits/AUPublic/AUBase\"";
 				SDKROOT = macosx10.5;
@@ -2254,6 +2253,7 @@
 				GCC_WARN_NON_VIRTUAL_DESTRUCTOR = YES;
 				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "Lua Protoplug Fx";
 				WARNING_CFLAGS = -Wreorder;
 				ZERO_LINK = NO; }; name = Debug; };
@@ -2325,10 +2325,10 @@
 					28E8E2E8BF4D3DE683FD7D01,
 					D4AE28D3D3FE003522AD6668,
 					692A5A17E8E55CC970B05653,
-					483B2DCC75920A4AAD3871C8,
-					16D38EDA1ABAE2E54C029A86,
 					A406B50A10891873A2AD5D6D,
-					17E35D8738ADD84060421D13, ); runOnlyForDeploymentPostprocessing = 0; };
+					17E35D8738ADD84060421D13,
+					483B2DCC75920A4AAD3871C8,
+					16D38EDA1ABAE2E54C029A86, ); runOnlyForDeploymentPostprocessing = 0; };
 		67CAD94A82735E472CCA6EEB = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (
 					19D74940566A73955C74E7EC,
 					19A36D14D27FEF580DCAA584,

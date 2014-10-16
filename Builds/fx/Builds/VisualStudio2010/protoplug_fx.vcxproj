@@ -64,8 +64,8 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.1.0;JUCE_APP_VERSION_HEX=0x10100;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
@@ -89,6 +89,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -107,8 +108,8 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.1.0;JUCE_APP_VERSION_HEX=0x10100;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
@@ -131,6 +132,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -148,8 +150,8 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.1.0;JUCE_APP_VERSION_HEX=0x10100;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
       <AssemblerListingLocation>$(IntDir)\</AssemblerListingLocation>
@@ -172,6 +174,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <LargeAddressAware>true</LargeAddressAware>
+      <AdditionalOptions>/FORCE:multiple %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <Bscmake>
       <SuppressStartupBanner>true</SuppressStartupBanner>
@@ -1247,8 +1250,8 @@
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\RTAS\juce_RTAS_Wrapper.cpp">
       <CallingConvention>StdCall</CallingConvention>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp"/>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\VST\juce_VST_Wrapper.cpp"/>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_audio_plugin_client\VST3\juce_VST3_Wrapper.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Source\guiclasses\AboutBox.h"/>
@@ -1371,9 +1374,9 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\juce_audio_processors.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharacterFunctions.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharPointer_ASCII.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharPointer_UTF8.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharPointer_UTF16.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharPointer_UTF32.h"/>
-    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_CharPointer_UTF8.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_Identifier.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_LocalisedStrings.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\text\juce_NewLine.h"/>
