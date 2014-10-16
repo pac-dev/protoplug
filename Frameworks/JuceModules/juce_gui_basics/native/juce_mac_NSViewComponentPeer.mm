@@ -1714,7 +1714,7 @@ struct JuceNSWindowClass   : public ObjCClass<NSWindow>
         addMethod (@selector (windowShouldClose:),            windowShouldClose,         "c@:@");
         addMethod (@selector (constrainFrameRect:toScreen:),  constrainFrameRect,        @encode (NSRect), "@:",  @encode (NSRect), "@");
         addMethod (@selector (windowWillResize:toSize:),      windowWillResize,          @encode (NSSize), "@:@", @encode (NSSize));
-        addMethod (@selector (windowDidExitFullScreen:),      windowDidExitFullScreen,   "v@:@");
+//        addMethod (@selector (windowDidExitFullScreen:),      windowDidExitFullScreen,   "v@:@");
         addMethod (@selector (zoom:),                         zoom,                      "v@:@");
         addMethod (@selector (windowWillMove:),               windowWillMove,            "v@:@");
         addMethod (@selector (windowWillStartLiveResize:),    windowWillStartLiveResize, "v@:@");
@@ -1784,10 +1784,10 @@ private:
         return frameRect.size;
     }
 
-    static void windowDidExitFullScreen (id, SEL, NSNotification*)
+    /*static void windowDidExitFullScreen (id, SEL, NSNotification*)
     {
         [NSApp setPresentationOptions: NSApplicationPresentationDefault];
-    }
+    }*/
 
     static void zoom (id self, SEL, id sender)
     {
