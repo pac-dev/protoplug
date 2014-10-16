@@ -39,7 +39,8 @@ local function mouseHandler(event)
 	end
 	freq = event.x + 80
 	amp = (320-event.y)/300
-	delta = 2*math.pi*freq/plugin.getSampleRate()
+	local sr = plugin.isSampleRateKnown() and plugin.getSampleRate() or 44100
+	delta = 2*math.pi*freq/sr
 end
 
 gui.addHandler("mouseDrag", mouseHandler)

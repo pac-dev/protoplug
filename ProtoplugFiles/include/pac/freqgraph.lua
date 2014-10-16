@@ -187,7 +187,13 @@ function M:InitBackBuffer()
 	g:setFont(16)
 	g:drawText("frequency (kHz)", self.frame.x, self.bounds.h-20, self.frame.w, 20, J.Justification.centred)
 	g:setFillType(self.fgFill)
-	local sr = plugin.getSampleRate() or 44100
+	local sr = 44100
+	if plugin.isSampleRateKnown() then
+		sr = plugin.getSampleRate()
+	else
+		-- if the samplerate is unknown, call this again when it becomes known
+		plugin.addHandler('prepareToPlay', function() self:InitBackBuffer() end)
+	end
 	local f,fmax = 0, sr/2
 	local function f2x(f)
 		return self:bar2x(f/fmax*self.dataSize)+self.frame.x
