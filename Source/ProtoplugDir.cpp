@@ -6,26 +6,39 @@ ProtoplugDir* ProtoplugDir::pInstance = 0;
 ProtoplugDir::ProtoplugDir()
 {
 	found = true;
-	File pluginLocation = File::getSpecialLocation(File::currentExecutableFile);
-	#if JUCE_MAC
-    //if (ret.getFullPathName().endsWith("/Contents/MacOS")) // assume OSX bundle format
-	pluginLocation = pluginLocation.getSiblingFile("../../../");
+	#if JUCE_WINDOWS
+		dir = File::getSpecialLocation(File::currentExecutableFile).getSiblingFile("ProtoplugFiles");
 	#endif
-	dirTextFile = pluginLocation.getSiblingFile("ProtoplugFiles.txt");
+	#if JUCE_MAC
+		dir = File::getSpecialLocation(File::currentApplicationFile).getSiblingFile("ProtoplugFiles");
+		//if (ret.getFullPathName().endsWith("/Contents/MacOS")) // assume OSX bundle format
+		//pluginLocation = pluginLocation.getSiblingFile("../../../");
+	#endif
+	#if JUCE_LINUX
+		dir = File("/usr/share/ProtoplugFiles");
+	#endif
+	if (dir.exists())
+		return;
+
+	// compatibility with old version
+	dir = dir.getSiblingFile("protoplug");
+	if (dir.exists())
+		return;
+
+	dir = File::getSpecialLocation(File::userHomeDirectory).getSiblingFile("ProtoplugFiles");
+	if (dir.exists())
+		return;
+
+	File appDataDir = File::getSpecialLocation(File::userApplicationDataDirectory).getChildFile("Protoplug");
+	if (!appDataDir.exists())
+		appDataDir.createDirectory();
+	dirTextFile = appDataDir.getChildFile("ProtoplugFiles.txt");
 	String protoPath = dirTextFile.loadFileAsString();
 	if (protoPath.isNotEmpty() && File::isAbsolutePath(protoPath))
 		dir = File(protoPath);
-	if (dir.exists())
-		return;
-	dir = pluginLocation.getSiblingFile("ProtoplugFiles");
-	if (dir.exists())
-		return;
-	dir = pluginLocation.getSiblingFile("protoplug");
-	if (dir.exists()) 
-		return;
-	// ProtoplugFiles not found
-	found = false;
-	dir = pluginLocation.getParentDirectory();
+	if (!dir.exists())
+		// ProtoplugFiles not found
+		found = false;
 }
 
 bool ProtoplugDir::checkDir(File _dir, String &missing)
