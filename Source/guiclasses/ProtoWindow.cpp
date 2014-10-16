@@ -86,6 +86,7 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 
 	msg_UpdateLog = 1;
 	msg_ParamsChanged = msg_TakeFocus = 0;
+	hackTimer = 0;
     startTimer (50);
 	addKeyListener(commMgr.getKeyMappings());
 	
@@ -654,6 +655,20 @@ void ProtoWindow::timerCallback()
 		msg_TakeFocus = 0;
 		editor.grabKeyboardFocus();
 	}
+	// pestilentially ugly hack to fix the misplaced menu popups.
+	// the problem appeared between Jan and Sept '14 versions of JUCE
+	#if JUCE_LINUX
+	if (hackTimer++>10)
+	{
+		hackTimer = 0;
+		Component *pc = processor->getProtoEditor()->getParentComponent();
+		if (pc) {
+			Rectangle<int> pcrect = pc->getBounds();
+			pc->setBounds(pcrect.withWidth(pcrect.getWidth()+1));
+			pc->setBounds(pcrect);
+		}
+	}
+	#endif
 }
 
 void ProtoWindow::takeFocus()

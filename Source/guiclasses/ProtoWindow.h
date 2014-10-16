@@ -122,5 +122,6 @@ private:
 	ProtoTabButton tab1, tab2, tab3;
 	TextButton compileButton;
 	TooltipWindow tooltip;
+	int hackTimer;
 };
 
