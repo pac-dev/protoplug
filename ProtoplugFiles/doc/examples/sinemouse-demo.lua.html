@@ -122,7 +122,8 @@ author: osar.fr
 	<span class="keyword">end</span>
 	freq = event.x + <span class="number">80</span>
 	amp = (<span class="number">320</span>-event.y)/<span class="number">300</span>
-	delta = <span class="number">2</span>*<span class="global">math</span>.pi*freq/plugin.getSampleRate()
+	<span class="keyword">local</span> sr = plugin.isSampleRateKnown() <span class="keyword">and</span> plugin.getSampleRate() <span class="keyword">or</span> <span class="number">44100</span>
+	delta = <span class="number">2</span>*<span class="global">math</span>.pi*freq/sr
 <span class="keyword">end</span>
 
 gui.addHandler(<span class="string">"mouseDrag"</span>, mouseHandler)
