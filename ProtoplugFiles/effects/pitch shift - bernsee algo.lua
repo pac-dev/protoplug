@@ -144,7 +144,8 @@ function stereoFx.Channel:processBlock(s, smax)
 end
 
 plugin.manageParams {
-	Shift = {
+	{
+		name = "Shift";
 		changed = function(val) 
 			if val<0.5 then
 				shift = (val+0.1)/0.6

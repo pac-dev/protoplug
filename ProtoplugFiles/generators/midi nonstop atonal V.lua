@@ -44,13 +44,14 @@ function magic(x)
 end
 
 function updateInterval()
-	local int = params.Interval.getValue()
+	local int = params[1].getValue()
 	bpm = plugin.getCurrentPosition().bpm
 	interval = math.floor((plugin.getSampleRate()*int)/(bpm))
 end
 
 params = plugin.manageParams {
-	Interval = {
+	{
+		name = "Interval";
 		type = "int";
 		min = 3;
 		max = 30;

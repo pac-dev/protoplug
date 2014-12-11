@@ -17,10 +17,10 @@ function stereoFx.Channel:init()
 	self.filter = cbFilter
 	{
 		-- initialize filters with current param values
-		type 	= params.Type.getValue();
-		f 		= params.Frequency.getValue()/2;
-		gain 	= params.Gain.getValue();
-		Q 		= params.Resonance.getValue();
+		type 	= params[1].getValue();
+		f 		= params[2].getValue()/2;
+		gain 	= params[3].getValue();
+		Q 		= params[4].getValue();
 	}
 	table.insert(filters, self.filter)
 end
@@ -38,25 +38,29 @@ local function updateFilters(args)
 end
 
 params = plugin.manageParams {
-	Type = {
+	{
+		name = "Type";
 		type = "list";
 		values = {"hp"; "lp"; "bp"; "bs"; "ls"; "hs"; "ap"; "eq"};
 		default = "hp";
 		changed = function(val) updateFilters{type=val} end;
 	};
-	Frequency = {
+	{
+		name = "Frequency";
 		min = 10;
 		max = 20000;
 		default = 440;
 		changed = function(val) updateFilters{f=val} end;
 	};
-	Gain = {
+	{
+		name = "Gain";
 		min = -30;
 		max = 30;
 		default = 0;
 		changed = function(val) updateFilters{gain=val} end;
 	};
-	Resonance = {
+	{
+		name = "Resonance";
 		min = 0.1;
 		max = 30;
 		default = 1;

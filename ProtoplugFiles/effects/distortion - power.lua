@@ -28,7 +28,8 @@ function stereoFx.Channel:processBlock (samples, smax)
 end
 
 params = plugin.manageParams {
-    Power = {
+    {
+		name = "Power";
         min = 1;
         max = 0.01;
         changed = function (val) power = val end;

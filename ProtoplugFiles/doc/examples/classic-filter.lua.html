@@ -100,10 +100,10 @@ stereoFx.init()
 </span>	self.filter = cbFilter
 	{
 		<span class="comment">-- initialize filters with current param values
-</span>		<span class="global">type</span> 	= params.Type.getValue();
-		f 		= params.Frequency.getValue()/<span class="number">2</span>;
-		gain 	= params.Gain.getValue();
-		Q 		= params.Resonance.getValue();
+</span>		<span class="global">type</span> 	= params[<span class="number">1</span>].getValue();
+		f 		= params[<span class="number">2</span>].getValue()/<span class="number">2</span>;
+		gain 	= params[<span class="number">3</span>].getValue();
+		Q 		= params[<span class="number">4</span>].getValue();
 	}
 	<span class="global">table</span>.insert(filters, self.filter)
 <span class="keyword">end</span>
@@ -121,25 +121,29 @@ stereoFx.init()
 <span class="keyword">end</span>
 
 params = plugin.manageParams {
-	Type = {
+	{
+		name = <span class="string">"Type"</span>;
 		<span class="global">type</span> = <span class="string">"list"</span>;
 		values = {<span class="string">"hp"</span>; <span class="string">"lp"</span>; <span class="string">"bp"</span>; <span class="string">"bs"</span>; <span class="string">"ls"</span>; <span class="string">"hs"</span>; <span class="string">"ap"</span>; <span class="string">"eq"</span>};
 		default = <span class="string">"hp"</span>;
 		changed = <span class="keyword">function</span>(val) updateFilters{<span class="global">type</span>=val} <span class="keyword">end</span>;
 	};
-	Frequency = {
+	{
+		name = <span class="string">"Frequency"</span>;
 		min = <span class="number">10</span>;
 		max = <span class="number">20000</span>;
 		default = <span class="number">440</span>;
 		changed = <span class="keyword">function</span>(val) updateFilters{f=val} <span class="keyword">end</span>;
 	};
-	Gain = {
+	{
+		name = <span class="string">"Gain"</span>;
 		min = -<span class="number">30</span>;
 		max = <span class="number">30</span>;
 		default = <span class="number">0</span>;
 		changed = <span class="keyword">function</span>(val) updateFilters{gain=val} <span class="keyword">end</span>;
 	};
-	Resonance = {
+	{
+		name = <span class="string">"Resonance"</span>;
 		min = <span class="number">0.1</span>;
 		max = <span class="number">30</span>;
 		default = <span class="number">1</span>;

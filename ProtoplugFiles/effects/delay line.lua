@@ -45,12 +45,14 @@ function stereoFx.Channel:processBlock(samples, smax)
 end
 
 params = plugin.manageParams {
-	Length = {
+	{
+		name = "Length";
 		type = "int";
 		max = 510;
 		changed = function(val) length = val end;
 	};
-	Feedback = {
+	{
+		name = "Feedback";
 		max = 1;
 		changed = function(val) feedback = val end;
 	};

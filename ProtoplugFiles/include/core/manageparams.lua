@@ -86,11 +86,9 @@ return function(args)
 	local params = {}
 	local index2param = {}
 	
-	local index = 0
 	for key, param in pairs(args) do
 		param.type = param.type or "double"
-		param.name = param.name or key
-		param.index = param.index or index
+		param.index = key - 1
 		param = paramConstructors[param.type](param)
 
 		if type(param.name) ~= "string" then
@@ -103,7 +101,6 @@ return function(args)
 		end
 		params[key] = param
 		index2param[param.index] = param
-		index = index + 1
 	end
 
 	function plugin.getParameterName(index)
