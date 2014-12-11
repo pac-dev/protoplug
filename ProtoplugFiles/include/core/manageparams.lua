@@ -90,14 +90,19 @@ return function(args)
 	for key, param in pairs(args) do
 		param.type = param.type or "double"
 		param.name = param.name or key
-		param.index = index
+		param.index = param.index or index
 		param = paramConstructors[param.type](param)
+
+		if type(param.name) ~= "string" then
+			param.name = ("Param %i (%s)"):format(param.index, param.type)
+		end
+
 		param.set = function(val)
 			plugin.setParameter(param.index, param.Value2Raw(val))
 			param.changed(param.getValue())
 		end
 		params[key] = param
-		index2param[index] = param
+		index2param[param.index] = param
 		index = index + 1
 	end
 
