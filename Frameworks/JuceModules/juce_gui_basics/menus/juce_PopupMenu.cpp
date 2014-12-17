@@ -740,7 +740,7 @@ public:
 
     void ensureItemIsVisible (const int itemID, int wantedY)
     {
-        jassert (itemID != 0)
+        jassert (itemID != 0);
 
         for (int i = items.size(); --i >= 0;)
         {
@@ -979,7 +979,8 @@ public:
 
     void timerCallback() override
     {
-		if (window.windowIsStillValid()) {
+        if (window.windowIsStillValid())
+		{
 			window.toFront(false);
             handleMousePosition (source.getScreenPosition().roundToInt());
 		}
@@ -1218,12 +1219,7 @@ public:
 
     void paint (Graphics& g) override
     {
-        g.setFont (getLookAndFeel().getPopupMenuFont().boldened());
-        g.setColour (findColour (PopupMenu::headerTextColourId));
-
-        g.drawFittedText (getName(),
-                          12, 0, getWidth() - 16, proportionOfHeight (0.8f),
-                          Justification::bottomLeft, 1);
+        getLookAndFeel().drawPopupMenuSectionHeader (g, getLocalBounds(), getName());
     }
 
     void getIdealSize (int& idealWidth, int& idealHeight)

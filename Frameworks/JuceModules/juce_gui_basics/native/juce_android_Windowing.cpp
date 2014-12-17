@@ -43,7 +43,7 @@ JUCE_JNI_CALLBACK (JUCE_ANDROID_ACTIVITY_CLASSNAME, launchApp, void, (JNIEnv* en
 
     JUCEApplicationBase* app = JUCEApplicationBase::createInstance();
     if (! app->initialiseApp())
-        exit (0);
+        exit (app->getApplicationReturnValue());
 
     jassert (MessageManager::getInstance()->isThisTheMessageThread());
 }
@@ -111,7 +111,8 @@ public:
         // NB: must not put this in the initialiser list, as it invokes a callback,
         // which will fail if the peer is only half-constructed.
         view = GlobalRef (android.activity.callObjectMethod (JuceAppActivity.createNewView,
-                                                             component.isOpaque(), (jlong) this));
+                                                             (jboolean) component.isOpaque(),
+                                                             (jlong) this));
 
         if (isFocused())
             handleFocusGain();
@@ -584,7 +585,7 @@ ComponentPeer* Component::createNewPeer (int styleFlags, void*)
 
 jobject createOpenGLView (ComponentPeer* peer)
 {
-    jobject parentView = static_cast <jobject> (peer->getNativeHandle());
+    jobject parentView = static_cast<jobject> (peer->getNativeHandle());
     return getEnv()->CallObjectMethod (parentView, ComponentPeerView.createGLView);
 }
 

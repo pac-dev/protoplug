@@ -135,7 +135,14 @@ namespace
         char chunk[8];          // variable
     };
 
-    static VstInt32 fxbName (const char* name) noexcept   { return (VstInt32) ByteOrder::bigEndianInt (name); }
+    // Compares a magic value in either endianness.
+    static bool compareMagic (VstInt32 magic, const char* name) noexcept
+    {
+        return magic == (VstInt32) ByteOrder::littleEndianInt (name)
+            || magic == (VstInt32) ByteOrder::bigEndianInt (name);
+    }
+
+    static VstInt32 fxbName (const char* name) noexcept   { return (VstInt32) ByteOrder::littleEndianInt (name); }
     static VstInt32 fxbSwap (const VstInt32 x) noexcept   { return (VstInt32) ByteOrder::swapIfLittleEndian ((uint32) x); }
 
     static float fxbSwapFloat (const float x) noexcept
@@ -787,7 +794,7 @@ public:
             char buffer [512] = { 0 };
             dispatch (effGetEffectName, 0, 0, buffer, 0);
 
-            desc.descriptiveName = String (buffer).trim();
+            desc.descriptiveName = String::fromUTF8 (buffer).trim();
 
             if (desc.descriptiveName.isEmpty())
                 desc.descriptiveName = name;
@@ -802,7 +809,7 @@ public:
         {
             char buffer [kVstMaxVendorStrLen + 8] = { 0 };
             dispatch (effGetVendorString, 0, 0, buffer, 0);
-            desc.manufacturerName = buffer;
+            desc.manufacturerName = String::fromUTF8 (buffer);
         }
 
         desc.version = getVersion();
@@ -1013,12 +1020,12 @@ public:
                 if (position.isLooping)
                 {
                     vstHostTime.cycleStartPos = position.ppqLoopStart;
-                    vstHostTime.cycleEndPos = position.ppqLoopEnd;
-                    vstHostTime.flags |= kVstCyclePosValid;
+                    vstHostTime.cycleEndPos   = position.ppqLoopEnd;
+                    vstHostTime.flags |= (kVstCyclePosValid | kVstTransportCycleActive);
                 }
                 else
                 {
-                    vstHostTime.flags &= ~kVstCyclePosValid;
+                    vstHostTime.flags &= ~(kVstCyclePosValid | kVstTransportCycleActive);
                 }
             }
 
@@ -1197,7 +1204,7 @@ public:
                 char nm[264] = { 0 };
 
                 if (dispatch (effGetProgramNameIndexed, jlimit (0, getNumPrograms(), index), -1, nm, 0) != 0)
-                    return String (CharPointer_UTF8 (nm)).trim();
+                    return String::fromUTF8 (nm).trim();
             }
         }
 
@@ -1432,11 +1439,10 @@ public:
 
         const fxSet* const set = (const fxSet*) data;
 
-        if ((set->chunkMagic != fxbName ("CcnK") && set->chunkMagic != fxbName ("KncC"))
-             || fxbSwap (set->version) > fxbVersionNum)
+        if ((! compareMagic (set->chunkMagic, "CcnK")) || fxbSwap (set->version) > fxbVersionNum)
             return false;
 
-        if (set->fxMagic == fxbName ("FxBk"))
+        if (compareMagic (set->fxMagic, "FxBk"))
         {
             // bank of programs
             if (fxbSwap (set->numPrograms) >= 0)
@@ -1472,12 +1478,12 @@ public:
                     return false;
             }
         }
-        else if (set->fxMagic == fxbName ("FxCk"))
+        else if (compareMagic (set->fxMagic, "FxCk"))
         {
             // single program
             const fxProgram* const prog = (const fxProgram*) data;
 
-            if (prog->chunkMagic != fxbName ("CcnK"))
+            if (! compareMagic (prog->chunkMagic, "CcnK"))
                 return false;
 
             changeProgramName (getCurrentProgram(), prog->prgName);
@@ -1485,7 +1491,7 @@ public:
             for (int i = 0; i < fxbSwap (prog->numParams); ++i)
                 setParameter (i, fxbSwapFloat (prog->params[i]));
         }
-        else if (set->fxMagic == fxbName ("FBCh") || set->fxMagic == fxbName ("hCBF"))
+        else if (compareMagic (set->fxMagic, "FBCh"))
         {
             // non-preset chunk
             const fxChunkSet* const cset = (const fxChunkSet*) data;
@@ -1495,7 +1501,7 @@ public:
 
             setChunkData (cset->chunk, fxbSwap (cset->chunkSize), false);
         }
-        else if (set->fxMagic == fxbName ("FPCh") || set->fxMagic == fxbName ("hCPF"))
+        else if (compareMagic (set->fxMagic, "FPCh"))
         {
             // preset chunk
             const fxProgramSet* const cset = (const fxProgramSet*) data;
@@ -1671,7 +1677,8 @@ private:
 
     bool restoreProgramSettings (const fxProgram* const prog)
     {
-        if (prog->chunkMagic == fxbName ("CcnK") && prog->fxMagic == fxbName ("FxCk"))
+        if (compareMagic (prog->chunkMagic, "CcnK")
+             && compareMagic (prog->fxMagic, "FxCk"))
         {
             changeProgramName (getCurrentProgram(), prog->prgName);
 

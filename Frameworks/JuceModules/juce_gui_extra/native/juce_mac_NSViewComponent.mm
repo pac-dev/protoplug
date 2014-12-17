@@ -81,7 +81,7 @@ private:
                 target->viewResized();
         }
 
-        JUCE_DECLARE_NON_COPYABLE (ViewFrameChangeCallbackClass);
+        JUCE_DECLARE_NON_COPYABLE (ViewFrameChangeCallbackClass)
     };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (NSViewResizeWatcher)
@@ -142,7 +142,6 @@ public:
 
         if (currentPeer != peer)
         {
-            removeFromParent();
             currentPeer = peer;
 
             if (peer != nullptr)
@@ -150,6 +149,10 @@ public:
                 NSView* const peerView = (NSView*) peer->getNativeHandle();
                 [peerView addSubview: view];
                 componentMovedOrResized (false, false);
+            }
+            else
+            {
+                removeFromParent();
             }
         }
 

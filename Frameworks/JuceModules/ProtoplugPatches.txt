@@ -7,13 +7,6 @@ in  juce_PopupMenu.cpp > class MouseSourceState > void timerCallback() (line 980
 		}
 this fixes the menu-behind-window-when-window-made-always-on-top-by-host glitch.
 
-in juce_VST_wrapper.cpp: (RESLOVED IN NEW VERSION)
-void registerMouseWheelHook()
-{/*
-	... (comment out everything)
-*/}
-this fixes the mouse wheel being rendered unusable in windows when different plugins are open.
-
 in juce_linux_Files.cpp: 
 bool Process::openDocument (const String& fileName, const String& parameters)
 {
@@ -25,19 +18,3 @@ bool Process::openDocument (const String& fileName, const String& parameters)
 	...
 }
 this fixes the backslashes being sent to browsers when file:/// url has spaces bug.
-
-in juce_CodeEditorComponent.cpp: 
-void CodeEditorComponent::updateCachedIterators (int maxLineNum)
-{
-	const int numLines = document.getNumLines();
-	...
-			const int targetLine = last.getLine() + linesBetweenCachedSources;
-			if (targetLine >= numLines)
-				return;
-	...
-}
-this fixes the delete last paragraph leaving blank area, arrow up until crash crash.
-
-in juce_mac_NSViewComponentPeer.mm:
-all windowDidExitFullScreen references commented out
-This allows compiling under OSX 10.6
