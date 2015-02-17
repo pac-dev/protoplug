@@ -64,7 +64,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.3.0;JUCE_APP_VERSION_HEX=0x10300;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -108,7 +108,7 @@
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;DEBUG;_DEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.3.0;JUCE_APP_VERSION_HEX=0x10300;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>
@@ -150,7 +150,7 @@
     <ClCompile>
       <Optimization>Full</Optimization>
       <AdditionalIncludeDirectories>..\..\JuceLibraryCode;..\..\..\..\Frameworks\JuceModules;..\..\..\..\Frameworks\vstsdk2.4_minimal;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.2.0;JUCE_APP_VERSION_HEX=0x10200;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;_PROTOGEN=1;JUCER_VS2010_78A501D=1;JUCE_APP_VERSION=1.3.0;JUCE_APP_VERSION_HEX=0x10300;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <RuntimeTypeInfo>true</RuntimeTypeInfo>
       <PrecompiledHeader/>

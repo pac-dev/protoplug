@@ -29,8 +29,8 @@ After compiling, you'll also need the [LuaJIT] [1] shared library installed on y
 
 **Linux :** 
 
-	tar zxf protoplug-1.2.0.tar.gz
-	cd protoplug-1.2.0/Builds/multi/Linux
+	tar zxf protoplug-1.3.0.tar.gz
+	cd protoplug-1.3.0/Builds/multi/Linux
 	make
 
 You might get some missing includes. The required headers should be easy to obtain, for example on Debian 7 :

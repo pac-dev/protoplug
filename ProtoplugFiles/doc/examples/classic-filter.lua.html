@@ -121,7 +121,9 @@ stereoFx.init()
 <span class="keyword">end</span>
 
 params = plugin.manageParams {
-	{
+	<span class="comment">-- automatable VST/AU parameters
+</span>	<span class="comment">-- note the new 1.3 way of declaring them
+</span>	{
 		name = <span class="string">"Type"</span>;
 		<span class="global">type</span> = <span class="string">"list"</span>;
 		values = {<span class="string">"hp"</span>; <span class="string">"lp"</span>; <span class="string">"bp"</span>; <span class="string">"bs"</span>; <span class="string">"ls"</span>; <span class="string">"hs"</span>; <span class="string">"ap"</span>; <span class="string">"eq"</span>};

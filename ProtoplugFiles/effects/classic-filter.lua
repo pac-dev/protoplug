@@ -38,6 +38,8 @@ local function updateFilters(args)
 end
 
 params = plugin.manageParams {
+	-- automatable VST/AU parameters
+	-- note the new 1.3 way of declaring them
 	{
 		name = "Type";
 		type = "list";
