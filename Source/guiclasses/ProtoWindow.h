@@ -69,6 +69,7 @@ public:
     {
 		cmdCompile		= 0x10,
 		cmdStackDump	= 0x11,
+		cmdLiveMode		= 0x12,
 		cmdFindSelected = 0x25,
 		cmdFindNext		= 0x26,
 		cmdFindPrev		= 0x27,

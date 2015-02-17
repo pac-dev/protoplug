@@ -283,6 +283,7 @@ PopupMenu ProtoWindow::getMenuForIndex (int menuIndex, const String& /*menuName*
 	case 2: // Build
 		menu.addCommandItem(&commMgr, cmdCompile);
 		menu.addCommandItem(&commMgr, cmdStackDump);
+		menu.addCommandItem(&commMgr, cmdLiveMode);
 		break;
 	case 3: // View
 		menu.addCommandItem(&commMgr, cmdPopout);
@@ -318,10 +319,10 @@ void ProtoWindow::menuItemSelected (int menuItemID, int /*topLevelMenuIndex*/)
 
 void ProtoWindow::getAllCommands (Array <CommandID>& commands)
 {
-	const CommandID ids[] = {cmdCompile, cmdStackDump, cmdFindSelected, cmdFindNext, cmdFindPrev, 
-							cmdShow0, cmdShow1, cmdShow2, cmdShowNext, cmdShowPrev, cmdOpen, cmdSaveAs, 
-							cmdOpenProto, cmdPopout, cmdAlwaysOnTop, cmdWebsite, cmdAPI, cmdAbout, 
-							cmdUndo, cmdRedo, cmdCut, cmdCopy, cmdPaste};
+	const CommandID ids[] = {cmdCompile, cmdStackDump, cmdLiveMode, cmdFindSelected, cmdFindNext, 
+							cmdFindPrev, cmdShow0, cmdShow1, cmdShow2, cmdShowNext, cmdShowPrev, 
+							cmdOpen, cmdSaveAs, cmdOpenProto, cmdPopout, cmdAlwaysOnTop, cmdWebsite, 
+							cmdAPI, cmdAbout, cmdUndo, cmdRedo, cmdCut, cmdCopy, cmdPaste};
 	commands.addArray (ids, numElementsInArray (ids));
 }
 
@@ -337,6 +338,11 @@ void ProtoWindow::getCommandInfo (CommandID commandID, ApplicationCommandInfo& r
 
     case cmdStackDump:
         result.setInfo ("Stack Dump", "Stack Dump", cat, 0);
+        break;
+
+    case cmdLiveMode:
+        result.setInfo ("Live Mode", "Live Mode", cat, 0);
+		result.setTicked (processor->liveMode);
         break;
 
     case cmdShow0:
@@ -453,6 +459,7 @@ bool ProtoWindow::perform (const InvocationInfo& info)
 	{
 	case cmdCompile:	compile(); break;
 	case cmdStackDump:	processor->luli->stackDump(); break;
+	case cmdLiveMode:	processor->liveMode = !processor->liveMode; break;
 	case cmdOpenProto:	ProtoplugDir::Instance()->getDir().startAsProcess(); break;
 	case cmdShow0:		setActivePanel(0); break;
 	case cmdShow1:		setActivePanel(1); break;
@@ -633,6 +640,10 @@ void ProtoWindow::timerCallback()
 	if (msg_TakeFocus) {
 		msg_TakeFocus = 0;
 		editor.grabKeyboardFocus();
+	}
+	if (processor->liveMode && editor.somethingChanged) {
+		editor.somethingChanged = false;
+		compile();
 	}
 	// pestilentially ugly hack to fix the misplaced menu popups.
 	// the problem appeared between Jan and Sept '14 versions of JUCE

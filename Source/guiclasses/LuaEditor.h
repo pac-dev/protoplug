@@ -3,11 +3,15 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "../PluginProcessor.h"
 
-class LuaEditor	:	public CodeEditorComponent
+class LuaEditor	:	public CodeEditorComponent, public CodeDocument::Listener
 {
 public:
 	LuaEditor(CodeDocument &doc, CodeTokeniser *tok) :
-	  CodeEditorComponent(doc, tok)		{ }
+	  CodeEditorComponent(doc, tok)
+	{
+		somethingChanged = false;
+		getDocument().addListener(this);
+	}
 	void setFontSize(float sz)
 	{
 		if (sz<2) sz = 2;
@@ -64,4 +68,9 @@ public:
 				findNext(searchTerm, direction, true);
 		}
 	}
+	void codeDocumentTextInserted(const String &newText, int insertIndex)
+	{ somethingChanged = true; }
+	void codeDocumentTextDeleted(int startIndex, int endIndex)
+	{ somethingChanged = true; }
+	bool somethingChanged;
 };

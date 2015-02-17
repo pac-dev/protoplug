@@ -22,7 +22,7 @@ LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
 	lastUIPanel = 0;
 	lastPopoutX = lastPopoutY = 60;
 	lastUIFontSize = -1;
-	popout = alwaysontop = false;
+	popout = alwaysontop = liveMode = false;
 	for (int i=0; i<NPARAMS; i++)
 		params[i] = 0.5;
 	chunk = 0;

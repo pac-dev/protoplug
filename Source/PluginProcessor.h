@@ -54,7 +54,7 @@ public:
     int lastUIWidth, lastUIHeight, lastUISplit, lastUIPanel;
 	int lastPopoutX, lastPopoutY;
 	float lastUIFontSize;
-	bool popout, alwaysontop;
+	bool popout, alwaysontop, liveMode;
 	LuaLink *luli;
 	double params[NPARAMS];
 
