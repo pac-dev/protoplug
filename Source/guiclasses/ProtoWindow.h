@@ -8,7 +8,7 @@
 #include "CustomGuiPanel.h"
 #include "LuaEditor.h"
 #include "Dockable.h"
-#include "ProtoTabButton.h"
+#include "BottomPane.h"
 #include <map>
 
 #define MSG_POPOUT 1
@@ -30,10 +30,10 @@ class ProtoWindow	:	public Component,
 						public MenuBarModel,
 						public Timer,
 						public ApplicationCommandTarget,
-						public Button::Listener,
 						public ProtoTabButton::Listener,
 						public CodeDocument::Listener
 {
+	friend class BottomPane;
 public:
 	ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* ownerFilter);
 	~ProtoWindow();
@@ -50,7 +50,6 @@ public:
 	bool perform (const InvocationInfo& info);
 	void tabButtonClicked (ProtoTabButton *b);
 	void tabButtonDoubleClicked (ProtoTabButton *b);
-	void buttonClicked (Button *b);
 	void codeDocumentTextInserted (const String &newText, int insertIndex);
 	void codeDocumentTextDeleted (int startIndex, int endIndex);
 	void initProtoplugDir();
@@ -110,7 +109,7 @@ private:
 	ProtoLuaTokeniser tok;
 	String themeFolder;
 	LuaEditor editor;
-	TextEditor log;
+	BottomPane bottomPane;
 	ParameterPanel paramPanel;
 	CustomGuiPanel guiPanel;
 	int activePanel;
@@ -120,8 +119,6 @@ private:
 	Dockable paramDock, guiDock;
 	String searchTerm;
 	ProtoTabButton tab1, tab2, tab3;
-	TextButton compileButton;
-	TooltipWindow tooltip;
 	int hackTimer;
 };
 

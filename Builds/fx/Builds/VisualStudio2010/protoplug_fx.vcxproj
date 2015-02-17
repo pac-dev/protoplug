@@ -182,6 +182,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Source\guiclasses\BottomPane.cpp"/>
     <ClCompile Include="..\..\..\..\Source\guiclasses\CustomGuiPanel.cpp"/>
     <ClCompile Include="..\..\..\..\Source\guiclasses\Dockable.cpp"/>
     <ClCompile Include="..\..\..\..\Source\guiclasses\HintedFeel.cpp"/>
@@ -1177,6 +1178,9 @@
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\documents\juce_FileBasedDocument.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_AnimatedAppComponent.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_BubbleMessageComponent.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
@@ -1255,6 +1259,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\Source\guiclasses\AboutBox.h"/>
+    <ClInclude Include="..\..\..\..\Source\guiclasses\BottomPane.h"/>
     <ClInclude Include="..\..\..\..\Source\guiclasses\CustomGuiPanel.h"/>
     <ClInclude Include="..\..\..\..\Source\guiclasses\DarkSplitter.h"/>
     <ClInclude Include="..\..\..\..\Source\guiclasses\Dockable.h"/>
@@ -1357,6 +1362,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioProcessorEditor.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioProcessorGraph.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioProcessorListener.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_AudioProcessorParameter.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_GenericAudioProcessorEditor.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\processors\juce_PluginDescription.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_audio_processors\format\juce_AudioPluginFormat.h"/>
@@ -1389,6 +1395,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_BigInteger.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_Expression.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_MathsFunctions.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_NormalisableRange.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_Random.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\maths\juce_Range.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\memory\juce_Atomic.h"/>
@@ -1462,6 +1469,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\streams\juce_SubregionStream.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\logging\juce_FileLogger.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\logging\juce_Logger.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\system\juce_CompilerSupport.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\system\juce_PlatformDefs.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\system\juce_StandardHeader.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_core\system\juce_SystemStats.h"/>
@@ -1497,6 +1505,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\messages\juce_Message.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\messages\juce_MessageListener.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\messages\juce_MessageManager.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\messages\juce_MountedVolumeListChangeDetector.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\messages\juce_NotificationType.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\timers\juce_MultiTimer.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_events\timers\juce_Timer.h"/>
@@ -1690,6 +1699,7 @@
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\embedding\juce_ActiveXControlComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\embedding\juce_NSViewComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\embedding\juce_UIViewComponent.h"/>
+    <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_AnimatedAppComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_AppleRemote.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_BubbleMessageComponent.h"/>
     <ClInclude Include="..\..\..\..\Frameworks\JuceModules\juce_gui_extra\misc\juce_ColourSelector.h"/>

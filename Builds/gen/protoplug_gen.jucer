@@ -8,12 +8,14 @@
               pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="protoplug_genAU" pluginRTASCategory=""
               aaxIdentifier="com.yourcompany.protoplug_gen" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="3.1.0" companyName="osar.fr" pluginAUMainType="kAudioUnitType_MusicDevice"
+              jucerVersion="3.1.1" companyName="osar.fr" pluginAUMainType="kAudioUnitType_MusicDevice"
               buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="Blif9d" name="protoplug_gen">
     <GROUP id="{14A58A55-62AB-895C-44B4-A814F95BEEB9}" name="Source">
       <GROUP id="{FEABF009-6C32-593B-3434-77AE0069A212}" name="GUI Classes">
         <FILE id="tTGvbq" name="AboutBox.h" compile="0" resource="0" file="../../Source/guiclasses/AboutBox.h"/>
+        <FILE id="WXtzbR" name="BottomPane.cpp" compile="1" resource="0" file="../../Source/guiclasses/BottomPane.cpp"/>
+        <FILE id="J3q6Pk" name="BottomPane.h" compile="0" resource="0" file="../../Source/guiclasses/BottomPane.h"/>
         <FILE id="zMmrGj" name="CustomGuiPanel.cpp" compile="1" resource="0"
               file="../../Source/guiclasses/CustomGuiPanel.cpp"/>
         <FILE id="tk4iZv" name="CustomGuiPanel.h" compile="0" resource="0"

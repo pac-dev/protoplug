@@ -7,6 +7,7 @@ DynamicLibrary *	LuaState::dll = 0;
 ptr_luaL_newstate	LuaState::luaL_newstate			= 0;
 ptr_luaL_openlibs	LuaState::luaL_openlibs			= 0;
 ptr_luaL_loadbuffer	LuaState::luaL_loadbuffer		= 0;
+ptr_luaL_loadstring	LuaState::luaL_loadstring		= 0;
 ptr_lua_tolstring	LuaState::lua_tolstring			= 0;
 ptr_lua_tonumber	LuaState::lua_tonumber			= 0;
 ptr_lua_toboolean	LuaState::lua_toboolean			= 0;
@@ -50,6 +51,7 @@ LuaState::LuaState(File defaultDir)
 		luaL_newstate		= ptr_luaL_newstate		(dll->getFunction("luaL_newstate"));
 		luaL_openlibs		= ptr_luaL_openlibs		(dll->getFunction("luaL_openlibs"));
 		luaL_loadbuffer		= ptr_luaL_loadbuffer	(dll->getFunction("luaL_loadbuffer"));
+		luaL_loadstring		= ptr_luaL_loadstring	(dll->getFunction("luaL_loadstring"));
 		lua_tolstring		= ptr_lua_tolstring		(dll->getFunction("lua_tolstring"));
 		lua_tonumber		= ptr_lua_tonumber		(dll->getFunction("lua_tonumber"));
 		lua_toboolean		= ptr_lua_toboolean		(dll->getFunction("lua_toboolean"));
@@ -73,11 +75,12 @@ LuaState::LuaState(File defaultDir)
 		luajit_setmode		= ptr_luajit_setmode	(dll->getFunction("luaJIT_setmode"));
 #endif
 	}
-	void *kk[22] = {
+	void *kk[23] = {
 		// cast required for some compilers
         (void*)luaL_newstate,
         (void*)luaL_openlibs,
         (void*)luaL_loadbuffer,
+        (void*)luaL_loadstring,
         (void*)lua_tolstring,
         (void*)lua_tonumber,
         (void*)lua_toboolean,
@@ -97,7 +100,7 @@ LuaState::LuaState(File defaultDir)
         (void*)lua_isnumber,
         (void*)lua_typename,
         (void*)lua_newuserdata};
-	for (int i=0; i<22; i++)
+	for (int i=0; i<23; i++)
 		if (kk[i]==0) {
 			failed = 1;
 			errmsg = 	"Error: Could not load " + libName + 
@@ -127,6 +130,9 @@ void LuaState::openlibs()
 
 int LuaState::loadbuffer(const char *buff, size_t sz, const char *name)
 { return (*luaL_loadbuffer)(l, buff, sz, name);}
+
+int LuaState::loadstring(const char *buff)
+{ return (*luaL_loadstring)(l, buff);}
 
 const char * LuaState::tolstring(int idx, size_t *len)
 { return (*lua_tolstring)(l, idx, len);}

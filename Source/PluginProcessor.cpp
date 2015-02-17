@@ -18,7 +18,7 @@ LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
 {
     lastUIWidth = 670;
     lastUIHeight = 455;
-	lastUISplit = 455-22;
+	lastUISplit = 455-46;
 	lastUIPanel = 0;
 	lastPopoutX = lastPopoutY = 60;
 	lastUIFontSize = -1;
@@ -145,10 +145,11 @@ void LuaProtoplugJuceAudioProcessor::setStateInformation (const void* data, int 
 	int sz_script = *pi++;				// get size of code
 	char *pc = (char*)(pi);
 	luli->code = pc;					// get code
-	luli->addToLog("Loaded uncompiled script");
 	luli->saveData = String::empty;
 	if (ProtoplugDir::Instance()->found)
 		luli->compile();
+	else
+		luli->addToLog("could not compile script because the ProtoplugFiles directory is missing or incomplete");
 	
 	pc += sz_script;
 	pi = (int*)pc;

@@ -15,12 +15,8 @@ public:
 	void addToLog(String buf);
 	void compile();
 	void stackDump();
-
-	/** Calls a lua function if it has been defined, ignoring the return value
-
-		add any parameters to be sent to the function, preceded by their type (as 
-		defined in luastate.h) Last argument must be 0.
-	*/
+	bool runString(String toRun);
+	void runStringInteractive(String toRun);
 
 	// Audio plugin overrides :
 	void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages, AudioPlayHead* ph);
@@ -61,6 +57,12 @@ private:
 	bool startOverride(const char *fname);
 	int startVarargOverride(const char *fname, va_list _args);
 	int safepcall(const char *fname, int nargs, int nresults, int errfunc);
+
+	/** Calls a lua function if it has been defined, ignoring the return value
+
+		add any parameters to be sent to the function, preceded by their type (as 
+		defined in luastate.h) Last argument must be 0.
+	*/
 	bool callVoidOverride(const char *fname, ...);
 	String callStringOverride(const char *fname, ...);
 	bool callBoolOverride(const char *fname, ...);
@@ -70,5 +72,5 @@ private:
 
 	ProtoWindow *ped;
 	CriticalSection cs;
-	bool guiThreadRunning,  workable;
+	bool guiThreadRunning,  workable, iLuaLoaded;
 };

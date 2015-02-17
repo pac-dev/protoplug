@@ -7,12 +7,14 @@
               pluginChannelConfigs="{2, 2}" pluginIsSynth="0" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="protoplug_fxAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.protoplug_fx"
-              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.0"
+              pluginAAXCategory="AAX_ePlugInCategory_Dynamics" jucerVersion="3.1.1"
               companyName="osar.fr" buildVST3="0" buildRTAS="0" buildAAX="0">
   <MAINGROUP id="urQWd4" name="protoplug_fx">
     <GROUP id="{1FCED3FA-32ED-7781-CAD3-EF328350EB7D}" name="Source">
       <GROUP id="{4CF632D6-F70A-6A7F-9D89-874B01728E9A}" name="GUI Classes">
         <FILE id="AvMm8S" name="AboutBox.h" compile="0" resource="0" file="../../Source/guiclasses/AboutBox.h"/>
+        <FILE id="vclVLG" name="BottomPane.cpp" compile="1" resource="0" file="../../Source/guiclasses/BottomPane.cpp"/>
+        <FILE id="ykIaxA" name="BottomPane.h" compile="0" resource="0" file="../../Source/guiclasses/BottomPane.h"/>
         <FILE id="Pr0RiW" name="CustomGuiPanel.cpp" compile="1" resource="0"
               file="../../Source/guiclasses/CustomGuiPanel.cpp"/>
         <FILE id="xVjtik" name="CustomGuiPanel.h" compile="0" resource="0"

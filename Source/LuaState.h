@@ -27,6 +27,7 @@ typedef int (*lua_CFunction) (lua_State *L);
 typedef lua_State*	(*ptr_luaL_newstate)		();
 typedef void		(*ptr_luaL_openlibs)		(lua_State *L);
 typedef int			(*ptr_luaL_loadbuffer)		(lua_State *L, const char *buff, size_t sz, const char *name);
+typedef int			(*ptr_luaL_loadstring)		(lua_State *L, const char *s);
 typedef const char* (*ptr_lua_tolstring)		(lua_State *L, int idx, size_t *len);
 typedef lua_Number	(*ptr_lua_tonumber)			(lua_State *L, int idx);
 typedef int			(*ptr_lua_toboolean)		(lua_State *L, int idx);
@@ -62,6 +63,7 @@ public:
 	~LuaState();
 	void openlibs();
 	int loadbuffer(const char *buff, size_t sz, const char *name);
+	int loadstring(const char *s);
 	const char * tolstring(int idx, size_t *len);
 	lua_Number tonumber(int idx);
 	int toboolean(int idx);
@@ -112,6 +114,7 @@ public:
 	static ptr_luaL_newstate	luaL_newstate;
 	static ptr_luaL_openlibs	luaL_openlibs;
 	static ptr_luaL_loadbuffer	luaL_loadbuffer;
+	static ptr_luaL_loadstring	luaL_loadstring;
 	static ptr_lua_tolstring	lua_tolstring;
 	static ptr_lua_tonumber		lua_tonumber;
 	static ptr_lua_toboolean	lua_toboolean;

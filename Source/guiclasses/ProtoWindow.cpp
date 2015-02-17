@@ -25,7 +25,7 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 	paramDock(&paramPanel, "protoplug parameters", ownerFilter),
 	guiDock(&guiPanel, "protoplug GUI", ownerFilter),
 	tab1("code"), tab2("params"), tab3("gui"), 
-	compileButton("Compile", "It's not pink, it's like, ah... lightish red")
+	bottomPane(this)
 {
 	dirty = false;
 	vstPanel = parent;
@@ -60,20 +60,12 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 	activePanelComponent = panels[activePanel];
 	
 	// log text area
-    addAndMakeVisible (&log);
-	log.setMultiLine(true);
-	log.setReadOnly(true);
-	log.setCaretVisible(false);
-	log.setFont(Font(Font::getDefaultMonospacedFontName(), 12, 0));
-	log.setColour(TextEditor::backgroundColourId, Colour(0xffe0e0e0));
-	addChildComponent(&compileButton);
-	compileButton.setColour(TextButton::buttonColourId, Colour(0xffff8d8d));
-	tooltip.setLookAndFeel(&newFeel);
+	addAndMakeVisible(&bottomPane);
 	
 	// splitter						item	min		max		default
     horizontalLayout.setItemLayout (0,		-0.1,	-1.0,	processor->lastUISplit-20);		// top (code editor)
     horizontalLayout.setItemLayout (1,		8,		8,		8);										// mid (splitter)
-    horizontalLayout.setItemLayout (2,		16,		-0.9,	processor->lastUIHeight-processor->lastUISplit);	// bottom (log)
+    horizontalLayout.setItemLayout (2,		22,		-0.9,	processor->lastUIHeight-processor->lastUISplit);	// bottom (log)
     horizontalDividerBar = new DarkSplitter (&horizontalLayout, 1, false);
     addAndMakeVisible (horizontalDividerBar);
 
@@ -92,7 +84,6 @@ ProtoWindow::ProtoWindow (Component *parent, LuaProtoplugJuceAudioProcessor* own
 	
 	commMgr.registerAllCommandsForTarget(this);
 	editor.getDocument().addListener(this);
-	compileButton.addListener(this);
 	readPrefs();
 }
 
@@ -218,16 +209,15 @@ void ProtoWindow::resized()
 {
 	int menuHeight = 20;
 	
-    Component* hcomps[] = { activePanelComponent, horizontalDividerBar, &log };
+    Component* hcomps[] = { activePanelComponent, horizontalDividerBar, &bottomPane };
     horizontalLayout.layOutComponents (hcomps, 3,
                                         0, menuHeight, getWidth(), getHeight() - menuHeight,
                                         true,      // lay out on top of each other
                                         true);     // resize the components' widths as well as heights
-	log.setBounds(0, log.getY(), getWidth()-16, log.getHeight());
 
     resizer.setBounds (getWidth() - 16, getHeight() - 16, 16, 16);
-    compileButton.setBounds (getWidth() - 100, getHeight() - 22, 80, 22);
     menubar.setBounds (0, 0, getWidth(), menuHeight);
+	bottomPane.setBounds(0, bottomPane.getY(), getWidth()-16, bottomPane.getHeight());
 
     processor->lastUIWidth = getWidth();
     processor->lastUIHeight = getHeight();
@@ -535,12 +525,6 @@ bool ProtoWindow::perform (const InvocationInfo& info)
 	return true;
 }
 
-void ProtoWindow::buttonClicked (Button *b)
-{
-	if (b==&compileButton)
-		compile();
-}
-
 void ProtoWindow::tabButtonClicked (ProtoTabButton *b)
 {
 	if (b==&tab1)
@@ -577,10 +561,10 @@ void ProtoWindow::tabButtonDoubleClicked (ProtoTabButton *b)
 }
 
 void ProtoWindow::codeDocumentTextInserted (const String &newText, int insertIndex)
-{ compileButton.setVisible(true); }
+{ bottomPane.setCompileVisible(true); }
 
 void ProtoWindow::codeDocumentTextDeleted (int startIndex, int endIndex)
-{ compileButton.setVisible(true); }
+{ bottomPane.setCompileVisible(true); }
 
 void ProtoWindow::findNext(bool direction, bool wrap /*= false*/)
 { editor.findNext(searchTerm, direction, wrap); }
@@ -594,7 +578,7 @@ void ProtoWindow::compile()
 {
 	saveCode();
 	processor->luli->compile();
-	compileButton.setVisible(false);
+	bottomPane.setCompileVisible(false);
 }
 
 void ProtoWindow::setActivePanel(int p)
@@ -618,8 +602,7 @@ void ProtoWindow::setActivePanel(int p)
 		guiPanel.repaint();
 	}
 	resized();
-	log.moveCaretToEndOfLine(false);
-	log.moveCaretToStartOfLine(false);
+	bottomPane.scrollLog();
 	processor->lastUIPanel = activePanel;
 }
 
@@ -640,11 +623,7 @@ void ProtoWindow::timerCallback()
 {
 	if (msg_UpdateLog) {
 		msg_UpdateLog = 0;
-		log.clear();
-		log.setText(processor->luli->log);
-		log.moveCaretToEnd();
-		log.moveCaretToEndOfLine(false);
-		log.moveCaretToStartOfLine(false);
+		bottomPane.updateLog();
 	}
 	if (msg_ParamsChanged) {
 		msg_ParamsChanged = 0;

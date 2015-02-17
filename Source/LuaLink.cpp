@@ -29,12 +29,15 @@ static int LuaSetParam (protolua::lua_State *L) {
 LuaLink::LuaLink(LuaProtoplugJuceAudioProcessor *_pfx)
 {
 	ls = 0;
-	guiThreadRunning = workable = 0;
+	guiThreadRunning = workable = iLuaLoaded = 0;
 	pfx = _pfx;
 	customGui = 0;
 	
 	libFolder = ProtoplugDir::Instance()->getScriptsDir().getFullPathName();
 	code = File(libFolder).getChildFile("default.lua").loadFileAsString();
+	// unfortunately we can't know whether the host will call setStateInformation or not,
+	// so the default script is always compiled even if we're loading something else
+	compile();
 }
 
 LuaLink::~LuaLink()
@@ -70,7 +73,7 @@ void LuaLink::compile() {
 		saveData = sd;
 
 	// wait for running functions to finish and prevent new ones from happening
-	workable = 0;
+	workable = iLuaLoaded = 0;
 	cs.enter();
 	cs.exit();
 
@@ -162,6 +165,35 @@ void LuaLink::compile() {
 		load(saveData);
 
 	return;
+}
+
+bool LuaLink::runString(String toRun) {
+	if (!workable)
+		return false;
+	ls->loadstring(toRun.getCharPointer().getAddress());
+	int result = ls->pcall(0, 0, 0);
+	if (result) {
+		addToLog(ls->tostring(-1));
+		return false;
+		// the rest still works, right?
+		/*globalStates.erase(ls->l);
+		delete ls;   // Cya, Lua
+		ls=0;
+		return;*/
+	}
+	return true;
+}
+
+void LuaLink::runStringInteractive(String toRun) {
+	if (!workable)
+		return;
+	if (!iLuaLoaded) {
+		if (runString("require 'include/iluaembed'"))
+			iLuaLoaded = true;
+		else
+			return;
+	}
+	callVoidOverride("ilua_runline"	, LUA_TSTRING, toRun.getCharPointer().getAddress(), 0);
 }
 
 void LuaLink::stackDump () {
