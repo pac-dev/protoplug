@@ -50,11 +50,14 @@ void LuaLink::initProtoplugDir() {
 		code = File(libFolder).getChildFile("default.lua").loadFileAsString();
 }
 
-void LuaLink::addToLog(String buf) {
+void LuaLink::addToLog(String buf, bool isInput /*= false*/) {
 	if (log.length()>4000)
 		log = log.substring(log.length()-3000);
 	Time t = Time::getCurrentTime();
-	log += String::formatted("\n%02i:%02i - ", t.getMinutes(), t.getSeconds());
+	if (isInput)
+		log += String::formatted("\n%02i:%02i > ", t.getMinutes(), t.getSeconds());
+	else
+		log += String::formatted("\n%02i:%02i - ", t.getMinutes(), t.getSeconds());
 	log += buf;
 	ped = pfx->getProtoEditor();
 	if (ped)
@@ -187,6 +190,7 @@ bool LuaLink::runString(String toRun) {
 void LuaLink::runStringInteractive(String toRun) {
 	if (!workable)
 		return;
+	addToLog(toRun, true);
 	if (!iLuaLoaded) {
 		if (runString("require 'include/iluaembed'"))
 			iLuaLoaded = true;

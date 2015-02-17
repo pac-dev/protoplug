@@ -12,7 +12,7 @@ public:
 	LuaLink(LuaProtoplugJuceAudioProcessor *pfx);
 	~LuaLink();
 	
-	void addToLog(String buf);
+	void addToLog(String buf, bool isInput = false);
 	void compile();
 	void stackDump();
 	bool runString(String toRun);
