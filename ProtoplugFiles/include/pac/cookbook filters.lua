@@ -90,7 +90,27 @@ local function Filter(params)
 				error("Unsupported filter type " .. params.type)
 			end
 		end;
-		
+		phaseDelay = function(frequency )
+            
+            local omegaT = 2 * math.pi * frequency / plugin.getSampleRate();
+            local real, imag = 0.0, 0.0;
+            for i,b in ipairs{b0,b1,b2} do
+                real = real + b/a0 * math.cos( (i-1) * omegaT );
+                imag = imag - b/a0 * math.sin( (i-1) * omegaT );
+            end
+            
+            local phase = math.atan2( imag, real );
+            
+            real = 0.0; imag = 0.0;
+            for i,a in ipairs{a0,a1,a2} do
+                real = real + a/a0 * math.cos( (i-1) * omegaT );
+                imag = imag - a/a0 * math.sin( (i-1) * omegaT );
+            end
+            
+            phase = phase - math.atan2( imag, real );
+            phase = math.fmod( -phase, 2 * math.pi );
+            return phase / omegaT;
+        end;
 		process = function (x0)
 			y2, y1 = y1, y0
 			y0 = (b0 / a0) * x0 + (b1 / a0) * x1 + (b2 / a0) * x2 - (a1 / a0) * y1 - (a2 / a0) * y2

@@ -6,9 +6,9 @@ author: victor bombi
 
 require "include/protoplug"
 
-local Fdelay = require "include/vic/fdelay_line"
-local Filter = require "include/vic/cookbook_filters"
-local Env = require "include/vic/Env"
+local Fdelay = require "include/pac/fdelay_line"
+local Filter = require "include/pac/cookbook filters"
+local Env = require "include/pac/Env"
 local att_secs = 0
 local rel_secs = 0.3
 local maxbuff = 2048 --44100/20
@@ -26,12 +26,11 @@ end
 
 function polyGen.VTrack:addProcessBlock(samples, smax)
 	local envamp = 1
-    local tick_len = 1/plugin.getSampleRate()
     local dt = self.notePeriod - self.filter.phaseDelay(self.noteFreq*plugin.getSampleRate())
 	for i = 0,smax do
 		if self.env.ended then break end
-        envamp = self.env:get_amp(tick_len)
-        local envampT = self.envT:get_amp(tick_len)
+        envamp = self.env:get_amp()
+        local envampT = self.envT:get_amp()
         local loops = self.delay.goBack(dt)
 		local trackSample = self.filter_excit.process(2*math.random()-1)*envampT*self.amp + loops
         trackSample = self.delay.dc_remove(trackSample)
