@@ -26,7 +26,7 @@ end
 
 function polyGen.VTrack:addProcessBlock(samples, smax)
 	local envamp = 1
-    local dt = self.notePeriod - self.filter.phaseDelay(self.noteFreq*plugin.getSampleRate())
+    local dt = self.notePeriod - self.filter.phaseDelay(self.noteFreq*plugin.getSampleRate()) -1
 	for i = 0,smax do
 		if self.env.ended then break end
         envamp = self.env:get_amp()
