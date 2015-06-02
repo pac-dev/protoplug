@@ -11,13 +11,15 @@ local Filter = require "include/pac/cookbook filters"
 local Env = require "include/pac/Env"
 local att_secs = 0
 local rel_secs = 0.3
+local fc = 6000
 local maxbuff = 2048 --44100/20
 
 polyGen.initTracks(8)
 
 function polyGen.VTrack:init()
 	-- create per-track fields here
-	self.filter = Filter{type = "hs", f = 15000, gain = -3, Q = 0.1}
+	--self.filter = Filter{type = "hs", f = 15000, gain = -3, Q = 0.1}
+    self.filter = Filter{type = "lp", f = fc, gain = -3, Q = 0.707}
     self.filter_excit = Filter{type = "hs", f = 6000, gain = -6, Q = 1}
     self.env = Env.EnvLinear:new{}
     self.envT = Env.EnvTri:new{}
@@ -54,7 +56,8 @@ function polyGen.VTrack:noteOn(note, vel, ev)
     self.delay.zero()
 	local amp = vel/127
 	self.amp = amp * amp
-    self.filter_excit.update{f=linearmap(self.amp,0,1,500,6000)}
+	self.filter.update{f=fc}
+    self.filter_excit.update{f=linearmap(self.amp,0,1,100,16000)}
 end
 
 params = plugin.manageParams {
@@ -67,5 +70,10 @@ params = plugin.manageParams {
 		name = "Release";
 		max = 1;
 		changed = function(val) rel_secs = val end;
+	};
+	{
+		name = "fc";
+		max = 10000;
+		changed = function(val) fc = val end;
 	};
 }
