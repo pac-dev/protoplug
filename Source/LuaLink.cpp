@@ -12,10 +12,25 @@ extern "C" {
 // could be avoided by namespacing every callback into a userdata (eg. theme api)
 std::map<protolua::lua_State*, LuaLink*> globalStates;
 
+// adapted from Lua 5.1 lbaselib.c
 static int LuaWriteLine (protolua::lua_State *L) {
 	LuaLink *luli = globalStates[L];
 	if (!luli) return 0;
-	luli->addToLog(luli->ls->tolstring(1, 0));
+	String logLine;
+	int n = luli->ls->gettop();  // number of arguments
+	int i;
+	luli->ls->getglobal("tostring");
+	for (i=1; i<=n; i++) {
+		const char *s;
+		luli->ls->pushvalue(-1);  // function to be called
+		luli->ls->pushvalue(i);   // value to print
+		luli->ls->pcall(1, 1, 0);
+		s = luli->ls->tostring(-1);  // get result
+		if (i>1) logLine += "\t";
+		logLine += (s == NULL) ? "<cannot convert to string>" : s;
+		luli->ls->pop(1);  // pop result
+	}
+	luli->addToLog(logLine);
 	return 0;
 }
 
@@ -51,6 +66,7 @@ void LuaLink::initProtoplugDir() {
 }
 
 void LuaLink::addToLog(String buf, bool isInput /*= false*/) {
+	buf = buf.replace("\t", "    "); // TODO this does not line up like real tabs, obviously...
 	if (log.length()>4000)
 		log = log.substring(log.length()-3000);
 	Time t = Time::getCurrentTime();

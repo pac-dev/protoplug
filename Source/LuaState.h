@@ -37,6 +37,7 @@ typedef int			(*ptr_lua_gettop)			(lua_State *L);
 typedef void		(*ptr_lua_settop)			(lua_State *L, int idx);
 typedef int			(*ptr_lua_pcall)			(lua_State *L, int nargs, int nresults, int errfunc);
 typedef void		(*ptr_lua_getfield)			(lua_State *L, int idx, const char *k);
+typedef void		(*ptr_lua_pushvalue)		(lua_State *L, int idx);
 typedef void		(*ptr_lua_pushlightuserdata)(lua_State *L, void *p);
 typedef void		(*ptr_lua_pushstring)		(lua_State *L, const char *s);
 typedef void		(*ptr_lua_pushnumber)		(lua_State *L, lua_Number n);
@@ -73,6 +74,7 @@ public:
 	void settop(int idx);
 	int pcall(int nargs, int nresults, int errfunc);
 	void getfield(int idx, const char *k);
+	void pushvalue(int idx);
 	void pushlightuserdata(void *p);
 	void pushstring(const char *s);
 	void pushnumber(lua_Number n);
@@ -124,6 +126,7 @@ public:
 	static ptr_lua_settop		lua_settop;
 	static ptr_lua_pcall		lua_pcall;
 	static ptr_lua_getfield		lua_getfield;
+	static ptr_lua_pushvalue	lua_pushvalue;
 	static ptr_lua_pushlightuserdata	lua_pushlightuserdata;
 	static ptr_lua_pushstring	lua_pushstring;
 	static ptr_lua_pushnumber	lua_pushnumber;

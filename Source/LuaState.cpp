@@ -17,6 +17,7 @@ ptr_lua_gettop		LuaState::lua_gettop			= 0;
 ptr_lua_settop		LuaState::lua_settop			= 0;
 ptr_lua_pcall		LuaState::lua_pcall				= 0;
 ptr_lua_getfield	LuaState::lua_getfield			= 0;
+ptr_lua_pushvalue	LuaState::lua_pushvalue			= 0;
 ptr_lua_pushlightuserdata	LuaState::lua_pushlightuserdata	= 0;
 ptr_lua_pushstring	LuaState::lua_pushstring		= 0;
 ptr_lua_pushnumber	LuaState::lua_pushnumber		= 0;
@@ -61,6 +62,7 @@ LuaState::LuaState(File defaultDir)
 		lua_settop			= ptr_lua_settop		(dll->getFunction("lua_settop"));
 		lua_pcall			= ptr_lua_pcall			(dll->getFunction("lua_pcall"));
 		lua_getfield		= ptr_lua_getfield		(dll->getFunction("lua_getfield"));
+		lua_pushvalue		= ptr_lua_pushvalue		(dll->getFunction("lua_pushvalue"));
 		lua_pushlightuserdata = ptr_lua_pushlightuserdata	(dll->getFunction("lua_pushlightuserdata"));
 		lua_pushstring		= ptr_lua_pushstring	(dll->getFunction("lua_pushstring"));
 		lua_pushnumber		= ptr_lua_pushnumber	(dll->getFunction("lua_pushnumber"));
@@ -75,7 +77,7 @@ LuaState::LuaState(File defaultDir)
 		luajit_setmode		= ptr_luajit_setmode	(dll->getFunction("luaJIT_setmode"));
 #endif
 	}
-	void *kk[23] = {
+	void *kk[24] = {
 		// cast required for some compilers
         (void*)luaL_newstate,
         (void*)luaL_openlibs,
@@ -90,6 +92,7 @@ LuaState::LuaState(File defaultDir)
         (void*)lua_settop,
         (void*)lua_pcall,
         (void*)lua_getfield,
+        (void*)lua_pushvalue,
         (void*)lua_pushlightuserdata,
         (void*)lua_pushstring,
         (void*)lua_pushnumber,
@@ -100,7 +103,7 @@ LuaState::LuaState(File defaultDir)
         (void*)lua_isnumber,
         (void*)lua_typename,
         (void*)lua_newuserdata};
-	for (int i=0; i<23; i++)
+	for (int i=0; i<24; i++)
 		if (kk[i]==0) {
 			failed = 1;
 			errmsg = 	"Error: Could not load " + libName + 
@@ -160,6 +163,9 @@ int LuaState::pcall(int nargs, int nresults, int errfunc)
 
 void LuaState::getfield(int idx, const char *k)
 { (*lua_getfield)(l, idx, k);}
+
+void LuaState::pushvalue(int idx)
+{ (*lua_pushvalue)(l, idx);}
 
 void LuaState::pushlightuserdata(void *p)
 { (*lua_pushlightuserdata)(l, p);}
