@@ -10,9 +10,9 @@ fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3")
 
 ffi.cdef[[
 typedef enum {
-     FFTW_R2HC=0, FFTW_HC2R=1, FFTW_DHT=2,
-     FFTW_REDFT00=3, FFTW_REDFT01=4, FFTW_REDFT10=5, FFTW_REDFT11=6,
-     FFTW_RODFT00=7, FFTW_RODFT01=8, FFTW_RODFT10=9, FFTW_RODFT11=10
+	FFTW_R2HC=0, FFTW_HC2R=1, FFTW_DHT=2,
+	FFTW_REDFT00=3, FFTW_REDFT01=4, FFTW_REDFT10=5, FFTW_REDFT11=6,
+	FFTW_RODFT00=7, FFTW_RODFT01=8, FFTW_RODFT10=9, FFTW_RODFT11=10
 } fftw_r2r_kind;
 void *fftw_plan_r2r_1d(int n, double *in, double *out, fftw_r2r_kind kind, unsigned int flags);
 void fftw_execute(void *plan);

@@ -3,16 +3,16 @@
 
 
 local function FLine (bufSize)
-    local n,e = math.frexp(bufSize)
-    bufSize = 2^e --nextpoweroftwo
+	local n,e = math.frexp(bufSize)
+	bufSize = 2^e --nextpoweroftwo
 	local buf = ffi.new("double[?]", bufSize)
-    local mask = bufSize - 1
-    local h = {[0]=0,0,0,0}
+	local mask = bufSize - 1
+	local h = {[0]=0,0,0,0}
 	local pos = 0 
-    local ptL = 0
+	local ptL = 0
 	local dc1, dc2 = 0, 0
-    local lastdt = math.huge
-    local function CalcCoeffs(delay)
+	local lastdt = math.huge
+	local function CalcCoeffs(delay)
 		local intd =math.floor(delay);
 		local Dm1 = delay - intd;
 		intd = intd - 1.;
@@ -30,30 +30,30 @@ local function FLine (bufSize)
 	end
 	return {
 		goBack = function (dt)
-            if (dt ~= lastdt) then
-                ptL = CalcCoeffs(dt);
-                lastdt = dt;
-            end
+			if (dt ~= lastdt) then
+				ptL = CalcCoeffs(dt);
+				lastdt = dt;
+			end
 			local sum = 0;
-            for i=0,3 do
-                sum = sum + buf[bit.band((pos + ptL + i), mask)]*h[i];
-            end
-            return sum;
+			for i=0,3 do
+				sum = sum + buf[bit.band((pos + ptL + i), mask)]*h[i];
+			end
+			return sum;
 		end;
 		push = function (s)
 			pos = pos - 1
 			if pos < 0 then pos = mask end
 			buf[pos] = s
 		end;
-        zero = function()
-            for i=0,bufSize-1 do buf[i] = 0 end
-        end;
-        dc_remove = function(s)
-            dc1 = dc1 + (s - dc2) * 0.000002
+		zero = function()
+			for i=0,bufSize-1 do buf[i] = 0 end
+		end;
+		dc_remove = function(s)
+			dc1 = dc1 + (s - dc2) * 0.000002
 			dc2 = dc2 + dc1
 			dc1 = dc1 * 0.96
-            return s - dc2
-        end
+			return s - dc2
+		end
 	}
 end
 

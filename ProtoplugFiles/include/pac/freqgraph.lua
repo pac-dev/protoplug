@@ -173,7 +173,7 @@ function M:InitBackBuffer()
 	
 	-- draw the Y axis labels
 	g:saveState()
-	g:addTransform(J.AffineTransform(0, -1, self.bounds.w,     1, 0, self.frame.y))
+	g:addTransform(J.AffineTransform(0, -1, self.bounds.w, 1, 0, self.frame.y))
 	g:setFont(16)
 	g:drawText(self.yAxis.name, 0, 0, self.frame.h, 20, J.Justification.centred)
 	g:restoreState()
