@@ -3,7 +3,7 @@
 an interactive histogram-ish frequency graph 
 used in "spectral filter" and "pitch distort"
 usage : 
-	local Freqgraph = require "include/pac/freqgraph"
+	local Freqgraph = require "include/gui-extras/freqgraph"
 	local fg = Freqgraph {
 		-- required paramters :
 			-- an array (Lua or C) containing the values to be read and modified by the interactive graph

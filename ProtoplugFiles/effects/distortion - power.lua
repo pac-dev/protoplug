@@ -4,7 +4,7 @@ description: The one from the website
 author: osar.fr
 --]]
 require "include/protoplug"
-local cbFilter = require "include/pac/cookbook filters"
+local cbFilter = require "include/dsp/cookbook filters"
 
 local power
 

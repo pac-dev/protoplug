@@ -95,7 +95,7 @@ end
 
 
 --			Graphics		 --
-local Freqgraph = require "include/pac/freqgraph"
+local Freqgraph = require "include/gui-extras/freqgraph"
 local J = require "include/protojuce"
 
 local fg = Freqgraph {

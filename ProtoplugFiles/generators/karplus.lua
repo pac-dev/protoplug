@@ -6,9 +6,9 @@ author: victor bombi
 
 require "include/protoplug"
 
-local Fdelay = require "include/pac/fdelay_line"
-local Filter = require "include/pac/cookbook filters"
-local Env = require "include/pac/Env"
+local Fdelay = require "include/dsp/fdelay_line"
+local Filter = require "include/dsp/cookbook filters"
+local Env = require "include/dsp/Env"
 local att_secs = 0
 local rel_secs = 0.3
 local fc = 6000
