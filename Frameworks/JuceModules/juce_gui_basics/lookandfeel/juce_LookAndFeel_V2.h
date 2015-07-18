@@ -67,7 +67,22 @@ public:
     void drawAlertBox (Graphics&, AlertWindow&, const Rectangle<int>& textArea, TextLayout&) override;
     int getAlertBoxWindowFlags() override;
     int getAlertWindowButtonHeight() override;
+
+    /** Override this function to supply a custom font for the alert window title.
+        This default implementation will use a boldened and slightly larger version
+        of the alert window message font.
+
+        @see getAlertWindowMessageFont.
+    */
+    Font getAlertWindowTitleFont() override;
+
+    /** Override this function to supply a custom font for the alert window message.
+        This default implementation will use the default font with height set to 15.0f.
+
+        @see getAlertWindowTitleFont
+    */
     Font getAlertWindowMessageFont() override;
+
     Font getAlertWindowFont() override;
 
     //==============================================================================
@@ -193,9 +208,10 @@ public:
     ImageEffectFilter* getSliderEffect (Slider&) override;
     Font getSliderPopupFont (Slider&) override;
     int getSliderPopupPlacement (Slider&) override;
+    Slider::SliderLayout getSliderLayout (Slider&) override;
 
     //==============================================================================
-    void getTooltipSize (const String& tipText, int& width, int& height) override;
+    Rectangle<int> getTooltipBounds (const String& tipText, Point<int> screenPos, Rectangle<int> parentArea) override;
     void drawTooltip (Graphics&, const String& text, int width, int height) override;
 
     //==============================================================================

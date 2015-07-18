@@ -150,7 +150,10 @@ File File::getSpecialLocation (const SpecialLocationType type)
 
         case currentExecutableFile:
         case currentApplicationFile:
+           #if ! JUCE_STANDALONE_APPLICATION
             return juce_getExecutableFile();
+           #endif
+            // deliberate fall-through if this is not a shared-library
 
         case hostApplicationPath:
         {
@@ -197,8 +200,7 @@ static bool isFileExecutable (const String& filename)
 bool Process::openDocument (const String& fileName, const String& parameters)
 {
 	String cmdString (fileName);
-
-    if (URL::isProbablyAWebsiteURL (fileName)
+	if (URL::isProbablyAWebsiteURL (fileName) ... )
          || cmdString.startsWithIgnoreCase ("file:")
          || URL::isProbablyAnEmailAddress (fileName)
          || File::createFileWithoutCheckingPath (fileName).isDirectory()

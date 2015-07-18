@@ -3,7 +3,7 @@ in  juce_PopupMenu.cpp > class MouseSourceState > void timerCallback() (line 980
 
 		if (window.windowIsStillValid()) {
 			window.toFront(false);
-			handleMousePosition (source.getScreenPosition());
+			handleMousePosition (source.getScreenPosition().roundToInt());
 		}
 this fixes the menu-behind-window-when-window-made-always-on-top-by-host glitch.
 
