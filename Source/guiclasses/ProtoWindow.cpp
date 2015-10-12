@@ -238,6 +238,12 @@ StringArray ProtoWindow::getMenuBarNames()
 
 void ProtoWindow::addFolderToMenu(File folder, PopupMenu &menu, String filter, int &mapCounter)
 {
+	if (folder.getFileName().matchesWildcard("*in *out", false))
+	{
+		std::pair<int,int> chans = processor->getNumChannelsFromFilename(folder);
+		if (chans.first != processor->getMaxInputs() || chans.second != processor->getMaxOutputs())
+			return;
+	}
 	Array<File> res;
 	int max = folder.findChildFiles(res, File::findDirectories, 0);
 	for (int i=0; i<max; i++) {
