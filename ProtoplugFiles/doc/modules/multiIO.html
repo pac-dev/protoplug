@@ -1,0 +1,344 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>protoplug: Module multiIO</title>
+    <link rel="stylesheet" href="../ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<a href="http://osar.fr">
+<div class=osarlogo> </div>
+</a>
+<br/>
+<a href="http://osar.fr/protoplug">
+<h1>protoplug</h1>
+</a>
+	<span class="proto_subtitle">Lua API reference</span>
+
+<ul>
+  <li><a href="../index.html">Index</a></li>
+</ul>
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Callback_functions">Callback functions </a></li>
+<li><a href="#Override_functions">Override functions </a></li>
+<li><a href="#Class_multiIO_Channel">Class multiIO.Channel </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><strong>multiIO</strong></li>
+  <li><a href="../modules/midi.html">midi</a></li>
+  <li><a href="../modules/polyGen.html">polyGen</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
+</ul>
+<h2>Classes</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../classes/juce.AffineTransform.html">juce.AffineTransform</a></li>
+  <li><a href="../classes/juce.AudioFormatReader.html">juce.AudioFormatReader</a></li>
+  <li><a href="../classes/juce.Colour.html">juce.Colour</a></li>
+  <li><a href="../classes/juce.ColourGradient.html">juce.ColourGradient</a></li>
+  <li><a href="../classes/juce.Component.html">juce.Component</a></li>
+  <li><a href="../classes/juce.FillType.html">juce.FillType</a></li>
+  <li><a href="../classes/juce.Font.html">juce.Font</a></li>
+  <li><a href="../classes/juce.Graphics.html">juce.Graphics</a></li>
+  <li><a href="../classes/juce.Image.html">juce.Image</a></li>
+  <li><a href="../classes/juce.Justification.html">juce.Justification</a></li>
+  <li><a href="../classes/juce.LagrangeInterpolator.html">juce.LagrangeInterpolator</a></li>
+  <li><a href="../classes/juce.Line.html">juce.Line</a></li>
+  <li><a href="../classes/juce.Path.html">juce.Path</a></li>
+  <li><a href="../classes/juce.Point.html">juce.Point</a></li>
+  <li><a href="../classes/juce.RectanglePlacement.html">juce.RectanglePlacement</a></li>
+  <li><a href="../classes/juce.Rectangle_float.html">juce.Rectangle_float</a></li>
+  <li><a href="../classes/juce.Rectangle_int.html">juce.Rectangle_int</a></li>
+</ul>
+<h2>Examples</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><a href="../examples/classic-filter.lua.html">classic-filter.lua</a></li>
+  <li><a href="../examples/sine-organ.lua.html">sine-organ.lua</a></li>
+  <li><a href="../examples/midi-chordify.lua.html">midi-chordify.lua</a></li>
+  <li><a href="../examples/sinemouse-demo.lua.html">sinemouse-demo.lua</a></li>
+  <li><a href="../examples/soundfile-test.lua.html">soundfile-test.lua</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>multiIO</code></h1>
+<p>This module allows handling of multiple audio channels (stereo or more).</p>
+<p>
+
+<p> For more info on multichannel handling, see this article:
+ http://osar.fr/articles/10/Handling<em>Stereo</em>and<em>Multichannel</em>in_Protoplug</p>
+
+<p> Most effects and non-mono instruments should use <a href="../modules/multiIO.html#multiIO.Channel">multiIO.Channel</a>  for easy
+ management of multiple channels. Define <a href="../modules/multiIO.html#Channel:processBlock">Channel:processBlock</a>
+ instead of <a href="../modules/plugin.html#processBlock">plugin.processBlock</a>, and processing will be applied to every
+ channel.</p>
+
+<p> The <a href="../modules/multiIO.html#">multiIO</a>  global is available to every protoplug script after including the
+ main protoplug header :</p>
+<pre><code>require "include/protoplug"
+</code></pre>
+</p>
+
+
+<h2><a href="#Callback_functions">Callback functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#getNumInputs"><span class="proto_prefix">multiIO</span>.getNumInputs ()</a></td>
+	<td class="summary">Get the number of input channels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getNumOutputs"><span class="proto_prefix">multiIO</span>.getNumOutputs ()</a></td>
+	<td class="summary">Get the number of output channels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getNumConnectedInputs"><span class="proto_prefix">multiIO</span>.getNumConnectedInputs ()</a></td>
+	<td class="summary">Get the number of currently connected input channels.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#getNumConnectedOutputs"><span class="proto_prefix">multiIO</span>.getNumConnectedOutputs ()</a></td>
+	<td class="summary">Get the number of output channels.</td>
+	</tr>
+</table>
+<h2><a href="#Override_functions">Override functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#processMIDI"><span class="proto_prefix">multiIO</span>.processMIDI (midiBuf)</a></td>
+	<td class="summary">Receive MIDI before multichannel audio.</td>
+	</tr>
+</table>
+<h2><a href="#Class_multiIO_Channel">Class multiIO.Channel </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Channel:processBlock"><span class="proto_prefix">multiIO.Channel</span>:processBlock (samples, smax)</a></td>
+	<td class="summary">Override to process a channel's audio block.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#Channel:init"><span class="proto_prefix">multiIO.Channel</span>:init ()</a></td>
+	<td class="summary">Override to handle initialisation.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Callback_functions"></a>Callback functions </h2>
+
+ Functions that your script can call.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "getNumInputs"></a>
+    <strong><span class="proto_prefix">multiIO</span>.getNumInputs ()</strong>
+    </dt>
+    <dd>
+    Get the number of input channels.
+ Returns the total number of input channels (connected or not), as set by the plugin's
+ filename (eg. will return 4 if using <code>Lua Protoplug Fx 4in 8out.dll</code>).
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getNumOutputs"></a>
+    <strong><span class="proto_prefix">multiIO</span>.getNumOutputs ()</strong>
+    </dt>
+    <dd>
+    Get the number of output channels.
+ Returns the total number of output channels (connected or not), as set by the plugin's
+ filename (eg. will return 8 if using <code>Lua Protoplug Fx 4in 8out.dll</code>).
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getNumConnectedInputs"></a>
+    <strong><span class="proto_prefix">multiIO</span>.getNumConnectedInputs ()</strong>
+    </dt>
+    <dd>
+    Get the number of currently connected input channels.
+ Returns number of input channels currently connected to another node in the host.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "getNumConnectedOutputs"></a>
+    <strong><span class="proto_prefix">multiIO</span>.getNumConnectedOutputs ()</strong>
+    </dt>
+    <dd>
+    Get the number of output channels.
+ Returns number of output channels currently connected to another node in the host.
+
+    </ul>
+
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">number</span></span>
+
+
+
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Override_functions"></a>Override functions </h2>
+
+ Define these functions and the host will call them.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "processMIDI"></a>
+    <strong><span class="proto_prefix">multiIO</span>.processMIDI (midiBuf)</strong>
+    </dt>
+    <dd>
+    Receive MIDI before multichannel audio.
+ If you defined <a href="../modules/multiIO.html#Channel:processBlock">Channel:processBlock</a>, and you also want to
+ process MIDI, define this function and it will get called on every block
+ before any audio processing happens.
+
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">midiBuf</span>
+            <span class="types"><a class="type" href="../modules/midi.html#midi.Buffer">midi.Buffer</a></span>
+         the MIDI data for this block, serving as input and output
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Class_multiIO_Channel"></a>Class multiIO.Channel </h2>
+
+ This class represents an Input/Output audio channel.
+ <br><br>
+    <dl class="function">
+    <dt>
+    <a name = "Channel:processBlock"></a>
+    <strong><span class="proto_prefix">multiIO.Channel</span>:processBlock (samples, smax)</strong>
+    </dt>
+    <dd>
+    Override to process a channel's audio block.
+ Define the audio processing of an I/O channel in this function. If this is
+ defined, it will be called instead of <a href="../modules/plugin.html#processBlock">plugin.processBlock</a>.
+
+    </ul>
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">samples</span>
+         a C float* serving as input and output
+        </li>
+        <li><span class="parameter">smax</span>
+         the maximum sample index (nSamples - 1)
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "Channel:init"></a>
+    <strong><span class="proto_prefix">multiIO.Channel</span>:init ()</strong>
+    </dt>
+    <dd>
+    Override to handle initialisation.
+ Override this method to perform initialisation tasks on each channel,
+ for example to create any per-channel fields.
+
+    </ul>
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>

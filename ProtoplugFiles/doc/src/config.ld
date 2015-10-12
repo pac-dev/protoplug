@@ -21,7 +21,7 @@ local function softenPrefix(s)
 	end
 end
 
-local forcePrefix = {"plugin", "script", "gui", "midi", "polyGen", "stereoFx"}
+local forcePrefix = {"plugin", "script", "gui", "midi", "polyGen", "multiIO"}
 local function formatName(item, default_display_name)
 	for _, v in ipairs(forcePrefix) do
 		if item.module.name == v then
@@ -56,12 +56,12 @@ new_type("simplefield","Fields")
 new_type("predefined","Predefined values")
 
 file = {
-	'../../include/core/plugin.lua';
 	'../../include/core/script.lua';
+	'../../include/core/plugin.lua';
+	'../../include/core/multiio.lua';
 	'../../include/core/midi.lua';
-	'../../include/core/gui.lua';
 	'../../include/core/polygen.lua';
-	'../../include/core/stereofx.lua';
+	'../../include/core/gui.lua';
 	'../../include/protojuce';
 }
 examples = {
