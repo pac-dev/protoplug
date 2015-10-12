@@ -44,6 +44,7 @@ public:
 			plugType = "error";
 		String m;
 		m << "Protoplug " << JucePlugin_VersionString << newLine
+			<< "Channels in: " << processor->getMaxInputs() << ", out: " << processor->getMaxOutputs() << newLine
 			<< "Author: Pierre Cusa" << newLine
 			<< "Homepage: http://osar.fr/protoplug" << newLine
 			<< "Build date: " << __DATE__ << newLine

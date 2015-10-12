@@ -41,6 +41,34 @@ static int LuaSetParam (protolua::lua_State *L) {
 	return 0;
 }
 
+static int LuaGetMaxInputChannels (protolua::lua_State *L) {
+	LuaLink *luli = globalStates[L];
+	if (!luli) return 0;
+	luli->ls->pushnumber(luli->pfx->getMaxInputs());
+	return 1;
+}
+
+static int LuaGetMaxOutputChannels (protolua::lua_State *L) {
+	LuaLink *luli = globalStates[L];
+	if (!luli) return 0;
+	luli->ls->pushnumber(luli->pfx->getMaxOutputs());
+	return 1;
+}
+
+static int LuaGetNumConnectedInputChannels (protolua::lua_State *L) {
+	LuaLink *luli = globalStates[L];
+	if (!luli) return 0;
+	luli->ls->pushnumber(luli->pfx->getNumInputChannels());
+	return 1;
+}
+
+static int LuaGetNumConnectedOutputChannels (protolua::lua_State *L) {
+	LuaLink *luli = globalStates[L];
+	if (!luli) return 0;
+	luli->ls->pushnumber(luli->pfx->getNumOutputChannels());
+	return 1;
+}
+
 LuaLink::LuaLink(LuaProtoplugJuceAudioProcessor *_pfx)
 {
 	ls = 0;
@@ -115,6 +143,14 @@ void LuaLink::compile() {
 	ls->setglobal("print");
 	ls->pushcclosure(LuaSetParam, 0);
 	ls->setglobal("plugin_setParameter");
+	ls->pushcclosure(LuaGetMaxInputChannels, 0);
+	ls->setglobal("plugin_getMaxInputChannels");
+	ls->pushcclosure(LuaGetMaxOutputChannels, 0);
+	ls->setglobal("plugin_getMaxOutputChannels");
+	ls->pushcclosure(LuaGetNumConnectedInputChannels, 0);
+	ls->setglobal("plugin_getNumConnectedInputChannels");
+	ls->pushcclosure(LuaGetNumConnectedOutputChannels, 0);
+	ls->setglobal("plugin_getNumConnectedOutputChannels");
 
 	// set globals
 	ls->pushlightuserdata((void *)&pfx->params);
@@ -387,6 +423,11 @@ double LuaLink::getTailLengthSeconds()
 	double ret = ls->tonumber(-1);
 	ls->pop( 1); // pop returned value
 	return ret;
+}
+
+void LuaLink::numChannelsChanged()
+{
+	callVoidOverride("plugin_numChannelsChanged", 0);
 }
 
 void LuaLink::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages, AudioPlayHead* ph)

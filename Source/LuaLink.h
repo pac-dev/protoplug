@@ -25,6 +25,7 @@ public:
 	bool parameterText2Double (int index, String text, double &d);
 	void paramChanged(int index);
 	double getTailLengthSeconds();
+	void numChannelsChanged();
 	String save();
 	void load(String loadData);
 	void preClose();

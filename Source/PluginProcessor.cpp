@@ -12,7 +12,6 @@
 #include "PluginEditor.h"
 #include "ProtoplugDir.h"
 
-
 //==============================================================================
 LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
 {
@@ -26,6 +25,8 @@ LuaProtoplugJuceAudioProcessor::LuaProtoplugJuceAudioProcessor()
 	for (int i=0; i<NPARAMS; i++)
 		params[i] = 0.5;
 	chunk = 0;
+	std::pair<int,int> nchans = getNumChannelsFromFilename(File::getSpecialLocation(File::currentExecutableFile));
+	initializeMaxChannels(nchans.first, nchans.second);
 	luli = new LuaLink(this);
 }
 
@@ -159,6 +160,32 @@ void LuaProtoplugJuceAudioProcessor::setStateInformation (const void* data, int 
 		luli->saveData = pc;			// get lua saveable string
 		luli->load(luli->saveData);
 	}
+}
+
+void LuaProtoplugJuceAudioProcessor::numChannelsChanged ()
+{
+	luli->numChannelsChanged();
+}
+
+std::pair<int,int> LuaProtoplugJuceAudioProcessor::getNumChannelsFromFilename(File file)
+{
+	// example: "Lua Protoplug Fx 12in 2out"
+	// example: "Lua Protoplug Gen 4out"
+	String filename = file.getFileName();
+	int in, out;
+#ifdef _PROTOGEN
+	in = 0;
+	out = filename.substring(18).upToFirstOccurrenceOf("out", false, false).getIntValue();
+	if (out==0) out = 2;
+#else
+	in = filename.upToFirstOccurrenceOf("in", false, false).getLastCharacters(2).getIntValue();
+	out = filename.upToFirstOccurrenceOf("out", false, false).getLastCharacters(2).getIntValue();
+	//in = filename.substring(17).upToFirstOccurrenceOf("in", false, false).getIntValue();
+	//out = filename.fromFirstOccurrenceOf("out" .upToFirstOccurrenceOf("in", false, false).getIntValue();
+	if (in==0) in = 2;
+	if (out==0) out = 2;
+#endif
+	return std::pair<int,int>(in,out);
 }
 
 //==============================================================================
