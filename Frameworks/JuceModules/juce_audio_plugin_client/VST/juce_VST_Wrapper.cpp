@@ -251,8 +251,8 @@ public:
          chunkMemoryTime (0),
          speakerIn (kSpeakerArrEmpty),
          speakerOut (kSpeakerArrEmpty),
-         numInChans (JucePlugin_MaxNumInputChannels),
-         numOutChans (JucePlugin_MaxNumOutputChannels),
+		 numInChans (af->getMaxInputs()),
+		 numOutChans (af->getMaxOutputs()),
          isProcessing (false),
          isBypassed (false),
          hasShutdown (false),
@@ -433,7 +433,7 @@ public:
 
     bool getInputProperties (VstInt32 index, VstPinProperties* properties) override
     {
-        if (filter == nullptr || index >= JucePlugin_MaxNumInputChannels)
+		if (filter == nullptr || index >= filter->getMaxInputs())
             return false;
 
         setPinProperties (*properties, filter->getInputChannelName ((int) index),
@@ -443,7 +443,7 @@ public:
 
     bool getOutputProperties (VstInt32 index, VstPinProperties* properties) override
     {
-        if (filter == nullptr || index >= JucePlugin_MaxNumOutputChannels)
+		if (filter == nullptr || index >= filter->getMaxOutputs())
             return false;
 
         setPinProperties (*properties, filter->getOutputChannelName ((int) index),
@@ -917,7 +917,7 @@ public:
             return 0;
         }
     };
-
+	/*
     bool setSpeakerArrangement (VstSpeakerArrangement* pluginInput,
                                 VstSpeakerArrangement* pluginOutput) override
     {
@@ -955,7 +955,7 @@ public:
         filter->setSpeakerArrangement (String::empty, String::empty);
         return false;
     }
-
+	*/
     static const char* getSpeakerArrangementString (VstSpeakerArrangementType type) noexcept
     {
         switch (type)

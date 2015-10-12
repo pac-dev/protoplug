@@ -40,6 +40,8 @@ AudioProcessor::AudioProcessor()
       suspended (false),
       nonRealtime (false)
 {
+	maxInputs = JucePlugin_MaxNumInputChannels;
+	maxOutputs = JucePlugin_MaxNumOutputChannels;
 }
 
 AudioProcessor::~AudioProcessor()
@@ -395,6 +397,32 @@ XmlElement* AudioProcessor::getXmlFromBinary (const void* data, const int sizeIn
     }
 
     return nullptr;
+}
+
+
+void AudioProcessor::initializeMaxChannels(int numIn, int numOut)
+{
+	// todo assert false if this is called after getters?
+	maxInputs = numIn;
+	maxOutputs = numOut;
+}
+
+int AudioProcessor::getMaxInputs()
+{
+	return maxInputs;
+}
+
+int AudioProcessor::getMaxOutputs()
+{
+	return maxOutputs;
+}
+
+std::vector<std::pair<int,int>> AudioProcessor::getPreferredChannelConfigs()
+{
+	// only half-implemented and not really settable (todo?)
+	std::vector<std::pair<int,int>> ret;
+	ret.push_back(std::pair<int,int>(maxInputs, maxOutputs));
+	return ret;
 }
 
 //==============================================================================
