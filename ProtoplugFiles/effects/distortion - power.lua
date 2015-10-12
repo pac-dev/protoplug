@@ -13,14 +13,13 @@ local function dist (x)
 	return math.pow (x,power)
 end
 
-stereoFx.init ()
-function stereoFx.Channel:init ()
+function multiIO.Channel:init ()
 	-- create per-channel fields (filters)
 	self.low = cbFilter {type = "lp"; f = 100; gain = 0; Q = 0.3}
 	self.high = cbFilter {type = "hp"; f = 50; gain = 0; Q = 0.3}
 end
 
-function stereoFx.Channel:processBlock (samples, smax)
+function multiIO.Channel:processBlock (samples, smax)
 	for i = 0, smax do
 		local s = dist (self.high.process (samples[i]))
 		samples[i] = s + self.low.process (samples[i])*2

@@ -47,7 +47,7 @@ script.addHandler("init", function ()
 	--- Process Audio Block.
 	-- Override this function to input and output audio and MIDI data.
 	--
-	-- This override is handled automatically if @{stereoFx} or @{polyGen} are used. 
+	-- This override is handled automatically if @{multiIO} or @{polyGen} are used. 
 	-- Use this function to handle the raw data instead.
 	-- @param samples a C float** pointing to two channels of samples, serving as input and output
 	-- @param smax the maximum sample index (nSamples - 1)
@@ -61,7 +61,8 @@ script.addHandler("init", function ()
 	-- end
 	-- @function plugin.processBlock
 	local dbged = false
-	if type(plugin.processBlock) == "function" then
+	if type(plugin.processBlock) == "function" 
+	or (multiIO and type(multiIO.Channel.processBlock) == "function") then
 		local prepared = false
 		function plugin_processBlock(nSamples, samples, midiBuf, playHead, _sampleRate)
 			if not dbged then
