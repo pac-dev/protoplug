@@ -199,8 +199,10 @@ static bool isFileExecutable (const String& filename)
 
 bool Process::openDocument (const String& fileName, const String& parameters)
 {
-	String cmdString (fileName);
-	if (URL::isProbablyAWebsiteURL (fileName) ... )
+    String cmdString (fileName.replace (" ", "\\ ",false));
+    cmdString << " " << parameters;
+
+    if (URL::isProbablyAWebsiteURL (fileName)
          || cmdString.startsWithIgnoreCase ("file:")
          || URL::isProbablyAnEmailAddress (fileName)
          || File::createFileWithoutCheckingPath (fileName).isDirectory()
@@ -216,8 +218,6 @@ bool Process::openDocument (const String& fileName, const String& parameters)
 
         cmdString = cmdLines.joinIntoString (" || ");
     }
-	else
-		cmdString = fileName.replace (" ", "\\ ",false) + " " + parameters;
 
     const char* const argv[4] = { "/bin/sh", "-c", cmdString.toUTF8(), 0 };
 
