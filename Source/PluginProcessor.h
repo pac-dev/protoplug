@@ -24,10 +24,11 @@ public:
     double getTailLengthSeconds() const;
     void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
+	void numChannelsChanged();
 
 	// some inlined overrides
-	const String getInputChannelName (int channelIndex) const	{ return String (channelIndex + 1); }
-	const String getOutputChannelName (int channelIndex) const	{ return String (channelIndex + 1); }
+	const String getInputChannelName (int channelIndex) const	{ return "protoplug in " + String (channelIndex + 1); }
+	const String getOutputChannelName (int channelIndex) const	{ return "protoplug out " + String (channelIndex + 1); }
 	float getParameterDefaultValue (int /*parameterIndex*/)	{ return 0.5; }
 	bool isInputChannelStereoPair (int /*index*/) const		{ return true; }
 	bool isOutputChannelStereoPair (int /*index*/) const	{ return true; }
@@ -50,6 +51,7 @@ public:
 	ProtoWindow *getProtoEditor();
 	void setProtoEditor(ProtoWindow * _ed);
     bool parameterText2Double (int index, String text, double &d);
+	static std::pair<int,int> getNumChannelsFromFilename(File file);
 	
     int lastUIWidth, lastUIHeight, lastUISplit, lastUIPanel;
 	int lastPopoutX, lastPopoutY;

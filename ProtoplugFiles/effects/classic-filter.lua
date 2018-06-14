@@ -10,9 +10,7 @@ require "include/protoplug"
 local cbFilter = require "include/dsp/cookbook filters"
 local filters = {}
 
-stereoFx.init()
-
-function stereoFx.Channel:init()
+function multiIO.Channel:init()
 	-- create per-channel fields (filters)
 	self.filter = cbFilter
 	{
@@ -25,7 +23,7 @@ function stereoFx.Channel:init()
 	table.insert(filters, self.filter)
 end
 
-function stereoFx.Channel:processBlock(s, smax)
+function multiIO.Channel:processBlock(s, smax)
 	for i = 0,smax do
 		s[i] = self.filter.process(s[i])
 	end

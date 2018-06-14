@@ -6,8 +6,6 @@ author: osar.fr
 
 require "include/protoplug"
 
-stereoFx.init()
-
 fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3")
 
 -- params
@@ -54,7 +52,7 @@ local r2c = fftlib.fftw_plan_dft_r2c_1d(fftSize, dbuf, spectrum, 64)
 local c2r = fftlib.fftw_plan_dft_c2r_1d(fftSize, spectrum, dbuf, 64)
 
 -- per-channel buffers
-function stereoFx.Channel:init()
+function multiIO.Channel:init()
 	self.inbuf = ffi.new("double[?]", lineMax)
 	self.outbuf = ffi.new("double[?]", lineMax)
 	self.bufi = 0
@@ -119,7 +117,7 @@ function wrap (i)
 	return (i>lineMax-1) and i-lineMax or i
 end
 
-function stereoFx.Channel:processBlock(s, smax)
+function multiIO.Channel:processBlock(s, smax)
 	for i = 0,smax do
 		self.inbuf[self.bufi] = s[i]
 		s[i] = self.outbuf[self.bufi]

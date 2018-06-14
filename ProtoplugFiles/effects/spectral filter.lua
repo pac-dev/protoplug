@@ -7,8 +7,6 @@ author: osar.fr
 require "include/protoplug"
 require "include/Pickle"
 
-stereoFx.init()
-
 -- settings (change these here)
 local fftSize = 512
 local xPixels = 400
@@ -59,7 +57,7 @@ local r2c = fftlib.fftw_plan_dft_r2c_1d(fftSize, samples, spectrum, 64)
 local c2r = fftlib.fftw_plan_dft_c2r_1d(fftSize, spectrum, samples, 64)
 
 -- per-channel buffers
-function stereoFx.Channel:init()
+function multiIO.Channel:init()
 	self.inbuf = ffi.new("double[?]", fftSize)
 	self.outbuf = ffi.new("double[?]", fftSize)
 	self.bufi = 0
@@ -69,7 +67,7 @@ local function wrap (i)
 	return (i>fftSize-1) and i-fftSize or i
 end
 
-function stereoFx.Channel:processBlock(s, smax)
+function multiIO.Channel:processBlock(s, smax)
 	for i = 0,smax do
 		self.inbuf[self.bufi] = s[i]
 		s[i] = self.outbuf[self.bufi]

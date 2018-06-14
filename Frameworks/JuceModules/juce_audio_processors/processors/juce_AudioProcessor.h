@@ -712,6 +712,35 @@ public:
     */
     static XmlElement* getXmlFromBinary (const void* data, int sizeInBytes);
 
+    /** Protoplug extension: initialize max number of channels.
+	
+        This overrides a number of preprocessor constants, and allows for the number of channels to
+        be defined at runtime instead of compile time. This is meant to be called in the
+        constructor of the class inheriting AudioProcessor. 
+    */
+    void initializeMaxChannels(int numIn, int numOut);
+
+    /** Protoplug extension: get maximum number of input channels.
+	
+        This replaces the JucePlugin_MaxNumInputChannels constant, allowing it to be defined at
+		runtime.
+    */
+    int getMaxInputs();
+
+    /** Protoplug extension: get maximum number of output channels.
+	
+        This replaces the JucePlugin_MaxNumOutputChannels constant, allowing it to be defined at
+		runtime.
+    */
+    int getMaxOutputs();
+
+    /** Protoplug extension: get preferred channel configurations.
+	
+        This replaces the JucePlugin_PreferredChannelConfigurations constant, allowing
+		it to be defined at runtime.
+    */
+	std::vector<std::pair<int,int>> getPreferredChannelConfigs();
+
     /** @internal */
     static void JUCE_CALLTYPE setTypeOfNextNewPlugin (WrapperType);
 
@@ -733,6 +762,9 @@ private:
 
     OwnedArray<AudioProcessorParameter> managedParameters;
     AudioProcessorParameter* getParamChecked (int) const noexcept;
+
+	// protoplug extension
+	int maxInputs, maxOutputs;
 
    #if JUCE_DEBUG && ! JUCE_DISABLE_AUDIOPROCESSOR_BEGIN_END_GESTURE_CHECKING
     BigInteger changingParams;

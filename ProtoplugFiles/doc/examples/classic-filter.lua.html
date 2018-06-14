@@ -48,12 +48,12 @@
 </ul>
 <h2>Modules</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
-  <li><a href="../modules/plugin.html">plugin</a></li>
   <li><a href="../modules/script.html">script</a></li>
+  <li><a href="../modules/plugin.html">plugin</a></li>
+  <li><a href="../modules/multiIO.html">multiIO</a></li>
   <li><a href="../modules/midi.html">midi</a></li>
-  <li><a href="../modules/gui.html">gui</a></li>
   <li><a href="../modules/polyGen.html">polyGen</a></li>
-  <li><a href="../modules/stereoFx.html">stereoFx</a></li>
+  <li><a href="../modules/gui.html">gui</a></li>
 </ul>
 <h2>Classes</h2>
 <ul class="$(kind=='Topics' and '' or 'nowrap'">
@@ -93,9 +93,7 @@ author: osar.fr
 <span class="keyword">local</span> cbFilter = <span class="global">require</span> <span class="string">"include/dsp/cookbook filters"</span>
 <span class="keyword">local</span> filters = {}
 
-stereoFx.init()
-
-<span class="keyword">function</span> stereoFx.Channel:init()
+<span class="keyword">function</span> multiIO.Channel:init()
 	<span class="comment">-- create per-channel fields (filters)
 </span>	self.filter = cbFilter
 	{
@@ -108,7 +106,7 @@ stereoFx.init()
 	<span class="global">table</span>.insert(filters, self.filter)
 <span class="keyword">end</span>
 
-<span class="keyword">function</span> stereoFx.Channel:processBlock(s, smax)
+<span class="keyword">function</span> multiIO.Channel:processBlock(s, smax)
 	<span class="keyword">for</span> i = <span class="number">0</span>,smax <span class="keyword">do</span>
 		s[i] = self.filter.process(s[i])
 	<span class="keyword">end</span>
