@@ -54,6 +54,7 @@ public:
 			sliders[i]->setValue(processor->params[i], dontSendNotification);
 			sliders[i]->updateText();
 			sliders[i]->addListener(this);
+			sliders[i]->setColour(Slider::ColourIds::textBoxTextColourId, Colours::black);
 			content->addAndMakeVisible(sliders[i]);
 		}
 		updateNames();
