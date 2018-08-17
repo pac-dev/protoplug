@@ -147,7 +147,7 @@ PROTO_API     void Graphics_fillRoundedRectangle2(pGraphics self, exRectangle_fl
 {	self.g->fillRoundedRectangle(rectangle.toJuceRect(), cornerSize); }
 
 
-PROTO_API     void Graphics_fillCheckerBoard(pGraphics self, exRectangle_int area,
+PROTO_API     void Graphics_fillCheckerBoard(pGraphics self, exRectangle_float area,
                            int checkWidth, int checkHeight,
                            exColour colour1, exColour colour2) 
 {	self.g->fillCheckerBoard(area.toJuceRect(), checkWidth, checkHeight, Colour(colour1.c), Colour(colour2.c)); }
@@ -178,9 +178,10 @@ PROTO_API     void Graphics_drawRoundedRectangle2(pGraphics self, exRectangle_fl
                                float cornerSize, float lineThickness) 
 {	self.g->drawRoundedRectangle(rectangle.toJuceRect(), cornerSize, lineThickness); }
 
-
+/*
 PROTO_API     void Graphics_setPixel(pGraphics self, int x, int y) 
 {	self.g->setPixel(x, y); }
+*/
 
 
 PROTO_API     void Graphics_fillEllipse(pGraphics self, float x, float y, float width, float height) 

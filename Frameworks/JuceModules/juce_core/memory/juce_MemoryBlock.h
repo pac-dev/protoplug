@@ -1,39 +1,34 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_MEMORYBLOCK_H_INCLUDED
-#define JUCE_MEMORYBLOCK_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
     A class to hold a resizable block of raw data.
 
+
+    @tags{Core}
 */
 class JUCE_API  MemoryBlock
 {
@@ -68,10 +63,11 @@ public:
     */
     MemoryBlock& operator= (const MemoryBlock&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+    /** Move constructor */
     MemoryBlock (MemoryBlock&&) noexcept;
+
+    /** Move assignment operator */
     MemoryBlock& operator= (MemoryBlock&&) noexcept;
-   #endif
 
     //==============================================================================
     /** Compares two memory blocks.
@@ -101,6 +97,11 @@ public:
     template <typename Type>
     char& operator[] (const Type offset) const noexcept             { return data [offset]; }
 
+    /** Returns an iterator for the data. */
+    char* begin() const noexcept                                    { return data; }
+
+    /** Returns an end-iterator for the data. */
+    char* end() const noexcept                                      { return begin() + getSize(); }
 
     //==============================================================================
     /** Returns the block's current allocated size, in bytes. */
@@ -222,32 +223,40 @@ public:
                      size_t numBitsToRead) const noexcept;
 
     //==============================================================================
-    /** Returns a string of characters that represent the binary contents of this block.
+    /** Returns a string of characters in a JUCE-specific text encoding that represents the
+        binary contents of this block.
 
-        Uses a 64-bit encoding system to allow binary data to be turned into a string
-        of simple non-extended characters, e.g. for storage in XML.
+        This uses a JUCE-specific (i.e. not standard!) 64-bit encoding system to convert binary
+        data into a string of ASCII characters for purposes like storage in XML.
+        Note that this proprietary format is mainly kept here for backwards-compatibility, and
+        you may prefer to use the Base64::toBase64() method if you want to use the standard
+        base-64 encoding.
 
-        @see fromBase64Encoding
+        @see fromBase64Encoding, Base64::toBase64, Base64::convertToBase64
     */
     String toBase64Encoding() const;
 
-    /** Takes a string of encoded characters and turns it into binary data.
+    /** Takes a string created by MemoryBlock::toBase64Encoding() and extracts the original data.
 
         The string passed in must have been created by to64BitEncoding(), and this
         block will be resized to recreate the original data block.
 
-        @see toBase64Encoding
+        Note that these methods use a JUCE-specific (i.e. not standard!) 64-bit encoding system.
+        You may prefer to use the Base64::convertFromBase64() method if you want to use the
+        standard base-64 encoding.
+
+        @see toBase64Encoding, Base64::convertFromBase64
     */
     bool fromBase64Encoding  (StringRef encodedString);
 
 
 private:
     //==============================================================================
-    HeapBlock<char> data;
-    size_t size;
+    using HeapBlockType = HeapBlock<char, true>;
+    HeapBlockType data;
+    size_t size = 0;
 
     JUCE_LEAK_DETECTOR (MemoryBlock)
 };
 
-
-#endif   // JUCE_MEMORYBLOCK_H_INCLUDED
+} // namespace juce

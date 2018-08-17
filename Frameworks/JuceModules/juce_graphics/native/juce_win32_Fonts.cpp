@@ -2,25 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 /*  This is some quick-and-dirty code to extract the typeface name from a lump of TTF file data.
     It's needed because although win32 will happily load a TTF file from in-memory data, it won't
@@ -58,14 +63,14 @@ namespace TTFNameExtractor
                                    const int64 directoryOffset, const int64 offsetOfStringStorage)
     {
         String result;
-        const int64 oldPos = input.getPosition();
+        auto oldPos = input.getPosition();
         input.setPosition (directoryOffset + offsetOfStringStorage + ByteOrder::swapIfLittleEndian (nameRecord.offsetFromStorageArea));
-        const int stringLength = (int) ByteOrder::swapIfLittleEndian (nameRecord.stringLength);
-        const int platformID = ByteOrder::swapIfLittleEndian (nameRecord.platformID);
+        auto stringLength = (int) ByteOrder::swapIfLittleEndian (nameRecord.stringLength);
+        auto platformID = ByteOrder::swapIfLittleEndian (nameRecord.platformID);
 
         if (platformID == 0 || platformID == 3)
         {
-            const int numChars = stringLength / 2 + 1;
+            auto numChars = stringLength / 2 + 1;
             HeapBlock<uint16> buffer;
             buffer.calloc (numChars + 1);
             input.read (buffer, stringLength);
@@ -73,7 +78,7 @@ namespace TTFNameExtractor
             for (int i = 0; i < numChars; ++i)
                 buffer[i] = ByteOrder::swapIfLittleEndian (buffer[i]);
 
-            static_jassert (sizeof (CharPointer_UTF16::CharType) == sizeof (uint16));
+            static_assert (sizeof (CharPointer_UTF16::CharType) == sizeof (uint16), "Sanity check UTF-16 type");
             result = CharPointer_UTF16 ((CharPointer_UTF16::CharType*) buffer.getData());
         }
         else
@@ -110,7 +115,7 @@ namespace TTFNameExtractor
             }
         }
 
-        return String();
+        return {};
     }
 
     static String getTypefaceNameFromFile (MemoryInputStream& input)
@@ -128,7 +133,7 @@ namespace TTFNameExtractor
                 return parseNameTable (input, ByteOrder::swapIfLittleEndian (tableDirectory.offset));
         }
 
-        return String();
+        return {};
     }
 }
 
@@ -160,10 +165,8 @@ namespace FontEnumerators
             const String fontName (lpelfe->elfLogFont.lfFaceName);
             fontName.copyToUTF16 (lf.lfFaceName, sizeof (lf.lfFaceName));
 
-            HDC dc = CreateCompatibleDC (0);
-            EnumFontFamiliesEx (dc, &lf,
-                                (FONTENUMPROCW) &fontEnum2,
-                                lParam, 0);
+            auto dc = CreateCompatibleDC (0);
+            EnumFontFamiliesEx (dc, &lf, (FONTENUMPROCW) &fontEnum2, lParam, 0);
             DeleteDC (dc);
         }
 
@@ -186,7 +189,7 @@ StringArray Font::findAllTypefaceNames()
 
         for (uint32 i = 0; i < fontFamilyCount; ++i)
         {
-            HRESULT hr = factories->systemFonts->GetFontFamily (i, fontFamily.resetAndGetPointerAddress());
+            auto hr = factories->systemFonts->GetFontFamily (i, fontFamily.resetAndGetPointerAddress());
 
             if (SUCCEEDED (hr))
                 results.addIfNotAlreadyThere (getFontFamilyName (fontFamily));
@@ -195,7 +198,7 @@ StringArray Font::findAllTypefaceNames()
     else
    #endif
     {
-        HDC dc = CreateCompatibleDC (0);
+        auto dc = CreateCompatibleDC (0);
 
         {
             LOGFONTW lf = { 0 };
@@ -232,7 +235,8 @@ StringArray Font::findAllTypefaceStyles (const String& family)
     {
         BOOL fontFound = false;
         uint32 fontIndex = 0;
-        HRESULT hr = factories->systemFonts->FindFamilyName (family.toWideCharPointer(), &fontIndex, &fontFound);
+        auto hr = factories->systemFonts->FindFamilyName (family.toWideCharPointer(), &fontIndex, &fontFound);
+
         if (! fontFound)
             fontIndex = 0;
 
@@ -297,7 +301,7 @@ Typeface::Ptr Font::getDefaultTypefaceForFont (const Font& font)
     static DefaultFontNames defaultNames;
 
     Font newFont (font);
-    const String& faceName = font.getTypefaceName();
+    auto& faceName = font.getTypefaceName();
 
     if (faceName == getDefaultSansSerifFontName())       newFont.setTypefaceName (defaultNames.defaultSans);
     else if (faceName == getDefaultSerifFontName())      newFont.setTypefaceName (defaultNames.defaultSerif);
@@ -313,22 +317,14 @@ Typeface::Ptr Font::getDefaultTypefaceForFont (const Font& font)
 class WindowsTypeface   : public Typeface
 {
 public:
-    WindowsTypeface (const Font& font)
-        : Typeface (font.getTypefaceName(), font.getTypefaceStyle()),
-          fontH (0), previousFontH (0),
-          dc (CreateCompatibleDC (0)), memoryFont (0),
-          ascent (1.0f), heightToPointsFactor (1.0f),
-          defaultGlyph (-1)
+    WindowsTypeface (const Font& font)  : Typeface (font.getTypefaceName(),
+                                                    font.getTypefaceStyle())
     {
         loadFont();
     }
 
     WindowsTypeface (const void* data, size_t dataSize)
-        : Typeface (String(), String()),
-          fontH (0), previousFontH (0),
-          dc (CreateCompatibleDC (0)), memoryFont (0),
-          ascent (1.0f), heightToPointsFactor (1.0f),
-          defaultGlyph (-1)
+        : Typeface (String(), String())
     {
         DWORD numInstalled = 0;
         memoryFont = AddFontMemResourceEx (const_cast<void*> (data), (DWORD) dataSize,
@@ -357,31 +353,29 @@ public:
 
     float getStringWidth (const String& text)
     {
-        const CharPointer_UTF16 utf16 (text.toUTF16());
-        const size_t numChars = utf16.length();
-        HeapBlock<int16> results (numChars + 1);
-        results[numChars] = -1;
+        auto utf16 = text.toUTF16();
+        auto numChars = utf16.length();
+        HeapBlock<uint16> results (numChars);
         float x = 0;
 
-        if (GetGlyphIndices (dc, utf16, (int) numChars, reinterpret_cast <WORD*> (results.getData()),
+        if (GetGlyphIndices (dc, utf16, (int) numChars, reinterpret_cast<WORD*> (results.getData()),
                              GGI_MARK_NONEXISTING_GLYPHS) != GDI_ERROR)
         {
             for (size_t i = 0; i < numChars; ++i)
-                x += getKerning (dc, results[i], results[i + 1]);
+                x += getKerning (dc, results[i], (i + 1) < numChars ? results[i + 1] : -1);
         }
 
         return x;
     }
 
-    void getGlyphPositions (const String& text, Array <int>& resultGlyphs, Array <float>& xOffsets)
+    void getGlyphPositions (const String& text, Array<int>& resultGlyphs, Array<float>& xOffsets)
     {
-        const CharPointer_UTF16 utf16 (text.toUTF16());
-        const size_t numChars = utf16.length();
-        HeapBlock<int16> results (numChars + 1);
-        results[numChars] = -1;
+        auto utf16 = text.toUTF16();
+        auto numChars = utf16.length();
+        HeapBlock<uint16> results (numChars);
         float x = 0;
 
-        if (GetGlyphIndices (dc, utf16, (int) numChars, reinterpret_cast <WORD*> (results.getData()),
+        if (GetGlyphIndices (dc, utf16, (int) numChars, reinterpret_cast<WORD*> (results.getData()),
                              GGI_MARK_NONEXISTING_GLYPHS) != GDI_ERROR)
         {
             resultGlyphs.ensureStorageAllocated ((int) numChars);
@@ -391,7 +385,7 @@ public:
             {
                 resultGlyphs.add (results[i]);
                 xOffsets.add (x);
-                x += getKerning (dc, results[i], results[i + 1]);
+                x += getKerning (dc, results[i], (i + 1) < numChars ? results[i + 1] : -1);
             }
         }
 
@@ -405,8 +399,8 @@ public:
 
         GLYPHMETRICS gm;
         // (although GetGlyphOutline returns a DWORD, it may be -1 on failure, so treat it as signed int..)
-        const int bufSize = (int) GetGlyphOutline (dc, (UINT) glyphNumber, GGO_NATIVE | GGO_GLYPH_INDEX,
-                                                   &gm, 0, 0, &identityMatrix);
+        auto bufSize = (int) GetGlyphOutline (dc, (UINT) glyphNumber, GGO_NATIVE | GGO_GLYPH_INDEX,
+                                              &gm, 0, 0, &identityMatrix);
 
         if (bufSize > 0)
         {
@@ -414,18 +408,18 @@ public:
             GetGlyphOutline (dc, (UINT) glyphNumber, GGO_NATIVE | GGO_GLYPH_INDEX, &gm,
                              bufSize, data, &identityMatrix);
 
-            const TTPOLYGONHEADER* pheader = reinterpret_cast<TTPOLYGONHEADER*> (data.getData());
+            auto pheader = reinterpret_cast<const TTPOLYGONHEADER*> (data.getData());
 
-            const float scaleX = 1.0f / tm.tmHeight;
-            const float scaleY = -scaleX;
+            auto scaleX = 1.0f / tm.tmHeight;
+            auto scaleY = -scaleX;
 
             while ((char*) pheader < data + bufSize)
             {
                 glyphPath.startNewSubPath (scaleX * pheader->pfxStart.x.value,
                                            scaleY * pheader->pfxStart.y.value);
 
-                const TTPOLYCURVE* curve = (const TTPOLYCURVE*) ((const char*) pheader + sizeof (TTPOLYGONHEADER));
-                const char* const curveEnd = ((const char*) pheader) + pheader->cb;
+                auto curve = (const TTPOLYCURVE*) ((const char*) pheader + sizeof (TTPOLYGONHEADER));
+                auto curveEnd = ((const char*) pheader) + pheader->cb;
 
                 while ((const char*) curve < curveEnd)
                 {
@@ -439,10 +433,10 @@ public:
                     {
                         for (int i = 0; i < curve->cpfx - 1; ++i)
                         {
-                            const float x2 = scaleX * curve->apfx[i].x.value;
-                            const float y2 = scaleY * curve->apfx[i].y.value;
-                            float x3       = scaleX * curve->apfx[i + 1].x.value;
-                            float y3       = scaleY * curve->apfx[i + 1].y.value;
+                            auto x2 = scaleX * curve->apfx[i].x.value;
+                            auto y2 = scaleY * curve->apfx[i].y.value;
+                            auto x3 = scaleX * curve->apfx[i + 1].x.value;
+                            auto y3 = scaleY * curve->apfx[i + 1].y.value;
 
                             if (i < curve->cpfx - 2)
                             {
@@ -468,13 +462,13 @@ public:
 
 private:
     static const MAT2 identityMatrix;
-    HFONT fontH;
-    HGDIOBJ previousFontH;
-    HDC dc;
+    HFONT fontH = {};
+    HGDIOBJ previousFontH = {};
+    HDC dc { CreateCompatibleDC (0) };
     TEXTMETRIC tm;
-    HANDLE memoryFont;
-    float ascent, heightToPointsFactor;
-    int defaultGlyph, heightInPoints;
+    HANDLE memoryFont = {};
+    float ascent = 1.0f, heightToPointsFactor = 1.0f;
+    int defaultGlyph = -1, heightInPoints = 0;
 
     struct KerningPair
     {
@@ -511,15 +505,15 @@ private:
         lf.lfHeight = -256;
         name.copyToUTF16 (lf.lfFaceName, sizeof (lf.lfFaceName));
 
-        HFONT standardSizedFont = CreateFontIndirect (&lf);
+        auto standardSizedFont = CreateFontIndirect (&lf);
 
         if (standardSizedFont != 0)
         {
             if ((previousFontH = SelectObject (dc, standardSizedFont)) != 0)
             {
                 fontH = standardSizedFont;
-
                 OUTLINETEXTMETRIC otm;
+
                 if (GetOutlineTextMetrics (dc, sizeof (otm), &otm) != 0)
                 {
                     heightInPoints = otm.otmEMSquare;
@@ -534,7 +528,7 @@ private:
 
         if (GetTextMetrics (dc, &tm))
         {
-            float dpi = (GetDeviceCaps (dc, LOGPIXELSX) + GetDeviceCaps (dc, LOGPIXELSY)) / 2.0f;
+            auto dpi = (GetDeviceCaps (dc, LOGPIXELSX) + GetDeviceCaps (dc, LOGPIXELSY)) / 2.0f;
             heightToPointsFactor = (dpi / GetDeviceCaps (dc, LOGPIXELSY)) * heightInPoints / (float) tm.tmHeight;
             ascent = tm.tmAscent / (float) tm.tmHeight;
             defaultGlyph = getGlyphForChar (dc, tm.tmDefaultChar);
@@ -542,22 +536,22 @@ private:
         }
     }
 
-    void createKerningPairs (HDC dc, const float height)
+    void createKerningPairs (HDC hdc, float height)
     {
         HeapBlock<KERNINGPAIR> rawKerning;
-        const DWORD numKPs = GetKerningPairs (dc, 0, 0);
+        auto numKPs = GetKerningPairs (hdc, 0, 0);
         rawKerning.calloc (numKPs);
-        GetKerningPairs (dc, numKPs, rawKerning);
+        GetKerningPairs (hdc, numKPs, rawKerning);
 
         kerningPairs.ensureStorageAllocated ((int) numKPs);
 
         for (DWORD i = 0; i < numKPs; ++i)
         {
             KerningPair kp;
-            kp.glyph1 = getGlyphForChar (dc, rawKerning[i].wFirst);
-            kp.glyph2 = getGlyphForChar (dc, rawKerning[i].wSecond);
+            kp.glyph1 = getGlyphForChar (hdc, rawKerning[i].wFirst);
+            kp.glyph2 = getGlyphForChar (hdc, rawKerning[i].wSecond);
 
-            const int standardWidth = getGlyphWidth (dc, kp.glyph1);
+            auto standardWidth = getGlyphWidth (hdc, kp.glyph1);
             kp.kerning = (standardWidth + rawKerning[i].iKernAmount) / height;
             kerningPairs.add (kp);
 
@@ -587,12 +581,12 @@ private:
         return gm.gmCellIncX;
     }
 
-    float getKerning (HDC dc, const int glyph1, const int glyph2)
+    float getKerning (HDC hdc, int glyph1, int glyph2)
     {
         KerningPair kp;
         kp.glyph1 = glyph1;
         kp.glyph2 = glyph2;
-        int index = kerningPairs.indexOf (kp);
+        auto index = kerningPairs.indexOf (kp);
 
         if (index < 0)
         {
@@ -602,7 +596,7 @@ private:
             if (index < 0)
             {
                 kp.glyph2 = -1;
-                kp.kerning = getGlyphWidth (dc, kp.glyph1) / (float) tm.tmHeight;
+                kp.kerning = getGlyphWidth (hdc, kp.glyph1) / (float) tm.tmHeight;
                 kerningPairs.add (kp);
                 return kp.kerning;
             }
@@ -623,7 +617,7 @@ Typeface::Ptr Typeface::createSystemTypefaceFor (const Font& font)
 
     if (factories->systemFonts != nullptr)
     {
-        ScopedPointer<WindowsDirectWriteTypeface> wtf (new WindowsDirectWriteTypeface (font, factories->systemFonts));
+        std::unique_ptr<WindowsDirectWriteTypeface> wtf (new WindowsDirectWriteTypeface (font, factories->systemFonts));
 
         if (wtf->loadedOk())
             return wtf.release();
@@ -642,3 +636,5 @@ void Typeface::scanFolderForFonts (const File&)
 {
     jassertfalse; // not implemented on this platform
 }
+
+} // namespace juce

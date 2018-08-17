@@ -2,28 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_TREEVIEW_H_INCLUDED
-#define JUCE_TREEVIEW_H_INCLUDED
+namespace juce
+{
 
 class TreeView;
 
@@ -41,6 +43,8 @@ class TreeView;
     do this the first time it's opened, or it might want to refresh itself each time.
     It also has the option of deleting its sub-items when it is closed, or leaving them
     in place.
+
+    @tags{GUI}
 */
 class JUCE_API  TreeViewItem
 {
@@ -54,15 +58,12 @@ public:
 
     //==============================================================================
     /** Returns the number of sub-items that have been added to this item.
-
         Note that this doesn't mean much if the node isn't open.
-
         @see getSubItem, mightContainSubItems, addSubItem
     */
     int getNumSubItems() const noexcept;
 
     /** Returns one of the item's sub-items.
-
         Remember that the object returned might get deleted at any time when its parent
         item is closed or refreshed, depending on the nature of the items you're using.
 
@@ -133,7 +134,9 @@ public:
     TreeViewItem* getParentItem() const noexcept        { return parentItem; }
 
     //==============================================================================
-    /** True if this item is currently open in the treeview. */
+    /** True if this item is currently open in the treeview.
+        @see getOpenness
+    */
     bool isOpen() const noexcept;
 
     /** Opens or closes the item.
@@ -142,9 +145,37 @@ public:
         and a subclass should use this callback to create and add any sub-items that
         it needs to.
 
-        @see itemOpennessChanged, mightContainSubItems
+        Note that if this is called when the item is in its default openness state, and
+        this call would not change whether it's open or closed, then no change will be
+        stored. If you want to explicitly set the openness state to be non-default then
+        you should use setOpenness instead.
+
+        @see setOpenness, itemOpennessChanged, mightContainSubItems
     */
     void setOpen (bool shouldBeOpen);
+
+    /** An enum of states to describe the explicit or implicit openness of an item. */
+    enum Openness
+    {
+        opennessDefault = 0,
+        opennessClosed = 1,
+        opennessOpen = 2
+    };
+
+    /** Returns the openness state of this item.
+        @see isOpen
+    */
+    Openness getOpenness() const noexcept;
+
+    /** Opens or closes the item.
+
+        If this causes the value of isOpen() to change, then the item's itemOpennessChanged()
+        method will be called, and a subclass should use this callback to create and add any
+        sub-items that it needs to.
+
+        @see setOpen
+    */
+    void setOpenness (Openness newOpenness);
 
     /** True if this item is currently selected.
         Use this when painting the node, to decide whether to draw it as selected or not.
@@ -153,7 +184,7 @@ public:
 
     /** Selects or deselects the item.
         If shouldNotify == sendNotification, then a callback will be made
-        to itemSelectionChanged()
+        to itemSelectionChanged() if the item's selection has changed.
     */
     void setSelected (bool shouldBeSelected,
                       bool deselectOtherItemsFirst,
@@ -339,7 +370,7 @@ public:
 
         @see itemDoubleClicked
     */
-    virtual void itemClicked (const MouseEvent& e);
+    virtual void itemClicked (const MouseEvent&);
 
     /** Called when the user double-clicks on this item.
 
@@ -355,7 +386,7 @@ public:
 
         @see itemClicked
     */
-    virtual void itemDoubleClicked (const MouseEvent& e);
+    virtual void itemDoubleClicked (const MouseEvent&);
 
     /** Called when the item is selected or deselected.
 
@@ -363,6 +394,9 @@ public:
         changes. By default it'll get repainted when this happens.
     */
     virtual void itemSelectionChanged (bool isNowSelected);
+
+    /** Called when the owner view changes */
+    virtual void ownerViewChanged (TreeView* newOwner);
 
     /** The item can return a tool tip string here if it wants to.
         @see TooltipClient
@@ -446,6 +480,19 @@ public:
     */
     void setDrawsInLeftMargin (bool canDrawInLeftMargin) noexcept;
 
+    /** Sets a flag to indicate that the item wants to be allowed
+        to draw all the way across to the right edge of the treeview.
+
+        Similar to setDrawsInLeftMargin: when this flag is set to true,
+        then the graphics context isn't clipped on the right side. Unlike
+        setDrawsInLeftMargin, you will very rarely need to use this function,
+        as this method won't clip the right margin unless your TreeViewItem
+        overrides getItemWidth to return a positive value.
+
+        @see setDrawsInLeftMargin, getItemWidth
+     */
+    void setDrawsInRightMargin (bool canDrawInRightMargin) noexcept;
+
     //==============================================================================
     /** Saves the current state of open/closed nodes so it can be restored later.
 
@@ -522,28 +569,29 @@ public:
     class OpennessRestorer
     {
     public:
-        OpennessRestorer (TreeViewItem& treeViewItem);
+        OpennessRestorer (TreeViewItem&);
         ~OpennessRestorer();
 
     private:
         TreeViewItem& treeViewItem;
-        ScopedPointer <XmlElement> oldOpenness;
+        std::unique_ptr<XmlElement> oldOpenness;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (OpennessRestorer)
     };
 
 private:
     //==============================================================================
-    TreeView* ownerView;
-    TreeViewItem* parentItem;
+    TreeView* ownerView = nullptr;
+    TreeViewItem* parentItem = nullptr;
     OwnedArray<TreeViewItem> subItems;
-    int y, itemHeight, totalHeight, itemWidth, totalWidth;
-    int uid;
+    int y = 0, itemHeight = 0, totalHeight = 0, itemWidth = 0, totalWidth = 0;
+    int uid = 0;
     bool selected           : 1;
     bool redrawNeeded       : 1;
     bool drawLinesInside    : 1;
     bool drawLinesSet       : 1;
     bool drawsInLeftMargin  : 1;
+    bool drawsInRightMargin : 1;
     unsigned int openness   : 2;
 
     friend class TreeView;
@@ -585,6 +633,8 @@ private:
 
     Use one of these to hold and display a structure of TreeViewItem objects.
 
+
+    @tags{GUI}
 */
 class JUCE_API  TreeView  : public Component,
                             public SettableTooltipClient,
@@ -598,7 +648,7 @@ public:
         Once you've got a treeview component, you'll need to give it something to
         display, using the setRootItem() method.
     */
-    TreeView (const String& componentName = String::empty);
+    TreeView (const String& componentName = String());
 
     /** Destructor. */
     ~TreeView();
@@ -797,7 +847,9 @@ public:
         backgroundColourId             = 0x1000500, /**< A background colour to fill the component with. */
         linesColourId                  = 0x1000501, /**< The colour to draw the lines with.*/
         dragAndDropIndicatorColourId   = 0x1000502, /**< The colour to use for the drag-and-drop target position indicator. */
-        selectedItemBackgroundColourId = 0x1000503  /**< The colour to use to fill the background of any selected items. */
+        selectedItemBackgroundColourId = 0x1000503, /**< The colour to use to fill the background of any selected items. */
+        oddItemsColourId               = 0x1000504, /**< The colour to use to fill the backround of the odd numbered items. */
+        evenItemsColourId              = 0x1000505  /**< The colour to use to fill the backround of the even numbered items. */
     };
 
     //==============================================================================
@@ -848,24 +900,21 @@ public:
     void itemDropped (const SourceDetails&) override;
 
 private:
+    friend class TreeViewItem;
+
     class ContentComponent;
     class TreeViewport;
     class InsertPointHighlight;
     class TargetGroupHighlight;
-    friend class TreeViewItem;
-    friend class ContentComponent;
-    friend struct ContainerDeletePolicy<TreeViewport>;
-    friend struct ContainerDeletePolicy<InsertPointHighlight>;
-    friend struct ContainerDeletePolicy<TargetGroupHighlight>;
 
-    ScopedPointer<TreeViewport> viewport;
+    std::unique_ptr<TreeViewport> viewport;
     CriticalSection nodeAlterationLock;
-    TreeViewItem* rootItem;
-    ScopedPointer<InsertPointHighlight> dragInsertPointHighlight;
-    ScopedPointer<TargetGroupHighlight> dragTargetGroupHighlight;
-    int indentSize;
-    bool defaultOpenness, needsRecalculating, rootItemVisible;
-    bool multiSelectEnabled, openCloseButtonsVisible;
+    TreeViewItem* rootItem = nullptr;
+    std::unique_ptr<InsertPointHighlight> dragInsertPointHighlight;
+    std::unique_ptr<TargetGroupHighlight> dragTargetGroupHighlight;
+    int indentSize = -1;
+    bool defaultOpenness = false, needsRecalculating = true, rootItemVisible = true;
+    bool multiSelectEnabled = false, openCloseButtonsVisible = true;
 
     void itemsChanged() noexcept;
     void recalculateIfNeeded();
@@ -888,4 +937,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TreeView)
 };
 
-#endif   // JUCE_TREEVIEW_H_INCLUDED
+} // namespace juce

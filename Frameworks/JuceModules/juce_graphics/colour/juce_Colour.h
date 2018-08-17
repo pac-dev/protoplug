@@ -2,45 +2,48 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_COLOUR_H_INCLUDED
-#define JUCE_COLOUR_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
     Represents a colour, also including a transparency value.
 
     The colour is stored internally as unsigned 8-bit red, green, blue and alpha values.
+
+    @tags{Graphics}
 */
-class JUCE_API  Colour
+class JUCE_API  Colour  final
 {
 public:
     //==============================================================================
     /** Creates a transparent black colour. */
-    Colour() noexcept;
+    Colour() = default;
 
     /** Creates a copy of another Colour object. */
-    Colour (const Colour& other) noexcept;
+    Colour (const Colour&) = default;
 
     /** Creates a colour from a 32-bit ARGB value.
 
@@ -140,10 +143,10 @@ public:
                            float alpha) noexcept;
 
     /** Destructor. */
-    ~Colour() noexcept;
+    ~Colour() = default;
 
     /** Copies another Colour object. */
-    Colour& operator= (const Colour& other) noexcept;
+    Colour& operator= (const Colour&) = default;
 
     /** Compares two colours. */
     bool operator== (const Colour& other) const noexcept;
@@ -188,7 +191,7 @@ public:
     /** Returns a 32-bit integer that represents this colour.
 
         The format of this number is:
-            ((alpha << 24) | (red << 16) | (green << 16) | blue).
+            ((alpha << 24) | (red << 16) | (green << 8) | blue).
     */
     uint32 getARGB() const noexcept;
 
@@ -282,30 +285,25 @@ public:
     Colour withBrightness (float newBrightness) const noexcept;
 
     /** Returns a copy of this colour with it hue rotated.
-
         The new colour's hue is ((this->getHue() + amountToRotate) % 1.0)
-
         @see brighter, darker, withMultipliedBrightness
     */
     Colour withRotatedHue (float amountToRotate) const noexcept;
 
     /** Returns a copy of this colour with its saturation multiplied by the given value.
-
         The new colour's saturation is (this->getSaturation() * multiplier)
         (the result is clipped to legal limits).
     */
     Colour withMultipliedSaturation (float multiplier) const noexcept;
 
     /** Returns a copy of this colour with its brightness multiplied by the given value.
-
-        The new colour's saturation is (this->getBrightness() * multiplier)
+        The new colour's brightness is (this->getBrightness() * multiplier)
         (the result is clipped to legal limits).
     */
     Colour withMultipliedBrightness (float amount) const noexcept;
 
     //==============================================================================
     /** Returns a brighter version of this colour.
-
         @param amountBrighter   how much brighter to make it - a value from 0 to 1.0 where 0 is
                                 unchanged, and higher values make it brighter
         @see withMultipliedBrightness
@@ -313,7 +311,6 @@ public:
     Colour brighter (float amountBrighter = 0.4f) const noexcept;
 
     /** Returns a darker version of this colour.
-
         @param amountDarker     how much darker to make it - a value from 0 to 1.0 where 0 is
                                 unchanged, and higher values make it darker
         @see withMultipliedBrightness
@@ -366,8 +363,7 @@ public:
 
 private:
     //==============================================================================
-    PixelARGB argb;
+    PixelARGB argb { 0, 0, 0, 0 };
 };
 
-
-#endif   // JUCE_COLOUR_H_INCLUDED
+} // namespace juce

@@ -2,25 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 LookAndFeel_V1::LookAndFeel_V1()
 {
@@ -47,7 +52,7 @@ LookAndFeel_V1::~LookAndFeel_V1()
 
 //==============================================================================
 void LookAndFeel_V1::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
-                                           bool isMouseOverButton, bool isButtonDown)
+                                           bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
     const int width = button.getWidth();
     const int height = button.getHeight();
@@ -64,9 +69,9 @@ void LookAndFeel_V1::drawButtonBackground (Graphics& g, Button& button, const Co
 
     Colour bc (backgroundColour.withMultipliedSaturation (0.3f));
 
-    if (isMouseOverButton)
+    if (shouldDrawButtonAsHighlighted)
     {
-        if (isButtonDown)
+        if (shouldDrawButtonAsDown)
             bc = bc.brighter();
         else if (bc.getBrightness() > 0.5f)
             bc = bc.darker (0.1f);
@@ -77,21 +82,21 @@ void LookAndFeel_V1::drawButtonBackground (Graphics& g, Button& button, const Co
     g.setColour (bc);
     g.fillPath (p);
 
-    g.setColour (bc.contrasting().withAlpha ((isMouseOverButton) ? 0.6f : 0.4f));
-    g.strokePath (p, PathStrokeType ((isMouseOverButton) ? 2.0f : 1.4f));
+    g.setColour (bc.contrasting().withAlpha ((shouldDrawButtonAsHighlighted) ? 0.6f : 0.4f));
+    g.strokePath (p, PathStrokeType ((shouldDrawButtonAsHighlighted) ? 2.0f : 1.4f));
 }
 
 void LookAndFeel_V1::drawTickBox (Graphics& g, Component& /*component*/,
                                   float x, float y, float w, float h,
                                   const bool ticked,
                                   const bool isEnabled,
-                                  const bool /*isMouseOverButton*/,
-                                  const bool isButtonDown)
+                                  const bool /*shouldDrawButtonAsHighlighted*/,
+                                  const bool shouldDrawButtonAsDown)
 {
     Path box;
     box.addRoundedRectangle (0.0f, 2.0f, 6.0f, 6.0f, 1.0f);
 
-    g.setColour (isEnabled ? Colours::blue.withAlpha (isButtonDown ? 0.3f : 0.1f)
+    g.setColour (isEnabled ? Colours::blue.withAlpha (shouldDrawButtonAsDown ? 0.3f : 0.1f)
                            : Colours::lightgrey.withAlpha (0.1f));
 
     AffineTransform trans (AffineTransform::scale (w / 9.0f, h / 9.0f).translated (x, y));
@@ -113,7 +118,7 @@ void LookAndFeel_V1::drawTickBox (Graphics& g, Component& /*component*/,
     }
 }
 
-void LookAndFeel_V1::drawToggleButton (Graphics& g, ToggleButton& button, bool isMouseOverButton, bool isButtonDown)
+void LookAndFeel_V1::drawToggleButton (Graphics& g, ToggleButton& button, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
     if (button.hasKeyboardFocus (true))
     {
@@ -127,8 +132,8 @@ void LookAndFeel_V1::drawToggleButton (Graphics& g, ToggleButton& button, bool i
                  (float) tickWidth, (float) tickWidth,
                  button.getToggleState(),
                  button.isEnabled(),
-                 isMouseOverButton,
-                 isButtonDown);
+                 shouldDrawButtonAsHighlighted,
+                 shouldDrawButtonAsDown);
 
     g.setColour (button.findColour (ToggleButton::textColourId));
     g.setFont (jmin (15.0f, button.getHeight() * 0.6f));
@@ -177,8 +182,8 @@ void LookAndFeel_V1::drawProgressBar (Graphics& g, ProgressBar& progressBar,
 void LookAndFeel_V1::drawScrollbarButton (Graphics& g, ScrollBar& bar,
                                           int width, int height, int buttonDirection,
                                           bool isScrollbarVertical,
-                                          bool isMouseOverButton,
-                                          bool isButtonDown)
+                                          bool shouldDrawButtonAsHighlighted,
+                                          bool shouldDrawButtonAsDown)
 {
     if (isScrollbarVertical)
         width -= 2;
@@ -204,9 +209,9 @@ void LookAndFeel_V1::drawScrollbarButton (Graphics& g, ScrollBar& bar,
                        width * 0.7f, height * 0.1f,
                        width * 0.7f, height * 0.9f);
 
-    if (isButtonDown)
+    if (shouldDrawButtonAsDown)
         g.setColour (Colours::white);
-    else if (isMouseOverButton)
+    else if (shouldDrawButtonAsHighlighted)
         g.setColour (Colours::white.withAlpha (0.7f));
     else
         g.setColour (bar.findColour (ScrollBar::thumbColourId).withAlpha (0.5f));
@@ -565,3 +570,5 @@ void LookAndFeel_V1::positionDocumentWindowButtons (DocumentWindow&,
     if (minimiseButton != nullptr)
         minimiseButton->setBounds (x, titleBarY - 2, buttonW, titleBarH);
 }
+
+} // namespace juce

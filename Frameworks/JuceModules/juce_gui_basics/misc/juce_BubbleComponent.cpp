@@ -2,25 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 BubbleComponent::BubbleComponent()
   : allowablePlacements (above | below | left | right)
@@ -49,38 +54,40 @@ void BubbleComponent::setAllowedPlacement (const int newPlacement)
     allowablePlacements = newPlacement;
 }
 
-void BubbleComponent::setPosition (Component* componentToPointTo)
+//==============================================================================
+void BubbleComponent::setPosition (Component* componentToPointTo, int distanceFromTarget, int arrowLength)
 {
     jassert (componentToPointTo != nullptr);
 
+    Rectangle<int> target;
+
     if (Component* p = getParentComponent())
-        setPosition (p->getLocalArea (componentToPointTo, componentToPointTo->getLocalBounds()));
+        target = p->getLocalArea (componentToPointTo, componentToPointTo->getLocalBounds());
     else
-        setPosition (componentToPointTo->getScreenBounds());
+        target = componentToPointTo->getScreenBounds().transformedBy (getTransform().inverted());
+
+    setPosition (target, distanceFromTarget, arrowLength);
 }
 
-void BubbleComponent::setPosition (Point<int> pos)
+void BubbleComponent::setPosition (Point<int> arrowTipPos, int arrowLength)
 {
-    setPosition (Rectangle<int> (pos.x, pos.y, 1, 1));
+    setPosition (Rectangle<int> (arrowTipPos.x, arrowTipPos.y, 1, 1), arrowLength, arrowLength);
 }
 
-//==============================================================================
-void BubbleComponent::setPosition (const Rectangle<int>& rectangleToPointTo)
+void BubbleComponent::setPosition (Rectangle<int> rectangleToPointTo,
+                                   int distanceFromTarget, int arrowLength)
 {
-    const int edgeSpace = 15;
-    const int arrowLength = 10;
-
     {
         int contentW = 150, contentH = 30;
         getContentSize (contentW, contentH);
-        content.setBounds (edgeSpace, edgeSpace, contentW, contentH);
+        content.setBounds (distanceFromTarget, distanceFromTarget, contentW, contentH);
     }
 
-    const int totalW = content.getWidth()  + edgeSpace * 2;
-    const int totalH = content.getHeight() + edgeSpace * 2;
+    const int totalW = content.getWidth()  + distanceFromTarget * 2;
+    const int totalH = content.getHeight() + distanceFromTarget * 2;
 
-    const Rectangle<int> availableSpace (getParentComponent() != nullptr ? getParentComponent()->getLocalBounds()
-                                                                         : getParentMonitorArea());
+    auto availableSpace = (getParentComponent() != nullptr ? getParentComponent()->getLocalBounds()
+                                                           : getParentMonitorArea().transformedBy (getTransform().inverted()));
 
     int spaceAbove = ((allowablePlacements & above) != 0) ? jmax (0, rectangleToPointTo.getY()  - availableSpace.getY()) : -1;
     int spaceBelow = ((allowablePlacements & below) != 0) ? jmax (0, availableSpace.getBottom() - rectangleToPointTo.getBottom()) : -1;
@@ -140,3 +147,5 @@ void BubbleComponent::setPosition (const Rectangle<int>& rectangleToPointTo)
 
     setBounds (targetX - arrowTip.x, targetY - arrowTip.y, totalW, totalH);
 }
+
+} // namespace juce

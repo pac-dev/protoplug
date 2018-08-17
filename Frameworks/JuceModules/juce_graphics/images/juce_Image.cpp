@@ -2,27 +2,32 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-ImagePixelData::ImagePixelData (const Image::PixelFormat format, const int w, const int h)
+namespace juce
+{
+
+ImagePixelData::ImagePixelData (Image::PixelFormat format, int w, int h)
     : pixelFormat (format), width (w), height (h)
 {
     jassert (format == Image::RGB || format == Image::ARGB || format == Image::SingleChannel);
@@ -31,12 +36,12 @@ ImagePixelData::ImagePixelData (const Image::PixelFormat format, const int w, co
 
 ImagePixelData::~ImagePixelData()
 {
-    listeners.call (&Listener::imageDataBeingDeleted, this);
+    listeners.call ([this] (Listener& l) { l.imageDataBeingDeleted (this); });
 }
 
 void ImagePixelData::sendDataChangeMessage()
 {
-    listeners.call (&Listener::imageDataChanged, this);
+    listeners.call ([this] (Listener& l) { l.imageDataChanged (this); });
 }
 
 int ImagePixelData::getSharedCount() const noexcept
@@ -50,7 +55,7 @@ ImageType::~ImageType() {}
 
 Image ImageType::convert (const Image& source) const
 {
-    if (source.isNull() || getTypeID() == (ScopedPointer<ImageType> (source.getPixelData()->createType())->getTypeID()))
+    if (source.isNull() || getTypeID() == (std::unique_ptr<ImageType> (source.getPixelData()->createType())->getTypeID()))
         return source;
 
     const Image::BitmapData src (source, Image::BitmapData::readOnly);
@@ -58,10 +63,17 @@ Image ImageType::convert (const Image& source) const
     Image newImage (create (src.pixelFormat, src.width, src.height, false));
     Image::BitmapData dest (newImage, Image::BitmapData::writeOnly);
 
-    jassert (src.pixelStride == dest.pixelStride && src.pixelFormat == dest.pixelFormat);
-
-    for (int y = 0; y < dest.height; ++y)
-        memcpy (dest.getLinePointer (y), src.getLinePointer (y), (size_t) dest.lineStride);
+    if (src.pixelStride == dest.pixelStride && src.pixelFormat == dest.pixelFormat)
+    {
+        for (int y = 0; y < dest.height; ++y)
+            memcpy (dest.getLinePointer (y), src.getLinePointer (y), (size_t) dest.lineStride);
+    }
+    else
+    {
+        for (int y = 0; y < dest.height; ++y)
+            for (int x = 0; x < dest.width; ++x)
+                dest.setPixelColour (x, y, src.getPixelColour (x, y));
+    }
 
     return newImage;
 }
@@ -70,23 +82,23 @@ Image ImageType::convert (const Image& source) const
 class SoftwarePixelData  : public ImagePixelData
 {
 public:
-    SoftwarePixelData (const Image::PixelFormat format_, const int w, const int h, const bool clearImage)
-        : ImagePixelData (format_, w, h),
-          pixelStride (format_ == Image::RGB ? 3 : ((format_ == Image::ARGB) ? 4 : 1)),
+    SoftwarePixelData (Image::PixelFormat formatToUse, int w, int h, bool clearImage)
+        : ImagePixelData (formatToUse, w, h),
+          pixelStride (formatToUse == Image::RGB ? 3 : ((formatToUse == Image::ARGB) ? 4 : 1)),
           lineStride ((pixelStride * jmax (1, w) + 3) & ~3)
     {
-        imageData.allocate ((size_t) (lineStride * jmax (1, h)), clearImage);
+        imageData.allocate ((size_t) lineStride * (size_t) jmax (1, h), clearImage);
     }
 
     LowLevelGraphicsContext* createLowLevelContext() override
     {
         sendDataChangeMessage();
-        return new LowLevelGraphicsSoftwareRenderer (Image (this));
+        return new LowLevelGraphicsSoftwareRenderer (Image (*this));
     }
 
     void initialiseBitmapData (Image::BitmapData& bitmap, int x, int y, Image::BitmapData::ReadWriteMode mode) override
     {
-        bitmap.data = imageData + x * pixelStride + y * lineStride;
+        bitmap.data = imageData + (size_t) x * (size_t) pixelStride + (size_t) y * (size_t) lineStride;
         bitmap.pixelFormat = pixelFormat;
         bitmap.lineStride = lineStride;
         bitmap.pixelStride = pixelStride;
@@ -95,11 +107,11 @@ public:
             sendDataChangeMessage();
     }
 
-    ImagePixelData* clone() override
+    ImagePixelData::Ptr clone() override
     {
-        SoftwarePixelData* s = new SoftwarePixelData (pixelFormat, width, height, false);
-        memcpy (s->imageData, imageData, (size_t) (lineStride * height));
-        return s;
+        auto s = new SoftwarePixelData (pixelFormat, width, height, false);
+        memcpy (s->imageData, imageData, (size_t) lineStride * (size_t) height);
+        return *s;
     }
 
     ImageType* createType() const override    { return new SoftwareImageType(); }
@@ -116,7 +128,7 @@ SoftwareImageType::~SoftwareImageType() {}
 
 ImagePixelData::Ptr SoftwareImageType::create (Image::PixelFormat format, int width, int height, bool clearImage) const
 {
-    return new SoftwarePixelData (format, width, height, clearImage);
+    return *new SoftwarePixelData (format, width, height, clearImage);
 }
 
 int SoftwareImageType::getTypeID() const
@@ -144,15 +156,15 @@ ImagePixelData::Ptr NativeImageType::create (Image::PixelFormat format, int widt
 class SubsectionPixelData  : public ImagePixelData
 {
 public:
-    SubsectionPixelData (ImagePixelData* const im, const Rectangle<int>& r)
-        : ImagePixelData (im->pixelFormat, r.getWidth(), r.getHeight()),
-          image (im), area (r)
+    SubsectionPixelData (ImagePixelData::Ptr source, Rectangle<int> r)
+        : ImagePixelData (source->pixelFormat, r.getWidth(), r.getHeight()),
+          sourceImage (static_cast<ImagePixelData::Ptr&&> (source)), area (r)
     {
     }
 
     LowLevelGraphicsContext* createLowLevelContext() override
     {
-        LowLevelGraphicsContext* g = image->createLowLevelContext();
+        LowLevelGraphicsContext* g = sourceImage->createLowLevelContext();
         g->clipToRectangle (area);
         g->setOrigin (area.getPosition());
         return g;
@@ -160,36 +172,35 @@ public:
 
     void initialiseBitmapData (Image::BitmapData& bitmap, int x, int y, Image::BitmapData::ReadWriteMode mode) override
     {
-        image->initialiseBitmapData (bitmap, x + area.getX(), y + area.getY(), mode);
+        sourceImage->initialiseBitmapData (bitmap, x + area.getX(), y + area.getY(), mode);
 
         if (mode != Image::BitmapData::readOnly)
             sendDataChangeMessage();
     }
 
-    ImagePixelData* clone() override
+    ImagePixelData::Ptr clone() override
     {
         jassert (getReferenceCount() > 0); // (This method can't be used on an unowned pointer, as it will end up self-deleting)
-        const ScopedPointer<ImageType> type (image->createType());
+        const std::unique_ptr<ImageType> type (createType());
 
         Image newImage (type->create (pixelFormat, area.getWidth(), area.getHeight(), pixelFormat != Image::RGB));
 
         {
             Graphics g (newImage);
-            g.drawImageAt (Image (this), 0, 0);
+            g.drawImageAt (Image (*this), 0, 0);
         }
 
-        newImage.getPixelData()->incReferenceCount();
-        return newImage.getPixelData();
+        return *newImage.getPixelData();
     }
 
-    ImageType* createType() const override          { return image->createType(); }
+    ImageType* createType() const override          { return sourceImage->createType(); }
 
     /* as we always hold a reference to image, don't double count */
-    int getSharedCount() const noexcept override    { return getReferenceCount() + image->getSharedCount() - 1; }
+    int getSharedCount() const noexcept override    { return getReferenceCount() + sourceImage->getSharedCount() - 1; }
 
 private:
     friend class Image;
-    const ImagePixelData::Ptr image;
+    const ImagePixelData::Ptr sourceImage;
     const Rectangle<int> area;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SubsectionPixelData)
@@ -200,8 +211,12 @@ Image Image::getClippedImage (const Rectangle<int>& area) const
     if (area.contains (getBounds()))
         return *this;
 
-    const Rectangle<int> validArea (area.getIntersection (getBounds()));
-    return Image (validArea.isEmpty() ? nullptr : new SubsectionPixelData (image, validArea));
+    auto validArea = area.getIntersection (getBounds());
+
+    if (validArea.isEmpty())
+        return {};
+
+    return Image (*new SubsectionPixelData (image, validArea));
 }
 
 
@@ -210,17 +225,17 @@ Image::Image() noexcept
 {
 }
 
-Image::Image (ImagePixelData* const instance) noexcept
-    : image (instance)
+Image::Image (ReferenceCountedObjectPtr<ImagePixelData> instance) noexcept
+    : image (static_cast<ReferenceCountedObjectPtr<ImagePixelData>&&> (instance))
 {
 }
 
-Image::Image (const PixelFormat format, int width, int height, bool clearImage)
+Image::Image (PixelFormat format, int width, int height, bool clearImage)
     : image (NativeImageType().create (format, width, height, clearImage))
 {
 }
 
-Image::Image (const PixelFormat format, int width, int height, bool clearImage, const ImageType& type)
+Image::Image (PixelFormat format, int width, int height, bool clearImage, const ImageType& type)
     : image (type.create (format, width, height, clearImage))
 {
 }
@@ -236,24 +251,22 @@ Image& Image::operator= (const Image& other)
     return *this;
 }
 
-#if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
 Image::Image (Image&& other) noexcept
-    : image (static_cast <ImagePixelData::Ptr&&> (other.image))
+    : image (static_cast<ImagePixelData::Ptr&&> (other.image))
 {
 }
 
 Image& Image::operator= (Image&& other) noexcept
 {
-    image = static_cast <ImagePixelData::Ptr&&> (other.image);
+    image = static_cast<ImagePixelData::Ptr&&> (other.image);
     return *this;
 }
-#endif
 
 Image::~Image()
 {
 }
 
-const Image Image::null;
+JUCE_DECLARE_DEPRECATED_STATIC (const Image Image::null;)
 
 int Image::getReferenceCount() const noexcept           { return image == nullptr ? 0 : image->getSharedCount(); }
 int Image::getWidth() const noexcept                    { return image == nullptr ? 0 : image->width; }
@@ -281,15 +294,15 @@ Image Image::createCopy() const
     if (image != nullptr)
         return Image (image->clone());
 
-    return Image();
+    return {};
 }
 
-Image Image::rescaled (const int newWidth, const int newHeight, const Graphics::ResamplingQuality quality) const
+Image Image::rescaled (int newWidth, int newHeight, Graphics::ResamplingQuality quality) const
 {
     if (image == nullptr || (image->width == newWidth && image->height == newHeight))
         return *this;
 
-    const ScopedPointer<ImageType> type (image->createType());
+    const std::unique_ptr<ImageType> type (image->createType());
     Image newImage (type->create (image->pixelFormat, newWidth, newHeight, hasAlphaChannel()));
 
     Graphics g (newImage);
@@ -304,9 +317,9 @@ Image Image::convertedToFormat (PixelFormat newFormat) const
     if (image == nullptr || newFormat == image->pixelFormat)
         return *this;
 
-    const int w = image->width, h = image->height;
+    auto w = image->width, h = image->height;
 
-    const ScopedPointer<ImageType> type (image->createType());
+    const std::unique_ptr<ImageType> type (image->createType());
     Image newImage (type->create (newFormat, w, h, false));
 
     if (newFormat == SingleChannel)
@@ -322,8 +335,8 @@ Image Image::convertedToFormat (PixelFormat newFormat) const
 
             for (int y = 0; y < h; ++y)
             {
-                const PixelARGB* const src = (const PixelARGB*) srcData.getLinePointer (y);
-                uint8* const dst = destData.getLinePointer (y);
+                auto src = reinterpret_cast<const PixelARGB*> (srcData.getLinePointer (y));
+                auto dst = destData.getLinePointer (y);
 
                 for (int x = 0; x < w; ++x)
                     dst[x] = src[x].getAlpha();
@@ -337,8 +350,8 @@ Image Image::convertedToFormat (PixelFormat newFormat) const
 
         for (int y = 0; y < h; ++y)
         {
-            const PixelAlpha* const src = (const PixelAlpha*) srcData.getLinePointer (y);
-            PixelARGB* const dst = (PixelARGB*) destData.getLinePointer (y);
+            auto src = reinterpret_cast<const PixelAlpha*> (srcData.getLinePointer (y));
+            auto dst = reinterpret_cast<PixelARGB*> (destData.getLinePointer (y));
 
             for (int x = 0; x < w; ++x)
                 dst[x].set (src[x]);
@@ -362,7 +375,7 @@ NamedValueSet* Image::getProperties() const
 }
 
 //==============================================================================
-Image::BitmapData::BitmapData (Image& im, const int x, const int y, const int w, const int h, BitmapData::ReadWriteMode mode)
+Image::BitmapData::BitmapData (Image& im, int x, int y, int w, int h, BitmapData::ReadWriteMode mode)
     : width (w), height (h)
 {
     // The BitmapData class must be given a valid image, and a valid rectangle within it!
@@ -373,7 +386,7 @@ Image::BitmapData::BitmapData (Image& im, const int x, const int y, const int w,
     jassert (data != nullptr && pixelStride > 0 && lineStride != 0);
 }
 
-Image::BitmapData::BitmapData (const Image& im, const int x, const int y, const int w, const int h)
+Image::BitmapData::BitmapData (const Image& im, int x, int y, int w, int h)
     : width (w), height (h)
 {
     // The BitmapData class must be given a valid image, and a valid rectangle within it!
@@ -399,11 +412,11 @@ Image::BitmapData::~BitmapData()
 {
 }
 
-Colour Image::BitmapData::getPixelColour (const int x, const int y) const noexcept
+Colour Image::BitmapData::getPixelColour (int x, int y) const noexcept
 {
     jassert (isPositiveAndBelow (x, width) && isPositiveAndBelow (y, height));
 
-    const uint8* const pixel = getPixelPointer (x, y);
+    auto pixel = getPixelPointer (x, y);
 
     switch (pixelFormat)
     {
@@ -413,15 +426,15 @@ Colour Image::BitmapData::getPixelColour (const int x, const int y) const noexce
         default:                    jassertfalse; break;
     }
 
-    return Colour();
+    return {};
 }
 
-void Image::BitmapData::setPixelColour (const int x, const int y, Colour colour) const noexcept
+void Image::BitmapData::setPixelColour (int x, int y, Colour colour) const noexcept
 {
     jassert (isPositiveAndBelow (x, width) && isPositiveAndBelow (y, height));
 
-    uint8* const pixel = getPixelPointer (x, y);
-    const PixelARGB col (colour.getPixelARGB());
+    auto pixel = getPixelPointer (x, y);
+    auto col = colour.getPixelARGB();
 
     switch (pixelFormat)
     {
@@ -435,13 +448,16 @@ void Image::BitmapData::setPixelColour (const int x, const int y, Colour colour)
 //==============================================================================
 void Image::clear (const Rectangle<int>& area, Colour colourToClearTo)
 {
-    const ScopedPointer<LowLevelGraphicsContext> g (image->createLowLevelContext());
-    g->setFill (colourToClearTo);
-    g->fillRect (area, true);
+    if (image != nullptr)
+    {
+        const std::unique_ptr<LowLevelGraphicsContext> g (image->createLowLevelContext());
+        g->setFill (colourToClearTo);
+        g->fillRect (area, true);
+    }
 }
 
 //==============================================================================
-Colour Image::getPixelAt (const int x, const int y) const
+Colour Image::getPixelAt (int x, int y) const
 {
     if (isPositiveAndBelow (x, getWidth()) && isPositiveAndBelow (y, getHeight()))
     {
@@ -449,10 +465,10 @@ Colour Image::getPixelAt (const int x, const int y) const
         return srcData.getPixelColour (0, 0);
     }
 
-    return Colour();
+    return {};
 }
 
-void Image::setPixelAt (const int x, const int y, Colour colour)
+void Image::setPixelAt (int x, int y, Colour colour)
 {
     if (isPositiveAndBelow (x, getWidth()) && isPositiveAndBelow (y, getHeight()))
     {
@@ -461,7 +477,7 @@ void Image::setPixelAt (const int x, const int y, Colour colour)
     }
 }
 
-void Image::multiplyAlphaAt (const int x, const int y, const float multiplier)
+void Image::multiplyAlphaAt (int x, int y, float multiplier)
 {
     if (isPositiveAndBelow (x, getWidth()) && isPositiveAndBelow (y, getHeight())
          && hasAlphaChannel())
@@ -469,7 +485,7 @@ void Image::multiplyAlphaAt (const int x, const int y, const float multiplier)
         const BitmapData destData (*this, x, y, 1, 1, BitmapData::readWrite);
 
         if (isARGB())
-            ((PixelARGB*) destData.data)->multiplyAlpha (multiplier);
+            reinterpret_cast<PixelARGB*> (destData.data)->multiplyAlpha (multiplier);
         else
             *(destData.data) = (uint8) (*(destData.data) * multiplier);
     }
@@ -483,11 +499,11 @@ struct PixelIterator
     {
         for (int y = 0; y < data.height; ++y)
         {
-            uint8* p = data.getLinePointer (y);
+            auto p = data.getLinePointer (y);
 
             for (int x = 0; x < data.width; ++x)
             {
-                pixelOp (*(PixelType*) p);
+                pixelOp (*reinterpret_cast<PixelType*> (p));
                 p += data.pixelStride;
             }
         }
@@ -508,25 +524,21 @@ static void performPixelOp (const Image::BitmapData& data, const PixelOperation&
 
 struct AlphaMultiplyOp
 {
-    AlphaMultiplyOp (float alpha_) noexcept : alpha (alpha_) {}
-
-    const float alpha;
+    float alpha;
 
     template <class PixelType>
     void operator() (PixelType& pixel) const
     {
         pixel.multiplyAlpha (alpha);
     }
-
-    JUCE_DECLARE_NON_COPYABLE (AlphaMultiplyOp)
 };
 
-void Image::multiplyAllAlphas (const float amountToMultiplyBy)
+void Image::multiplyAllAlphas (float amountToMultiplyBy)
 {
     jassert (hasAlphaChannel());
 
     const BitmapData destData (*this, 0, 0, getWidth(), getHeight(), BitmapData::readWrite);
-    performPixelOp (destData, AlphaMultiplyOp (amountToMultiplyBy));
+    performPixelOp (destData, AlphaMultiplyOp { amountToMultiplyBy });
 }
 
 struct DesaturateOp
@@ -547,11 +559,11 @@ void Image::desaturate()
     }
 }
 
-void Image::createSolidAreaMask (RectangleList<int>& result, const float alphaThreshold) const
+void Image::createSolidAreaMask (RectangleList<int>& result, float alphaThreshold) const
 {
     if (hasAlphaChannel())
     {
-        const uint8 threshold = (uint8) jlimit (0, 255, roundToInt (alphaThreshold * 255.0f));
+        auto threshold = (uint8) jlimit (0, 255, roundToInt (alphaThreshold * 255.0f));
         SparseSet<int> pixelsOnRow;
 
         const BitmapData srcData (*this, 0, 0, getWidth(), getHeight());
@@ -559,13 +571,13 @@ void Image::createSolidAreaMask (RectangleList<int>& result, const float alphaTh
         for (int y = 0; y < srcData.height; ++y)
         {
             pixelsOnRow.clear();
-            const uint8* lineData = srcData.getLinePointer (y);
+            auto lineData = srcData.getLinePointer (y);
 
             if (isARGB())
             {
                 for (int x = 0; x < srcData.width; ++x)
                 {
-                    if (((const PixelARGB*) lineData)->getAlpha() >= threshold)
+                    if (reinterpret_cast<const PixelARGB*> (lineData)->getAlpha() >= threshold)
                         pixelsOnRow.addRange (Range<int> (x, x + 1));
 
                     lineData += srcData.pixelStride;
@@ -584,7 +596,7 @@ void Image::createSolidAreaMask (RectangleList<int>& result, const float alphaTh
 
             for (int i = 0; i < pixelsOnRow.getNumRanges(); ++i)
             {
-                const Range<int> range (pixelsOnRow.getRange (i));
+                auto range = pixelsOnRow.getRange (i);
                 result.add (Rectangle<int> (range.getStart(), y, range.getLength(), 1));
             }
 
@@ -637,15 +649,15 @@ void Image::moveImageSection (int dx, int dy,
 
     if (w > 0 && h > 0)
     {
-        const int maxX = jmax (dx, sx) + w;
-        const int maxY = jmax (dy, sy) + h;
+        auto maxX = jmax (dx, sx) + w;
+        auto maxY = jmax (dy, sy) + h;
 
         const BitmapData destData (*this, minX, minY, maxX - minX, maxY - minY, BitmapData::readWrite);
 
-        uint8* dst       = destData.getPixelPointer (dx - minX, dy - minY);
-        const uint8* src = destData.getPixelPointer (sx - minX, sy - minY);
+        auto dst = destData.getPixelPointer (dx - minX, dy - minY);
+        auto src = destData.getPixelPointer (sx - minX, sy - minY);
 
-        const size_t lineSize = (size_t) (destData.pixelStride * w);
+        auto lineSize = (size_t) (destData.pixelStride * w);
 
         if (dy > sy)
         {
@@ -666,3 +678,5 @@ void Image::moveImageSection (int dx, int dy,
         }
     }
 }
+
+} // namespace juce

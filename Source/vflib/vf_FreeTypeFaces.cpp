@@ -630,7 +630,7 @@ private:
       return 0;
     }
 
-    ImagePixelData* clone()
+    ImagePixelData::Ptr clone()
     {
       ImagePixelData* dup = new GlyphImage (width, height, m_lineStride, m_imageData);
       //dup->userData = userData; /* unfortunate */
@@ -895,7 +895,7 @@ public:
 
   Typeface::Ptr createTypefaceForFont (const Font& font)
   {
-    Typeface::Ptr typeFace = 0;
+    Typeface::Ptr typeFace;
 
     for (int i=0; i<m_faces.size(); i++)
     {

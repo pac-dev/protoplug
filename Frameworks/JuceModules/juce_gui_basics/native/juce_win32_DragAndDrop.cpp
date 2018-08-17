@@ -2,35 +2,39 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
+namespace juce
+{
+
 namespace DragAndDropHelpers
 {
     //==============================================================================
-    class JuceDropSource   : public ComBaseClassHelper <IDropSource>
+    struct JuceDropSource   : public ComBaseClassHelper<IDropSource>
     {
-    public:
         JuceDropSource() {}
 
-        JUCE_COMRESULT QueryContinueDrag (BOOL escapePressed, DWORD keys)
+        JUCE_COMRESULT QueryContinueDrag (BOOL escapePressed, DWORD keys) override
         {
             if (escapePressed)
                 return DRAGDROP_S_CANCEL;
@@ -41,35 +45,29 @@ namespace DragAndDropHelpers
             return S_OK;
         }
 
-        JUCE_COMRESULT GiveFeedback (DWORD)
+        JUCE_COMRESULT GiveFeedback (DWORD) override
         {
             return DRAGDROP_S_USEDEFAULTCURSORS;
         }
     };
 
     //==============================================================================
-    class JuceEnumFormatEtc   : public ComBaseClassHelper <IEnumFORMATETC>
+    struct JuceEnumFormatEtc   : public ComBaseClassHelper<IEnumFORMATETC>
     {
-    public:
-        JuceEnumFormatEtc (const FORMATETC* const format_)
-            : format (format_),
-              index (0)
-        {
-        }
+        JuceEnumFormatEtc (const FORMATETC* f)  : format (f) {}
 
-        JUCE_COMRESULT Clone (IEnumFORMATETC** result)
+        JUCE_COMRESULT Clone (IEnumFORMATETC** result) override
         {
             if (result == 0)
                 return E_POINTER;
 
-            JuceEnumFormatEtc* const newOne = new JuceEnumFormatEtc (format);
+            auto newOne = new JuceEnumFormatEtc (format);
             newOne->index = index;
-
             *result = newOne;
             return S_OK;
         }
 
-        JUCE_COMRESULT Next (ULONG celt, LPFORMATETC lpFormatEtc, ULONG* pceltFetched)
+        JUCE_COMRESULT Next (ULONG celt, LPFORMATETC lpFormatEtc, ULONG* pceltFetched) override
         {
             if (pceltFetched != nullptr)
                 *pceltFetched = 0;
@@ -90,7 +88,7 @@ namespace DragAndDropHelpers
             return S_FALSE;
         }
 
-        JUCE_COMRESULT Skip (ULONG celt)
+        JUCE_COMRESULT Skip (ULONG celt) override
         {
             if (index + (int) celt >= 1)
                 return S_FALSE;
@@ -99,7 +97,7 @@ namespace DragAndDropHelpers
             return S_OK;
         }
 
-        JUCE_COMRESULT Reset()
+        JUCE_COMRESULT Reset() override
         {
             index = 0;
             return S_OK;
@@ -107,7 +105,7 @@ namespace DragAndDropHelpers
 
     private:
         const FORMATETC* const format;
-        int index;
+        int index = 0;
 
         static void copyFormatEtc (FORMATETC& dest, const FORMATETC& source)
         {
@@ -127,12 +125,8 @@ namespace DragAndDropHelpers
     class JuceDataObject  : public ComBaseClassHelper <IDataObject>
     {
     public:
-        JuceDataObject (JuceDropSource* const dropSource_,
-                        const FORMATETC* const format_,
-                        const STGMEDIUM* const medium_)
-            : dropSource (dropSource_),
-              format (format_),
-              medium (medium_)
+        JuceDataObject (JuceDropSource* s, const FORMATETC* f, const STGMEDIUM* m)
+            : dropSource (s), format (f), medium (m)
         {
         }
 
@@ -152,7 +146,7 @@ namespace DragAndDropHelpers
 
                 if (format->tymed == TYMED_HGLOBAL)
                 {
-                    const SIZE_T len = GlobalSize (medium->hGlobal);
+                    auto len = GlobalSize (medium->hGlobal);
                     void* const src = GlobalLock (medium->hGlobal);
                     void* const dst = GlobalAlloc (GMEM_FIXED, len);
 
@@ -227,15 +221,15 @@ namespace DragAndDropHelpers
 
         if (hDrop != 0)
         {
-            LPDROPFILES pDropFiles = (LPDROPFILES) GlobalLock (hDrop);
+            auto pDropFiles = (LPDROPFILES) GlobalLock (hDrop);
             pDropFiles->pFiles = sizeof (DROPFILES);
             pDropFiles->fWide = true;
 
-            WCHAR* fname = reinterpret_cast<WCHAR*> (addBytesToPointer (pDropFiles, sizeof (DROPFILES)));
+            auto* fname = reinterpret_cast<WCHAR*> (addBytesToPointer (pDropFiles, sizeof (DROPFILES)));
 
             for (int i = 0; i < fileNames.size(); ++i)
             {
-                const size_t bytesWritten = fileNames[i].copyToUTF16 (fname, 2048);
+                auto bytesWritten = fileNames[i].copyToUTF16 (fname, 2048);
                 fname = reinterpret_cast<WCHAR*> (addBytesToPointer (fname, bytesWritten));
             }
 
@@ -247,47 +241,112 @@ namespace DragAndDropHelpers
         return hDrop;
     }
 
-    bool performDragDrop (FORMATETC* const format, STGMEDIUM* const medium, const DWORD whatToDo)
+    struct DragAndDropJob   : public ThreadPoolJob
     {
-        JuceDropSource* const source = new JuceDropSource();
-        JuceDataObject* const data = new JuceDataObject (source, format, medium);
+        DragAndDropJob (FORMATETC f, STGMEDIUM m, DWORD d, std::function<void()> cb)
+            : ThreadPoolJob ("DragAndDrop"),
+              format (f), medium (m), whatToDo (d),
+              completionCallback (cb)
+        {
+        }
 
-        DWORD effect;
-        const HRESULT res = DoDragDrop (data, source, whatToDo, &effect);
+        JobStatus runJob() override
+        {
+            OleInitialize (0);
 
-        data->Release();
-        source->Release();
+            auto source = new JuceDropSource();
+            auto data = new JuceDataObject (source, &format, &medium);
 
-        return res == DRAGDROP_S_DROP;
-    }
+            DWORD effect;
+            DoDragDrop (data, source, whatToDo, &effect);
+
+            data->Release();
+            source->Release();
+
+            if (completionCallback != nullptr)
+                MessageManager::callAsync (completionCallback);
+
+            return jobHasFinished;
+        }
+
+        FORMATETC format;
+        STGMEDIUM medium;
+        DWORD whatToDo;
+
+        std::function<void()> completionCallback;
+    };
+
+    class ThreadPoolHolder   : private DeletedAtShutdown
+    {
+    public:
+        ThreadPoolHolder() = default;
+
+        ~ThreadPoolHolder()
+        {
+            // Wait forever if there's a job running. The user needs to cancel the transfer
+            // in the GUI.
+            pool.removeAllJobs (true, -1);
+
+            clearSingletonInstance();
+        }
+
+        juce_DeclareSingleton_SingleThreaded (ThreadPoolHolder, true)
+
+        // We need to make sure we don't do simultaneous text and file drag and drops,
+        // so use a pool that can only run a single job.
+        ThreadPool pool { 1 };
+    };
+
+    juce_ImplementSingleton_SingleThreaded (ThreadPoolHolder)
 }
 
 //==============================================================================
-bool DragAndDropContainer::performExternalDragDropOfFiles (const StringArray& files, const bool canMove)
+bool DragAndDropContainer::performExternalDragDropOfFiles (const StringArray& files, const bool canMove,
+                                                           Component*, std::function<void()> callback)
 {
+    if (files.isEmpty())
+        return false;
+
     FORMATETC format = { CF_HDROP, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
     STGMEDIUM medium = { TYMED_HGLOBAL, { 0 }, 0 };
 
     medium.hGlobal = DragAndDropHelpers::createHDrop (files);
 
-    return DragAndDropHelpers::performDragDrop (&format, &medium, canMove ? (DWORD) (DROPEFFECT_COPY | DROPEFFECT_MOVE)
-                                                                          : (DWORD) DROPEFFECT_COPY);
+    auto& pool = DragAndDropHelpers::ThreadPoolHolder::getInstance()->pool;
+    pool.addJob (new DragAndDropHelpers::DragAndDropJob (format, medium,
+                                                         canMove ? (DROPEFFECT_COPY | DROPEFFECT_MOVE) : DROPEFFECT_COPY,
+                                                         callback),
+                true);
+
+    return true;
 }
 
-bool DragAndDropContainer::performExternalDragDropOfText (const String& text)
+bool DragAndDropContainer::performExternalDragDropOfText (const String& text, Component*, std::function<void()> callback)
 {
+    if (text.isEmpty())
+        return false;
+
     FORMATETC format = { CF_TEXT, 0, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
     STGMEDIUM medium = { TYMED_HGLOBAL, { 0 }, 0 };
 
-    const size_t numBytes = CharPointer_UTF16::getBytesRequiredFor (text.getCharPointer());
+    auto numBytes = CharPointer_UTF16::getBytesRequiredFor (text.getCharPointer());
 
     medium.hGlobal = GlobalAlloc (GMEM_MOVEABLE | GMEM_ZEROINIT, numBytes + 2);
-    WCHAR* const data = static_cast <WCHAR*> (GlobalLock (medium.hGlobal));
+    auto* data = static_cast<WCHAR*> (GlobalLock (medium.hGlobal));
 
-    text.copyToUTF16 (data, numBytes);
+    text.copyToUTF16 (data, numBytes + 2);
     format.cfFormat = CF_UNICODETEXT;
 
     GlobalUnlock (medium.hGlobal);
 
-    return DragAndDropHelpers::performDragDrop (&format, &medium, DROPEFFECT_COPY | DROPEFFECT_MOVE);
+    auto& pool = DragAndDropHelpers::ThreadPoolHolder::getInstance()->pool;
+    pool.addJob (new DragAndDropHelpers::DragAndDropJob (format,
+                                                        medium,
+                                                        DROPEFFECT_COPY | DROPEFFECT_MOVE,
+                                                        callback),
+                 true);
+
+    return true;
 }
+
+} // namespace juce

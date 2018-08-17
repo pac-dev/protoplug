@@ -2,29 +2,26 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_REVERB_H_INCLUDED
-#define JUCE_REVERB_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -35,6 +32,8 @@
     apply the reverb to your audio data.
 
     @see ReverbAudioSource
+
+    @tags{Audio}
 */
 class Reverb
 {
@@ -232,7 +231,7 @@ private:
             if (size != bufferSize)
             {
                 bufferIndex = 0;
-                buffer.malloc ((size_t) size);
+                buffer.malloc (size);
                 bufferSize = size;
             }
 
@@ -277,7 +276,7 @@ private:
             if (size != bufferSize)
             {
                 bufferIndex = 0;
-                buffer.malloc ((size_t) size);
+                buffer.malloc (size);
                 bufferSize = size;
             }
 
@@ -307,54 +306,6 @@ private:
     };
 
     //==============================================================================
-    class LinearSmoothedValue
-    {
-    public:
-        LinearSmoothedValue() noexcept
-            : currentValue (0), target (0), step (0), countdown (0), stepsToTarget (0)
-        {
-        }
-
-        void reset (double sampleRate, double fadeLengthSeconds) noexcept
-        {
-            jassert (sampleRate > 0 && fadeLengthSeconds >= 0);
-            stepsToTarget = (int) std::floor (fadeLengthSeconds * sampleRate);
-            currentValue = target;
-            countdown = 0;
-        }
-
-        void setValue (float newValue) noexcept
-        {
-            if (target != newValue)
-            {
-                target = newValue;
-                countdown = stepsToTarget;
-
-                if (countdown <= 0)
-                    currentValue = target;
-                else
-                    step = (target - currentValue) / (float) countdown;
-            }
-        }
-
-        float getNextValue() noexcept
-        {
-            if (countdown <= 0)
-                return target;
-
-            --countdown;
-            currentValue += step;
-            return currentValue;
-        }
-
-    private:
-        float currentValue, target, step;
-        int countdown, stepsToTarget;
-
-        JUCE_DECLARE_NON_COPYABLE (LinearSmoothedValue)
-    };
-
-    //==============================================================================
     enum { numCombs = 8, numAllPasses = 4, numChannels = 2 };
 
     Parameters parameters;
@@ -363,10 +314,9 @@ private:
     CombFilter comb [numChannels][numCombs];
     AllPassFilter allPass [numChannels][numAllPasses];
 
-    LinearSmoothedValue damping, feedback, dryGain, wetGain1, wetGain2;
+    LinearSmoothedValue<float> damping, feedback, dryGain, wetGain1, wetGain2;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Reverb)
 };
 
-
-#endif   // JUCE_REVERB_H_INCLUDED
+} // namespace juce

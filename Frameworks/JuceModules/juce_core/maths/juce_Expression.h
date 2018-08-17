@@ -1,34 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_EXPRESSION_H_INCLUDED
-#define JUCE_EXPRESSION_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -44,6 +37,8 @@
     Expression::Scope to be supplied when evaluating them, and this object
     is expected to be able to resolve the symbol names and perform the functions that
     are used.
+
+    @tags{Core}
 */
 class JUCE_API  Expression
 {
@@ -55,25 +50,25 @@ public:
     /** Destructor. */
     ~Expression();
 
-    /** Creates a simple expression with a specified constant value. */
-    explicit Expression (double constant);
-
     /** Creates a copy of an expression. */
     Expression (const Expression&);
 
     /** Copies another expression. */
     Expression& operator= (const Expression&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+    /** Move constructor */
     Expression (Expression&&) noexcept;
-    Expression& operator= (Expression&&) noexcept;
-   #endif
 
-    /** Creates an expression by parsing a string.
-        If there's a syntax error in the string, this will throw a ParseError exception.
-        @throws ParseError
+    /** Move assignment operator */
+    Expression& operator= (Expression&&) noexcept;
+
+    /** Creates a simple expression with a specified constant value. */
+    explicit Expression (double constant);
+
+    /** Attempts to create an expression by parsing a string.
+        Any errors are returned in the parseError argument provided.
     */
-    explicit Expression (const String& stringToParse);
+    Expression (const String& stringToParse, String& parseError);
 
     /** Returns a string version of the expression. */
     String toString() const;
@@ -101,10 +96,10 @@ public:
         The pointer is incremented so that on return, it indicates the character that follows
         the end of the expression that was parsed.
 
-        If there's a syntax error in the string, this will throw a ParseError exception.
-        @throws ParseError
+        If there's a syntax error in parsing, the parseError argument will be set
+        to a description of the problem.
     */
-    static Expression parse (String::CharPointerType& stringToParse);
+    static Expression parse (String::CharPointerType& stringToParse, String& parseError);
 
     //==============================================================================
     /** When evaluating an Expression object, this class is used to resolve symbols and
@@ -217,16 +212,6 @@ public:
     void findReferencedSymbols (Array<Symbol>& results, const Scope& scope) const;
 
     //==============================================================================
-    /** An exception that can be thrown by Expression::parse(). */
-    class ParseError  : public std::exception
-    {
-    public:
-        ParseError (const String& message);
-
-        String description;
-    };
-
-    //==============================================================================
     /** Expression type.
         @see Expression::getType()
     */
@@ -258,13 +243,9 @@ private:
     //==============================================================================
     class Term;
     struct Helpers;
-    friend class Term;
-    friend struct Helpers;
-    friend struct ContainerDeletePolicy<Term>;
-    friend class ReferenceCountedObjectPtr<Term>;
     ReferenceCountedObjectPtr<Term> term;
 
     explicit Expression (Term*);
 };
 
-#endif   // JUCE_EXPRESSION_H_INCLUDED
+} // namespace juce

@@ -7,9 +7,10 @@
               pluginChannelConfigs=" {2, 2}" pluginIsSynth="1" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="protoplug_genAU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.protoplug_gen" pluginAAXCategory="AAX_ePlugInCategory_Dynamics"
-              jucerVersion="3.1.1" companyName="osar.fr" pluginAUMainType="kAudioUnitType_MusicDevice"
-              buildVST3="0" buildRTAS="0" buildAAX="0">
+              aaxIdentifier="com.yourcompany.protoplug_gen" pluginAAXCategory="2"
+              jucerVersion="5.3.2" companyName="osar.fr" pluginAUMainType="'aumu'"
+              buildVST3="0" buildRTAS="0" buildAAX="0" pluginFormats="buildVST,buildAU"
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn,pluginProducesMidiOut,pluginEditorRequiresKeys">
   <MAINGROUP id="Blif9d" name="protoplug_gen">
     <GROUP id="{14A58A55-62AB-895C-44B4-A814F95BEEB9}" name="Source">
       <GROUP id="{FEABF009-6C32-593B-3434-77AE0069A212}" name="GUI Classes">
@@ -96,42 +97,13 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2010 targetFolder="Builds/VisualStudio2010" vstFolder="..\..\Frameworks\vstsdk2.4_minimal"
-            smallIcon="kqUkD4" bigIcon="ZKX0WG">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="Lua Protoplug Gen" defines="_PROTOGEN=1"
-                       binaryPath="../../Bin/win32"/>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="Lua Protoplug Gen" binaryPath="../../Bin/win32"
-                       defines="_PROTOGEN=1"/>
-        <CONFIGURATION name="Release_x64" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="Lua Protoplug Gen (x64)"
-                       defines="_PROTOGEN=1" binaryPath="../../Bin/win64"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_core" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_events" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_graphics" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_data_structures" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_gui_extra" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../Frameworks/JuceModules"/>
-        <MODULEPATH id="juce_audio_plugin_client" path="../../Frameworks/JuceModules"/>
-      </MODULEPATHS>
-    </VS2010>
     <XCODE_MAC targetFolder="Builds/MacOSX" vstFolder="../../Frameworks/vstsdk2.4_minimal"
                postbuildCommand="# This script takes the build product and creates an AU and VST version, &#10;# then installs them for testing. &#10;&#10;original=$CONFIGURATION_BUILD_DIR/$FULL_PRODUCT_NAME&#10;&#10;echo &quot;protoplug [$CONFIGURATION] starting postbuild in $original&quot;&#10;sed -i &quot;&quot; -e 's/TDMwPTul/BNDLPTul/g' &quot;$original/Contents/PkgInfo&quot;&#10;sed -i &quot;&quot; -e 's/TDMw/BNDL/g' &quot;$original/Contents/$INFOPLIST_FILE&quot;&#10;&#10;echo &quot;Creating VST version...&quot;&#10;VST1=$CONFIGURATION_BUILD_DIR/$PRODUCT_NAME.vst&#10;if [ -d &quot;$VST1&quot; ]; then &#10;  rm -r &quot;$VST1&quot;&#10;fi&#10;cp -r &quot;$original&quot; &quot;$VST1&quot;&#10;&#10;echo &quot;Installing VST...&quot;&#10;VST2=~/Library/Audio/Plug-Ins/VST/$PRODUCT_NAME.vst&#10;if [ -d &quot;$VST2&quot; ]; then &#10;  rm -r &quot;$VST2&quot;&#10;fi&#10;cp -r &quot;$VST1&quot; &quot;$VST2&quot;&#10;&#10;&#10;# Fix info.plist for AUs built with Xcode 3&#10;if [ -f &quot;$DEVELOPER_DIR/Library/Developer/CoreAudio/AudioUnits/AUPublic/AUBase/AUPlugInDispatch.cpp&quot; ]; then&#10;  echo&#10;else&#10;  echo &quot;Removing AudioComponents entry from Info.plist because this is not a new-format AU&quot;&#10;  /usr/libexec/PlistBuddy -c &quot;Delete AudioComponents&quot; &quot;$original/Contents/Info.plist&quot;&#10;fi&#10;&#10;echo &quot;Installing AU...&quot;&#10;AU=~/Library/Audio/Plug-Ins/Components/$PRODUCT_NAME.component&#10;if [ -d &quot;$AU&quot; ]; then &#10;  rm -r &quot;$AU&quot;&#10;fi&#10;cp -r &quot;$original&quot; &quot;$AU&quot;&#10;"
-               smallIcon="kqUkD4" bigIcon="ZKX0WG">
+               smallIcon="kqUkD4" bigIcon="ZKX0WG" extraDefs="_PROTOGEN=1">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Release" osxSDK="10.5 SDK" osxCompatibility="default" osxArchitecture="default"
-                       isDebug="0" optimisation="3" targetName="Lua Protoplug Gen" defines="_PROTOGEN=1"
-                       binaryPath="../../Bin/mac"/>
-        <CONFIGURATION name="Debug" osxSDK="10.5 SDK" osxCompatibility="default" osxArchitecture="default"
-                       isDebug="1" optimisation="1" targetName="Lua Protoplug Gen" defines="_PROTOGEN=1"
+        <CONFIGURATION name="Release" osxSDK="10.5 SDK" isDebug="0" optimisation="3"
+                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/mac"/>
+        <CONFIGURATION name="Debug" osxSDK="10.5 SDK" isDebug="1" optimisation="1" targetName="Lua Protoplug Gen"
                        binaryPath="../../Bin/mac"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -149,12 +121,12 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <LINUX_MAKE targetFolder="Builds/Linux" vstFolder="../../Frameworks/vstsdk2.4_minimal"
-                smallIcon="kqUkD4" bigIcon="ZKX0WG">
+                smallIcon="kqUkD4" bigIcon="ZKX0WG" extraDefs="_PROTOGEN=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="Lua Protoplug Gen" defines="_PROTOGEN=1" binaryPath="../../Bin/linux"/>
+                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/linux"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Lua Protoplug Gen" defines="_PROTOGEN=1" binaryPath="../../Bin/linux"/>
+                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/linux"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../Frameworks/JuceModules"/>
@@ -170,6 +142,30 @@
         <MODULEPATH id="juce_audio_basics" path="../../Frameworks/JuceModules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
+    <VS2017 targetFolder="Builds/VisualStudio2017" vstFolder="..\..\Frameworks\vstsdk2.4_minimal"
+            extraDefs="_PROTOGEN=1" windowsTargetPlatformVersion="8.1">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Lua Protoplug Gen" binaryPath="../../Bin/win32"
+                       winArchitecture="Win32"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Lua Protoplug Gen" binaryPath="../../Bin/win32"
+                       winArchitecture="Win32"/>
+        <CONFIGURATION isDebug="0" name="Release_x64" targetName="Lua Protoplug Gen (x64)"
+                       binaryPath="../../Bin/win64" winArchitecture="x64"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_gui_extra" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_graphics" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_events" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_data_structures" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_core" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../Frameworks/JuceModules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../Frameworks/JuceModules"/>
+      </MODULEPATHS>
+    </VS2017>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
@@ -185,4 +181,7 @@
     <MODULES id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
+  <LIVE_SETTINGS>
+    <WINDOWS/>
+  </LIVE_SETTINGS>
 </JUCERPROJECT>

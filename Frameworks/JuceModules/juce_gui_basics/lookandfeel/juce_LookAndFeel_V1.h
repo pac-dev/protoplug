@@ -2,33 +2,37 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_LOOKANDFEEL_V1_H_INCLUDED
-#define JUCE_LOOKANDFEEL_V1_H_INCLUDED
+namespace juce
+{
 
 //==============================================================================
 /**
     The original JUCE look-and-feel, as used back from 2002 to about 2007ish.
     @see LookAndFeel, LookAndFeel_V2, LookAndFeel_V3
+
+    @tags{GUI}
 */
 class JUCE_API  LookAndFeel_V1    : public LookAndFeel_V2
 {
@@ -38,12 +42,14 @@ public:
 
     //==============================================================================
     void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
-                               bool isMouseOverButton, bool isButtonDown) override;
+                               bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
-    void drawToggleButton (Graphics&, ToggleButton&, bool isMouseOverButton, bool isButtonDown) override;
+    void drawToggleButton (Graphics&, ToggleButton&,
+                           bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
     void drawTickBox (Graphics&, Component&, float x, float y, float w, float h,
-                      bool ticked, bool isEnabled, bool isMouseOverButton, bool isButtonDown) override;
+                      bool ticked, bool isEnabled,
+                      bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
     void drawProgressBar (Graphics&, ProgressBar&, int width, int height,
                           double progress, const String& textToShow) override;
@@ -51,7 +57,7 @@ public:
     //==============================================================================
     void drawScrollbarButton (Graphics&, ScrollBar&, int width, int height,
                               int buttonDirection, bool isScrollbarVertical,
-                              bool isMouseOverButton, bool isButtonDown) override;
+                              bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override;
 
     void drawScrollbar (Graphics&, ScrollBar&, int x, int y, int width, int height,
                         bool isScrollbarVertical, int thumbStartPosition, int thumbSize,
@@ -97,5 +103,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LookAndFeel_V1)
 };
 
-
-#endif   // JUCE_LOOKANDFEEL_V1_H_INCLUDED
+} // namespace juce

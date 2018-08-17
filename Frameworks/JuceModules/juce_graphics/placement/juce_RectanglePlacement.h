@@ -2,37 +2,40 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_RECTANGLEPLACEMENT_H_INCLUDED
-#define JUCE_RECTANGLEPLACEMENT_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
-    Defines the method used to postion some kind of rectangular object within
+    Defines the method used to position some kind of rectangular object within
     a rectangular viewport.
 
     Although similar to Justification, this is more specific, and has some extra
     options.
+
+    @tags{Graphics}
 */
 class JUCE_API  RectanglePlacement
 {
@@ -42,13 +45,13 @@ public:
     inline RectanglePlacement (int placementFlags) noexcept  : flags (placementFlags) {}
 
     /** Creates a default RectanglePlacement object, which is equivalent to using the 'centred' flag. */
-    inline RectanglePlacement() noexcept                     : flags (centred) {}
+    inline RectanglePlacement() = default;
 
     /** Creates a copy of another RectanglePlacement object. */
-    RectanglePlacement (const RectanglePlacement&) noexcept;
+    RectanglePlacement (const RectanglePlacement&) = default;
 
     /** Copies another RectanglePlacement object. */
-    RectanglePlacement& operator= (const RectanglePlacement&) noexcept;
+    RectanglePlacement& operator= (const RectanglePlacement&) = default;
 
     bool operator== (const RectanglePlacement&) const noexcept;
     bool operator!= (const RectanglePlacement&) const noexcept;
@@ -151,10 +154,10 @@ public:
                                     const Rectangle<ValueType>& destination) const noexcept
     {
         double x = source.getX(), y = source.getY(), w = source.getWidth(), h = source.getHeight();
-        applyTo (x, y, w, h, static_cast <double> (destination.getX()), static_cast <double> (destination.getY()),
-                 static_cast <double> (destination.getWidth()), static_cast <double> (destination.getHeight()));
-        return Rectangle<ValueType> (static_cast <ValueType> (x), static_cast <ValueType> (y),
-                                     static_cast <ValueType> (w), static_cast <ValueType> (h));
+        applyTo (x, y, w, h, static_cast<double> (destination.getX()), static_cast<double> (destination.getY()),
+                 static_cast<double> (destination.getWidth()), static_cast<double> (destination.getHeight()));
+        return Rectangle<ValueType> (static_cast<ValueType> (x), static_cast<ValueType> (y),
+                                     static_cast<ValueType> (w), static_cast<ValueType> (h));
     }
 
     /** Returns the transform that should be applied to these source coordinates to fit them
@@ -166,7 +169,7 @@ public:
 
 private:
     //==============================================================================
-    int flags;
+    int flags { centred };
 };
 
-#endif   // JUCE_RECTANGLEPLACEMENT_H_INCLUDED
+} // namespace juce

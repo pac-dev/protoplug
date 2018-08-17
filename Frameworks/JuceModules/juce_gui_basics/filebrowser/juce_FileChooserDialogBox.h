@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_FILECHOOSERDIALOGBOX_H_INCLUDED
-#define JUCE_FILECHOOSERDIALOGBOX_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -37,10 +38,10 @@
 
     @code
     {
-        WildcardFileFilter wildcardFilter ("*.foo", String::empty, "Foo files");
+        WildcardFileFilter wildcardFilter ("*.foo", String(), "Foo files");
 
         FileBrowserComponent browser (FileBrowserComponent::canSelectFiles,
-                                      File::nonexistent,
+                                      File(),
                                       &wildcardFilter,
                                       nullptr);
 
@@ -60,9 +61,10 @@
     @endcode
 
     @see FileChooser
+
+    @tags{GUI}
 */
 class JUCE_API  FileChooserDialogBox : public ResizableWindow,
-                                       private ButtonListener,  // (can't use Button::Listener due to idiotic VC2005 bug)
                                        private FileBrowserListener
 {
 public:
@@ -79,6 +81,11 @@ public:
                                 if they try to select a file that already exists. (This
                                 flag is only used when saving files)
         @param backgroundColour the background colour for the top level window
+        @param parentComponent  an optional component which should be the parent
+                                for the file chooser. If this is a nullptr then the
+                                dialog box will be a top-level window. AUv3s on iOS
+                                must specify this parameter as opening a top-level window
+                                in an AUv3 is forbidden due to sandbox restrictions.
 
         @see FileBrowserComponent, FilePreviewComponent
     */
@@ -86,7 +93,8 @@ public:
                           const String& instructions,
                           FileBrowserComponent& browserComponent,
                           bool warnAboutOverwritingExistingFiles,
-                          Colour backgroundColour);
+                          Colour backgroundColour,
+                          Component* parentComponent = nullptr);
 
     /** Destructor. */
     ~FileChooserDialogBox();
@@ -135,7 +143,6 @@ private:
     ContentComponent* content;
     const bool warnAboutOverwritingExistingFiles;
 
-    void buttonClicked (Button*) override;
     void closeButtonPressed();
     void selectionChanged() override;
     void fileClicked (const File&, const MouseEvent&) override;
@@ -153,5 +160,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileChooserDialogBox)
 };
 
-
-#endif   // JUCE_FILECHOOSERDIALOGBOX_H_INCLUDED
+} // namespace juce

@@ -1,33 +1,26 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_TARGETPLATFORM_H_INCLUDED
-#define JUCE_TARGETPLATFORM_H_INCLUDED
+#pragma once
 
 //==============================================================================
 /*  This file figures out which platform is being built, and defines some macros
@@ -38,25 +31,45 @@
     - One of JUCE_WINDOWS, JUCE_MAC JUCE_LINUX, JUCE_IOS, JUCE_ANDROID, etc.
     - Either JUCE_32BIT or JUCE_64BIT, depending on the architecture.
     - Either JUCE_LITTLE_ENDIAN or JUCE_BIG_ENDIAN.
-    - Either JUCE_INTEL or JUCE_PPC
-    - Either JUCE_GCC or JUCE_MSVC
+    - Either JUCE_INTEL or JUCE_ARM
+    - Either JUCE_GCC or JUCE_CLANG or JUCE_MSVC
 */
 
 //==============================================================================
-#if (defined (_WIN32) || defined (_WIN64))
+#ifdef JUCE_APP_CONFIG_HEADER
+ #include JUCE_APP_CONFIG_HEADER
+#elif ! defined (JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED)
+ /*
+    Most projects will contain a global header file containing various settings that
+    should be applied to all the code in your project. If you use the projucer, it'll
+    set up a global header file for you automatically, but if you're doing things manually,
+    you may want to set the JUCE_APP_CONFIG_HEADER macro with the name of a file to include,
+    or just include one before all the module cpp files, in which you set
+    JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED=1 to silence this error.
+    (Or if you don't need a global header, then you can just define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED
+    globally to avoid this error).
+
+    Note for people who hit this error when trying to compile a JUCE project created by
+    a pre-v4.2 version of the Introjucer/Projucer, it's very easy to fix: just re-save
+    your project with the latest version of the Projucer, and it'll magically fix this!
+ */
+ #error "No global header file was included!"
+#endif
+
+//==============================================================================
+#if defined (_WIN32) || defined (_WIN64)
   #define       JUCE_WIN32 1
   #define       JUCE_WINDOWS 1
 #elif defined (JUCE_ANDROID)
   #undef        JUCE_ANDROID
   #define       JUCE_ANDROID 1
+#elif defined (__FreeBSD__) || (__OpenBSD__)
+  #define       JUCE_BSD 1
 #elif defined (LINUX) || defined (__linux__)
   #define     JUCE_LINUX 1
-#elif defined (__APPLE_CPP__) || defined(__APPLE_CC__)
-  #define Point CarbonDummyPointName // (workaround to avoid definition of "Point" by old Carbon headers)
-  #define Component CarbonDummyCompName
+#elif defined (__APPLE_CPP__) || defined (__APPLE_CC__)
   #include <CoreFoundation/CoreFoundation.h> // (needed to find out what platform we're using)
-  #undef Point
-  #undef Component
+  #include "../native/juce_mac_ClangBugWorkaround.h"
 
   #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
     #define     JUCE_IPHONE 1
@@ -64,8 +77,6 @@
   #else
     #define     JUCE_MAC 1
   #endif
-#elif defined (__FreeBSD__)
-  #define       JUCE_BSD 1
 #else
   #error "Unknown platform!"
 #endif
@@ -123,19 +134,19 @@
   #endif
 
   #if defined (__ppc__) || defined (__ppc64__)
-    #define JUCE_PPC 1
+    #error "PowerPC is no longer supported by JUCE!"
   #elif defined (__arm__) || defined (__arm64__)
     #define JUCE_ARM 1
   #else
     #define JUCE_INTEL 1
   #endif
 
-  #if JUCE_MAC && MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_4
-    #error "Building for OSX 10.3 is no longer supported!"
+  #if JUCE_MAC && MAC_OS_X_VERSION_MIN_REQUIRED < MAC_OS_X_VERSION_10_5
+    #error "Building for OSX 10.4 is no longer supported!"
   #endif
 
-  #if JUCE_MAC && ! defined (MAC_OS_X_VERSION_10_5)
-    #error "To build with 10.4 compatibility, use a 10.5 or 10.6 SDK and set the deployment target to 10.4"
+  #if JUCE_MAC && ! defined (MAC_OS_X_VERSION_10_6)
+    #error "To build with 10.5 compatibility, use a later SDK and set the deployment target to 10.5"
   #endif
 #endif
 
@@ -161,7 +172,7 @@
     #define JUCE_32BIT 1
   #endif
 
-  #if defined (__arm__) || defined (__arm64__)
+  #if defined (__arm__) || defined (__arm64__) || defined (__aarch64__)
     #define JUCE_ARM 1
   #elif __MMX__ || __SSE__ || __amd64__
     #define JUCE_INTEL 1
@@ -172,30 +183,14 @@
 // Compiler type macros.
 
 #ifdef __clang__
- #define JUCE_CLANG 1
- #define JUCE_GCC 1
+  #define JUCE_CLANG 1
+
 #elif defined (__GNUC__)
   #define JUCE_GCC 1
+
 #elif defined (_MSC_VER)
   #define JUCE_MSVC 1
 
-  #if _MSC_VER < 1500
-    #define JUCE_VC8_OR_EARLIER 1
-
-    #if _MSC_VER < 1400
-      #define JUCE_VC7_OR_EARLIER 1
-
-      #if _MSC_VER < 1300
-        #warning "MSVC 6.0 is no longer supported!"
-      #endif
-    #endif
-  #endif
-
-  #if JUCE_64BIT || ! JUCE_VC7_OR_EARLIER
-    #define JUCE_USE_MSVC_INTRINSICS 1
-  #endif
 #else
   #error unknown compiler
 #endif
-
-#endif   // JUCE_TARGETPLATFORM_H_INCLUDED

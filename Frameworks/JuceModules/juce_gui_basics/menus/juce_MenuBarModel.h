@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_MENUBARMODEL_H_INCLUDED
-#define JUCE_MENUBARMODEL_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -34,6 +35,8 @@
     to a menu being selected.
 
     @see MenuBarModel::Listener, MenuBarComponent, PopupMenu
+
+    @tags{GUI}
 */
 class JUCE_API  MenuBarModel      : private AsyncUpdater,
                                     private ApplicationCommandManagerListener
@@ -66,7 +69,7 @@ public:
         This will also allow it to flash a menu name when a command from that menu
         is invoked using a keystroke.
     */
-    void setApplicationCommandManagerToWatch (ApplicationCommandManager* manager) noexcept;
+    void setApplicationCommandManagerToWatch (ApplicationCommandManager* manager);
 
     //==============================================================================
     /** A class to receive callbacks when a MenuBarModel changes.
@@ -88,6 +91,10 @@ public:
         */
         virtual void menuCommandInvoked (MenuBarModel* menuBarModel,
                                          const ApplicationCommandTarget::InvocationInfo& info) = 0;
+
+        /** Called when the menu bar is first activated or when the user finished interacting
+            with the menu bar. */
+        virtual void menuBarActivated (MenuBarModel* menuBarModel, bool isActive);
     };
 
     /** Registers a listener for callbacks when the menu items in this model change.
@@ -97,12 +104,12 @@ public:
 
         @see removeListener
     */
-    void addListener (Listener* listenerToAdd) noexcept;
+    void addListener (Listener* listenerToAdd);
 
     /** Removes a listener.
         @see addListener
     */
-    void removeListener (Listener* listenerToRemove) noexcept;
+    void removeListener (Listener* listenerToRemove);
 
     //==============================================================================
     /** This method must return a list of the names of the menus. */
@@ -126,12 +133,18 @@ public:
     virtual void menuItemSelected (int menuItemID,
                                    int topLevelMenuIndex) = 0;
 
+    /** This is called when the user starts/stops navigating the menu bar.
+
+        @param isActive              true when the user starts navigating the menu bar
+    */
+    virtual void menuBarActivated (bool isActive);
+
     //==============================================================================
    #if JUCE_MAC || DOXYGEN
     /** OSX ONLY - Sets the model that is currently being shown as the main
         menu bar at the top of the screen on the Mac.
 
-        You can pass 0 to stop the current model being displayed. Be careful
+        You can pass nullptr to stop the current model being displayed. Be careful
         not to delete a model while it is being used.
 
         An optional extra menu can be specified, containing items to add to the top of
@@ -147,7 +160,7 @@ public:
     */
     static void setMacMainMenu (MenuBarModel* newMenuBarModel,
                                 const PopupMenu* extraAppleMenuItems = nullptr,
-                                const String& recentItemsMenuName = String::empty);
+                                const String& recentItemsMenuName = String());
 
     /** OSX ONLY - Returns the menu model that is currently being shown as
         the main menu bar.
@@ -167,7 +180,8 @@ public:
     void applicationCommandListChanged() override;
     /** @internal */
     void handleAsyncUpdate() override;
-
+    /** @internal */
+    void handleMenuBarActivate (bool isActive);
 private:
     ApplicationCommandManager* manager;
     ListenerList<Listener> listeners;
@@ -175,8 +189,5 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MenuBarModel)
 };
 
-/** This typedef is just for compatibility with old code - newer code should use the MenuBarModel::Listener class directly. */
-typedef MenuBarModel::Listener MenuBarModelListener;
 
-
-#endif   // JUCE_MENUBARMODEL_H_INCLUDED
+} // namespace juce

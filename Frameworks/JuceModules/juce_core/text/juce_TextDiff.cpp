@@ -1,53 +1,53 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
+namespace juce
+{
+
 struct TextDiffHelpers
 {
-    enum { minLengthToMatch = 3 };
+    enum { minLengthToMatch = 3,
+           maxComplexity = 16 * 1024 * 1024 };
 
     struct StringRegion
     {
         StringRegion (const String& s) noexcept
             : text (s.getCharPointer()), start (0), length (s.length()) {}
 
-        StringRegion (const String::CharPointerType t, int s, int len)  noexcept
+        StringRegion (String::CharPointerType t, int s, int len) noexcept
             : text (t), start (s), length (len) {}
+
+        void incrementStart() noexcept  { ++text; ++start; --length; }
 
         String::CharPointerType text;
         int start, length;
     };
 
-    static void addInsertion (TextDiff& td, const String::CharPointerType text, int index, int length)
+    static void addInsertion (TextDiff& td, String::CharPointerType text, int index, int length)
     {
         TextDiff::Change c;
         c.insertedText = String (text, (size_t) length);
         c.start = index;
-        c.length = length;
+        c.length = 0;
         td.changes.add (c);
     }
 
@@ -59,29 +59,28 @@ struct TextDiffHelpers
         td.changes.add (c);
     }
 
-    static void diffSkippingCommonStart (TextDiff& td, const StringRegion& a, const StringRegion& b)
+    static void diffSkippingCommonStart (TextDiff& td, StringRegion a, StringRegion b)
     {
-        String::CharPointerType sa (a.text);
-        String::CharPointerType sb (b.text);
-        const int maxLen = jmax (a.length, b.length);
-
-        for (int i = 0; i < maxLen; ++i, ++sa, ++sb)
+        for (;;)
         {
-            if (*sa != *sb)
-            {
-                diffRecursively (td, StringRegion (sa, a.start + i, a.length - i),
-                                     StringRegion (sb, b.start + i, b.length - i));
+            auto ca = *a.text;
+            auto cb = *b.text;
+
+            if (ca != cb || ca == 0)
                 break;
-            }
+
+            a.incrementStart();
+            b.incrementStart();
         }
+
+        diffRecursively (td, a, b);
     }
 
-    static void diffRecursively (TextDiff& td, const StringRegion& a, const StringRegion& b)
+    static void diffRecursively (TextDiff& td, StringRegion a, StringRegion b)
     {
-        int indexA, indexB;
-        const int len = findLongestCommonSubstring (a.text, a.length,
-                                                    b.text, b.length,
-                                                    indexA, indexB);
+        int indexA = 0, indexB = 0;
+        auto len = findLongestCommonSubstring (a.text, a.length, indexA,
+                                               b.text, b.length, indexB);
 
         if (len >= minLengthToMatch)
         {
@@ -93,8 +92,8 @@ struct TextDiffHelpers
             else if (indexB > 0)
                 addInsertion (td, b.text, b.start, indexB);
 
-            diffRecursively (td, StringRegion (a.text + indexA + len, a.start + indexA + len, a.length - indexA - len),
-                                 StringRegion (b.text + indexB + len, b.start + indexB + len, b.length - indexB - len));
+            diffRecursively (td, StringRegion (a.text + (indexA + len), a.start + indexA + len, a.length - indexA - len),
+                                 StringRegion (b.text + (indexB + len), b.start + indexB + len, b.length - indexB - len));
         }
         else
         {
@@ -103,27 +102,44 @@ struct TextDiffHelpers
         }
     }
 
-    static int findLongestCommonSubstring (String::CharPointerType a, const int lenA,
-                                           const String::CharPointerType b, const int lenB,
-                                           int& indexInA, int& indexInB)
+    static int findLongestCommonSubstring (String::CharPointerType a, const int lenA, int& indexInA,
+                                           String::CharPointerType b, const int lenB, int& indexInB) noexcept
     {
         if (lenA == 0 || lenB == 0)
             return 0;
 
-        HeapBlock<int> lines;
-        lines.calloc (2 + 2 * (size_t) lenB);
+        if (lenA * lenB > maxComplexity)
+            return findCommonSuffix (a, lenA, indexInA,
+                                     b, lenB, indexInB);
 
-        int* l0 = lines;
-        int* l1 = l0 + lenB + 1;
+        auto scratchSpace = sizeof (int) * (2 + 2 * (size_t) lenB);
+
+        if (scratchSpace < 4096)
+        {
+            auto* scratch = (int*) alloca (scratchSpace);
+            return findLongestCommonSubstring (a, lenA, indexInA, b, lenB, indexInB, scratchSpace, scratch);
+        }
+
+        HeapBlock<int> scratch (scratchSpace);
+        return findLongestCommonSubstring (a, lenA, indexInA, b, lenB, indexInB, scratchSpace, scratch);
+    }
+
+    static int findLongestCommonSubstring (String::CharPointerType a, const int lenA, int& indexInA,
+                                           String::CharPointerType b, const int lenB, int& indexInB,
+                                           const size_t scratchSpace, int* const lines) noexcept
+    {
+        zeromem (lines, scratchSpace);
+
+        auto* l0 = lines;
+        auto* l1 = l0 + lenB + 1;
 
         int loopsWithoutImprovement = 0;
         int bestLength = 0;
-        indexInA = indexInB = 0;
 
         for (int i = 0; i < lenA; ++i)
         {
-            const juce_wchar ca = a.getAndAdvance();
-            String::CharPointerType b2 (b);
+            auto ca = a.getAndAdvance();
+            auto b2 = b;
 
             for (int j = 0; j < lenB; ++j)
             {
@@ -133,7 +149,7 @@ struct TextDiffHelpers
                 }
                 else
                 {
-                    const int len = l0[j] + 1;
+                    auto len = l0[j] + 1;
                     l1[j + 1] = len;
 
                     if (len > bestLength)
@@ -156,6 +172,25 @@ struct TextDiffHelpers
         indexInB -= bestLength - 1;
         return bestLength;
     }
+
+    static int findCommonSuffix (String::CharPointerType a, int lenA, int& indexInA,
+                                 String::CharPointerType b, int lenB, int& indexInB) noexcept
+    {
+        int length = 0;
+        a += lenA - 1;
+        b += lenB - 1;
+
+        while (length < lenA && length < lenB && *a == *b)
+        {
+            --a;
+            --b;
+            ++length;
+        }
+
+        indexInA = lenA - length;
+        indexInB = lenB - length;
+        return length;
+    }
 };
 
 TextDiff::TextDiff (const String& original, const String& target)
@@ -165,8 +200,8 @@ TextDiff::TextDiff (const String& original, const String& target)
 
 String TextDiff::appliedTo (String text) const
 {
-    for (int i = 0; i < changes.size(); ++i)
-        text = changes.getReference(i).appliedTo (text);
+    for (auto& c : changes)
+        text = c.appliedTo (text);
 
     return text;
 }
@@ -178,8 +213,7 @@ bool TextDiff::Change::isDeletion() const noexcept
 
 String TextDiff::Change::appliedTo (const String& text) const noexcept
 {
-    return text.substring (0, start) + (isDeletion() ? text.substring (start + length)
-                                                     : (insertedText + text.substring (start)));
+    return text.replaceSection (start, length, insertedText);
 }
 
 //==============================================================================
@@ -189,13 +223,13 @@ String TextDiff::Change::appliedTo (const String& text) const noexcept
 class DiffTests  : public UnitTest
 {
 public:
-    DiffTests() : UnitTest ("TextDiff class") {}
+    DiffTests() : UnitTest ("TextDiff class", "Text") {}
 
     static String createString (Random& r)
     {
-        juce_wchar buffer[50] = { 0 };
+        juce_wchar buffer[500] = { 0 };
 
-        for (int i = r.nextInt (49); --i >= 0;)
+        for (int i = r.nextInt (numElementsInArray (buffer) - 1); --i >= 0;)
         {
             if (r.nextInt (10) == 0)
             {
@@ -215,27 +249,27 @@ public:
     void testDiff (const String& a, const String& b)
     {
         TextDiff diff (a, b);
-        const String result (diff.appliedTo (a));
+        auto result = diff.appliedTo (a);
         expectEquals (result, b);
     }
 
-    void runTest()
+    void runTest() override
     {
         beginTest ("TextDiff");
 
-        Random r = getRandom();
+        auto r = getRandom();
 
-        testDiff (String::empty, String::empty);
-        testDiff ("x", String::empty);
-        testDiff (String::empty, "x");
+        testDiff (String(), String());
+        testDiff ("x", String());
+        testDiff (String(), "x");
         testDiff ("x", "x");
         testDiff ("x", "y");
         testDiff ("xxx", "x");
         testDiff ("x", "xxx");
 
-        for (int i = 5000; --i >= 0;)
+        for (int i = 1000; --i >= 0;)
         {
-            String s (createString (r));
+            auto s = createString (r);
             testDiff (s, createString (r));
             testDiff (s + createString (r), s + createString (r));
         }
@@ -245,3 +279,5 @@ public:
 static DiffTests diffTests;
 
 #endif
+
+} // namespace juce

@@ -1,30 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 void MACAddress::findAllAddresses (Array<MACAddress>& result)
 {
@@ -53,7 +50,7 @@ void MACAddress::findAllAddresses (Array<MACAddress>& result)
             freeifaddrs (addrs);
         }
 
-        close (s);
+        ::close (s);
     }
 }
 
@@ -69,45 +66,91 @@ bool JUCE_CALLTYPE Process::openEmailWithAttachments (const String& /* targetEma
 
 //==============================================================================
 #if ! JUCE_USE_CURL
-class WebInputStream  : public InputStream
+class WebInputStream::Pimpl
 {
 public:
-    WebInputStream (const String& address_, bool isPost_, const MemoryBlock& postData_,
-                    URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                    const String& headers_, int timeOutMs_, StringPairArray* responseHeaders,
-                    const int maxRedirects)
-      : statusCode (0), socketHandle (-1), levelsOfRedirection (0),
-        address (address_), headers (headers_), postData (postData_), contentLength (-1), position (0),
-        finished (false), isPost (isPost_), timeOutMs (timeOutMs_), numRedirectsToFollow (maxRedirects),
-        chunkEnd (0), isChunked (false), readingChunk (false)
-    {
-        statusCode = createConnection (progressCallback, progressCallbackContext, numRedirectsToFollow);
+    Pimpl (WebInputStream& pimplOwner, const URL& urlToCopy, const bool shouldUsePost)
+        : owner (pimplOwner), url (urlToCopy),
+          isPost (shouldUsePost), httpRequestCmd (shouldUsePost ? "POST" : "GET")
+    {}
 
-        if (responseHeaders != nullptr && ! isError())
+    ~Pimpl()
+    {
+        closeSocket();
+    }
+
+    //==============================================================================
+    // WebInputStream methods
+    void withExtraHeaders (const String& extraHeaders)
+    {
+        if (! headers.endsWithChar ('\n') && headers.isNotEmpty())
+            headers << "\r\n";
+
+        headers << extraHeaders;
+
+        if (! headers.endsWithChar ('\n') && headers.isNotEmpty())
+            headers << "\r\n";
+    }
+
+    void withCustomRequestCommand (const String& customRequestCommand)    { httpRequestCmd = customRequestCommand; }
+    void withConnectionTimeout (int timeoutInMs)                          { timeOutMs = timeoutInMs; }
+    void withNumRedirectsToFollow (int maxRedirectsToFollow)              { numRedirectsToFollow = maxRedirectsToFollow; }
+    StringPairArray getRequestHeaders() const                             { return WebInputStream::parseHttpHeaders (headers); }
+
+    StringPairArray getResponseHeaders() const
+    {
+        StringPairArray responseHeaders;
+        if (! isError())
         {
             for (int i = 0; i < headerLines.size(); ++i)
             {
                 const String& headersEntry = headerLines[i];
                 const String key (headersEntry.upToFirstOccurrenceOf (": ", false, false));
                 const String value (headersEntry.fromFirstOccurrenceOf (": ", false, false));
-                const String previousValue ((*responseHeaders) [key]);
-                responseHeaders->set (key, previousValue.isEmpty() ? value : (previousValue + "," + value));
+                const String previousValue (responseHeaders [key]);
+                responseHeaders.set (key, previousValue.isEmpty() ? value : (previousValue + "," + value));
             }
         }
+
+        return responseHeaders;
     }
 
-    ~WebInputStream()
+    int getStatusCode() const                                             { return statusCode; }
+
+    bool connect (WebInputStream::Listener* listener)
     {
+        {
+            const ScopedLock lock (createSocketLock);
+
+            if (hasBeenCancelled)
+                return false;
+        }
+
+        address = url.toString (! isPost);
+        statusCode = createConnection (listener, numRedirectsToFollow);
+
+        return (statusCode != 0);
+    }
+
+    void cancel()
+    {
+        const ScopedLock lock (createSocketLock);
+
+        hasBeenCancelled = true;
+
+        statusCode = -1;
+        finished = true;
+
         closeSocket();
     }
 
     //==============================================================================
     bool isError() const                 { return socketHandle < 0; }
-    bool isExhausted() override          { return finished; }
-    int64 getPosition() override         { return position; }
-    int64 getTotalLength() override      { return contentLength; }
+    bool isExhausted()                   { return finished; }
+    int64 getPosition()                  { return position; }
+    int64 getTotalLength()               { return contentLength; }
 
-    int read (void* buffer, int bytesToRead) override
+    int read (void* buffer, int bytesToRead)
     {
         if (finished || isError())
             return 0;
@@ -159,7 +202,7 @@ public:
             }
 
             if (bytesToRead > chunkEnd - position)
-                bytesToRead = chunkEnd - position;
+                bytesToRead = static_cast<int> (chunkEnd - position);
         }
 
         fd_set readbits;
@@ -183,7 +226,7 @@ public:
         return bytesRead;
     }
 
-    bool setPosition (int64 wantedPos) override
+    bool setPosition (int64 wantedPos)
     {
         if (isError())
             return false;
@@ -193,54 +236,69 @@ public:
             finished = false;
 
             if (wantedPos < position)
-            {
-                closeSocket();
-                position = 0;
-                statusCode = createConnection (0, 0, numRedirectsToFollow);
-            }
+                return false;
 
-            skipNextBytes (wantedPos - position);
+            int64 numBytesToSkip = wantedPos - position;
+            auto skipBufferSize = (int) jmin (numBytesToSkip, (int64) 16384);
+            HeapBlock<char> temp (skipBufferSize);
+
+            while (numBytesToSkip > 0 && ! isExhausted())
+                numBytesToSkip -= read (temp, (int) jmin (numBytesToSkip, (int64) skipBufferSize));
         }
 
         return true;
     }
 
     //==============================================================================
-    int statusCode;
+    int statusCode = 0;
 
 private:
-    int socketHandle, levelsOfRedirection;
+    WebInputStream& owner;
+    URL url;
+    int socketHandle = -1, levelsOfRedirection = 0;
     StringArray headerLines;
     String address, headers;
     MemoryBlock postData;
-    int64 contentLength, position;
-    bool finished;
+    int64 contentLength = -1, position = 0;
+    bool finished = false;
     const bool isPost;
-    const int timeOutMs;
-    const int numRedirectsToFollow;
-    int64 chunkEnd;
-    bool isChunked, readingChunk;
+    int timeOutMs = 0;
+    int numRedirectsToFollow = 5;
+    String httpRequestCmd;
+    int64 chunkEnd = 0;
+    bool isChunked = false, readingChunk = false;
+    CriticalSection closeSocketLock, createSocketLock;
+    bool hasBeenCancelled = false;
 
     void closeSocket (bool resetLevelsOfRedirection = true)
     {
+        const ScopedLock lock (closeSocketLock);
+
         if (socketHandle >= 0)
-            close (socketHandle);
+        {
+            ::shutdown (socketHandle, SHUT_RDWR);
+            ::close (socketHandle);
+        }
 
         socketHandle = -1;
+
         if (resetLevelsOfRedirection)
             levelsOfRedirection = 0;
     }
 
-    int createConnection (URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext,
-                          const int numRedirects)
+    int createConnection (WebInputStream::Listener* listener, const int numRedirects)
     {
         closeSocket (false);
+
+        if (isPost)
+            WebInputStream::createHeadersAndPostData (url, headers, postData);
 
         uint32 timeOutTime = Time::getMillisecondCounter();
 
         if (timeOutMs == 0)
-            timeOutTime += 30000;
-        else if (timeOutMs < 0)
+            timeOutMs = 30000;
+
+        if (timeOutMs < 0)
             timeOutTime = 0xffffffff;
         else
             timeOutTime += (uint32) timeOutMs;
@@ -280,7 +338,12 @@ private:
         if (getaddrinfo (serverName.toUTF8(), String (port).toUTF8(), &hints, &result) != 0 || result == 0)
             return 0;
 
-        socketHandle = socket (result->ai_family, result->ai_socktype, 0);
+        {
+            const ScopedLock lock (createSocketLock);
+
+            socketHandle = hasBeenCancelled ? -1
+                                            : socket (result->ai_family, result->ai_socktype, 0);
+        }
 
         if (socketHandle == -1)
         {
@@ -296,7 +359,7 @@ private:
         setsockopt (socketHandle, SOL_SOCKET, SO_NOSIGPIPE, 0, 0);
       #endif
 
-        if (connect (socketHandle, result->ai_addr, result->ai_addrlen) == -1)
+        if (::connect (socketHandle, result->ai_addr, result->ai_addrlen) == -1)
         {
             closeSocket();
             freeaddrinfo (result);
@@ -306,11 +369,10 @@ private:
         freeaddrinfo (result);
 
         {
-            const MemoryBlock requestHeader (createRequestHeader (hostName, hostPort, proxyName, proxyPort,
-                                                                  hostPath, address, headers, postData, isPost));
+            const MemoryBlock requestHeader (createRequestHeader (hostName, hostPort, proxyName, proxyPort, hostPath,
+                                                                  address, headers, postData, isPost, httpRequestCmd));
 
-            if (! sendHeader (socketHandle, requestHeader, timeOutTime,
-                              progressCallback, progressCallbackContext))
+            if (! sendHeader (socketHandle, requestHeader, timeOutTime, owner, listener))
             {
                 closeSocket();
                 return 0;
@@ -345,7 +407,7 @@ private:
                 }
 
                 address = location;
-                return createConnection (progressCallback, progressCallbackContext, numRedirects);
+                return createConnection (listener, numRedirects);
             }
 
             String contentLengthString (findHeaderItem (headerLines, "Content-Length:"));
@@ -375,7 +437,7 @@ private:
         {
             char c = 0;
             if (read (&c, 1) != 1)
-                return String();
+                return {};
 
             buffer.writeByte (c);
 
@@ -390,7 +452,7 @@ private:
         if (header.startsWithIgnoreCase ("HTTP/"))
             return header;
 
-        return String();
+        return {};
     }
 
     static void writeValueIfNotPresent (MemoryOutputStream& dest, const String& headers, const String& key, const String& value)
@@ -399,10 +461,10 @@ private:
             dest << "\r\n" << key << ' ' << value;
     }
 
-    static void writeHost (MemoryOutputStream& dest, const bool isPost,
+    static void writeHost (MemoryOutputStream& dest, const String& httpRequestCmd,
                            const String& path, const String& host, int port)
     {
-        dest << (isPost ? "POST " : "GET ") << path << " HTTP/1.1\r\nHost: " << host;
+        dest << httpRequestCmd << ' ' << path << " HTTP/1.1\r\nHost: " << host;
 
         /* HTTP spec 14.23 says that the port number must be included in the header if it is not 80 */
         if (port != 80)
@@ -413,14 +475,14 @@ private:
                                             const String& proxyName, const int proxyPort,
                                             const String& hostPath, const String& originalURL,
                                             const String& userHeaders, const MemoryBlock& postData,
-                                            const bool isPost)
+                                            const bool isPost, const String& httpRequestCmd)
     {
         MemoryOutputStream header;
 
         if (proxyName.isEmpty())
-            writeHost (header, isPost, hostPath, hostName, hostPort);
+            writeHost (header, httpRequestCmd, hostPath, hostName, hostPort);
         else
-            writeHost (header, isPost, originalURL, proxyName, proxyPort);
+            writeHost (header, httpRequestCmd, originalURL, proxyName, proxyPort);
 
         writeValueIfNotPresent (header, userHeaders, "User-Agent:", "JUCE/" JUCE_STRINGIFY(JUCE_MAJOR_VERSION)
                                                                         "." JUCE_STRINGIFY(JUCE_MINOR_VERSION)
@@ -428,20 +490,21 @@ private:
         writeValueIfNotPresent (header, userHeaders, "Connection:", "close");
 
         if (isPost)
-        {
             writeValueIfNotPresent (header, userHeaders, "Content-Length:", String ((int) postData.getSize()));
-            header << userHeaders << "\r\n" << postData;
-        }
-        else
-        {
-            header << "\r\n" << userHeaders << "\r\n";
-        }
+
+        if (userHeaders.isNotEmpty())
+            header << "\r\n" << userHeaders;
+
+        header << "\r\n\r\n";
+
+        if (isPost)
+            header << postData;
 
         return header.getMemoryBlock();
     }
 
     static bool sendHeader (int socketHandle, const MemoryBlock& requestHeader, const uint32 timeOutTime,
-                            URL::OpenStreamProgressCallback* progressCallback, void* progressCallbackContext)
+                            WebInputStream& pimplOwner, WebInputStream::Listener* listener)
     {
         size_t totalHeaderSent = 0;
 
@@ -452,12 +515,12 @@ private:
 
             const int numToSend = jmin (1024, (int) (requestHeader.getSize() - totalHeaderSent));
 
-            if (send (socketHandle, static_cast <const char*> (requestHeader.getData()) + totalHeaderSent, (size_t) numToSend, 0) != numToSend)
+            if (send (socketHandle, static_cast<const char*> (requestHeader.getData()) + totalHeaderSent, (size_t) numToSend, 0) != numToSend)
                 return false;
 
             totalHeaderSent += (size_t) numToSend;
 
-            if (progressCallback != nullptr && ! progressCallback (progressCallbackContext, (int) totalHeaderSent, (int) requestHeader.getSize()))
+            if (listener != nullptr && ! listener->postDataSendProgress (pimplOwner, (int) totalHeaderSent, (int) requestHeader.getSize()))
                 return false;
         }
 
@@ -507,9 +570,16 @@ private:
             if (lines[i].startsWithIgnoreCase (itemName))
                 return lines[i].substring (itemName.length()).trim();
 
-        return String();
+        return {};
     }
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebInputStream)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Pimpl)
 };
+
+URL::DownloadTask* URL::downloadToFile (const File& targetLocation, String extraHeaders, DownloadTask::Listener* listener, bool shouldUsePost)
+{
+    return URL::DownloadTask::createFallbackDownloader (*this, targetLocation, extraHeaders, listener, shouldUsePost);
+}
 #endif
+
+} // namespace juce

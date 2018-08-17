@@ -2,27 +2,29 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#if defined (JUCE_GRAPHICS_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
+#ifdef JUCE_GRAPHICS_H_INCLUDED
  /* When you add this cpp file to your project, you mustn't include it in a file where you've
     already included any other headers - just put it inside a file on its own, possibly with your config
     flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
@@ -31,11 +33,12 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
-// Your project must contain an AppConfig.h file with your project-specific settings in it,
-// and your header search path must make it accessible to the module's files.
-#include "AppConfig.h"
+#define JUCE_CORE_INCLUDE_OBJC_HELPERS 1
+#define JUCE_CORE_INCLUDE_COM_SMART_PTR 1
+#define JUCE_CORE_INCLUDE_JNI_HELPERS 1
+#define JUCE_CORE_INCLUDE_NATIVE_HEADERS 1
+#define JUCE_GRAPHICS_INCLUDE_COREGRAPHICS_HELPERS 1
 
-#include "../juce_core/native/juce_BasicNativeHeaders.h"
 #include "juce_graphics.h"
 
 //==============================================================================
@@ -43,12 +46,18 @@
  #import <QuartzCore/QuartzCore.h>
 
 #elif JUCE_WINDOWS
+  // get rid of some warnings in Window's own headers
+ #ifdef JUCE_MSVC
+  #pragma warning (push)
+  #pragma warning (disable : 4458)
+ #endif
+
  #if JUCE_MINGW && JUCE_USE_DIRECTWRITE
   #warning "DirectWrite not currently implemented with mingw..."
   #undef JUCE_USE_DIRECTWRITE
  #endif
 
- #if JUCE_USE_DIRECTWRITE
+ #if JUCE_USE_DIRECTWRITE || JUCE_DIRECT2D
   /* If you hit a compile error trying to include these files, you may need to update
      your version of the Windows SDK to the latest one. The DirectWrite and Direct2D
      headers are in the version 7 SDKs.
@@ -59,6 +68,11 @@
 
  #if JUCE_MINGW
   #include <malloc.h>
+  #include <cstdio>
+ #endif
+
+ #ifdef JUCE_MSVC
+  #pragma warning (pop)
  #endif
 
 #elif JUCE_IOS
@@ -93,9 +107,6 @@
 #endif
 
 //==============================================================================
-namespace juce
-{
-
 #include "colour/juce_Colour.cpp"
 #include "colour/juce_ColourGradient.cpp"
 #include "colour/juce_Colours.cpp"
@@ -131,30 +142,29 @@ namespace juce
 
 //==============================================================================
 #if JUCE_MAC || JUCE_IOS
- #include "../juce_core/native/juce_osx_ObjCHelpers.h"
- #include "native/juce_mac_CoreGraphicsHelpers.h"
  #include "native/juce_mac_Fonts.mm"
  #include "native/juce_mac_CoreGraphicsContext.mm"
+ #include "native/juce_mac_IconHelpers.cpp"
 
 #elif JUCE_WINDOWS
- #include "../juce_core/native/juce_win32_ComSmartPtr.h"
  #include "native/juce_win32_DirectWriteTypeface.cpp"
  #include "native/juce_win32_DirectWriteTypeLayout.cpp"
  #include "native/juce_win32_Fonts.cpp"
+ #include "native/juce_win32_IconHelpers.cpp"
  #if JUCE_DIRECT2D
   #include "native/juce_win32_Direct2DGraphicsContext.cpp"
  #endif
 
 #elif JUCE_LINUX
  #include "native/juce_linux_Fonts.cpp"
+ #include "native/juce_linux_IconHelpers.cpp"
 
 #elif JUCE_ANDROID
- #include "../juce_core/native/juce_android_JNIHelpers.h"
  #include "native/juce_android_GraphicsContext.cpp"
  #include "native/juce_android_Fonts.cpp"
+ #include "native/juce_android_IconHelpers.cpp"
 
 #endif
-}
 
 //==============================================================================
 #if JUCE_USE_FREETYPE && JUCE_USE_FREETYPE_AMALGAMATED

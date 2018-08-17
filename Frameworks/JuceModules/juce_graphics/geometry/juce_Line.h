@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_LINE_H_INCLUDED
-#define JUCE_LINE_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -39,6 +40,8 @@
     sensible results.
 
     @see Point, Rectangle, Path, Graphics::drawLine
+
+    @tags{Graphics}
 */
 template <typename ValueType>
 class Line
@@ -46,40 +49,28 @@ class Line
 public:
     //==============================================================================
     /** Creates a line, using (0, 0) as its start and end points. */
-    Line() noexcept {}
+    Line() = default;
 
     /** Creates a copy of another line. */
-    Line (const Line& other) noexcept
-        : start (other.start),
-          end (other.end)
-    {
-    }
+    Line (const Line&) = default;
 
     /** Creates a line based on the coordinates of its start and end points. */
     Line (ValueType startX, ValueType startY, ValueType endX, ValueType endY) noexcept
-        : start (startX, startY),
-          end (endX, endY)
+        : start (startX, startY), end (endX, endY)
     {
     }
 
     /** Creates a line from its start and end points. */
-    Line (const Point<ValueType> startPoint,
-          const Point<ValueType> endPoint) noexcept
-        : start (startPoint),
-          end (endPoint)
+    Line (Point<ValueType> startPoint, Point<ValueType> endPoint) noexcept
+        : start (startPoint), end (endPoint)
     {
     }
 
     /** Copies a line from another one. */
-    Line& operator= (const Line& other) noexcept
-    {
-        start = other.start;
-        end = other.end;
-        return *this;
-    }
+    Line& operator= (const Line&) = default;
 
     /** Destructor. */
-    ~Line() noexcept {}
+    ~Line() = default;
 
     //==============================================================================
     /** Returns the x coordinate of the line's start point. */
@@ -113,7 +104,7 @@ public:
     void setEnd (const Point<ValueType> newEnd) noexcept                    { end = newEnd; }
 
     /** Returns a line that is the same as this one, but with the start and end reversed, */
-    const Line reversed() const noexcept                                    { return Line (end, start); }
+    Line reversed() const noexcept                                          { return { end, start }; }
 
     /** Applies an affine transform to the line's start and end points. */
     void applyTransform (const AffineTransform& transform) noexcept
@@ -125,6 +116,9 @@ public:
     //==============================================================================
     /** Returns the length of the line. */
     ValueType getLength() const noexcept                                    { return start.getDistanceFrom (end); }
+
+    /** Returns the length of the line. */
+    ValueType getLengthSquared() const noexcept                             { return start.getDistanceSquaredFrom (end); }
 
     /** Returns true if the line's start and end x coordinates are the same. */
     bool isVertical() const noexcept                                        { return start.x == end.x; }
@@ -139,18 +133,29 @@ public:
     */
     typename Point<ValueType>::FloatType getAngle() const noexcept          { return start.getAngleToPoint (end); }
 
+    /** Creates a line from a start point, length and angle.
+
+        This angle is the number of radians clockwise from the 12 o'clock direction,
+        where the line's start point is considered to be at the centre.
+    */
+    static Line fromStartAndAngle (Point<ValueType> startPoint, ValueType length, ValueType angle) noexcept
+    {
+        return { startPoint, startPoint.getPointOnCircumference (length, angle) };
+    }
+
+    //==============================================================================
     /** Casts this line to float coordinates. */
-    Line<float> toFloat() const noexcept                                    { return Line<float> (start.toFloat(), end.toFloat()); }
+    Line<float> toFloat() const noexcept                                    { return { start.toFloat(), end.toFloat() }; }
 
     /** Casts this line to double coordinates. */
-    Line<double> toDouble() const noexcept                                  { return Line<double> (start.toDouble(), end.toDouble()); }
+    Line<double> toDouble() const noexcept                                  { return { start.toDouble(), end.toDouble() }; }
 
     //==============================================================================
     /** Compares two lines. */
-    bool operator== (const Line& other) const noexcept                      { return start == other.start && end == other.end; }
+    bool operator== (Line other) const noexcept                             { return start == other.start && end == other.end; }
 
     /** Compares two lines. */
-    bool operator!= (const Line& other) const noexcept                      { return start != other.start || end != other.end; }
+    bool operator!= (Line other) const noexcept                             { return start != other.start || end != other.end; }
 
     //==============================================================================
     /** Finds the intersection between two lines.
@@ -158,7 +163,7 @@ public:
         @param line     the line to intersect with
         @returns        the point at which the lines intersect, even if this lies beyond the end of the lines
     */
-    Point<ValueType> getIntersection (const Line& line) const noexcept
+    Point<ValueType> getIntersection (Line line) const noexcept
     {
         Point<ValueType> p;
         findIntersection (start, end, line.start, line.end, p);
@@ -177,13 +182,13 @@ public:
                     don't intersect, the intersection coordinates returned will still
                     be valid
     */
-    bool intersects (const Line& line, Point<ValueType>& intersection) const noexcept
+    bool intersects (Line line, Point<ValueType>& intersection) const noexcept
     {
         return findIntersection (start, end, line.start, line.end, intersection);
     }
 
     /** Returns true if this line intersects another. */
-    bool intersects (const Line& other) const noexcept
+    bool intersects (Line other) const noexcept
     {
         Point<ValueType> ignored;
         return findIntersection (start, end, other.start, other.end, ignored);
@@ -218,14 +223,14 @@ public:
     Point<ValueType> getPointAlongLine (ValueType distanceFromStart,
                                         ValueType perpendicularDistance) const noexcept
     {
-        const Point<ValueType> delta (end - start);
-        const double length = juce_hypot ((double) delta.x,
-                                          (double) delta.y);
+        auto delta = end - start;
+        auto length = juce_hypot ((double) delta.x,
+                                  (double) delta.y);
         if (length <= 0)
             return start;
 
-        return Point<ValueType> (start.x + static_cast<ValueType> ((delta.x * distanceFromStart - delta.y * perpendicularDistance) / length),
-                                 start.y + static_cast<ValueType> ((delta.y * distanceFromStart + delta.x * perpendicularDistance) / length));
+        return { start.x + static_cast<ValueType> ((delta.x * distanceFromStart - delta.y * perpendicularDistance) / length),
+                 start.y + static_cast<ValueType> ((delta.y * distanceFromStart + delta.x * perpendicularDistance) / length) };
     }
 
     /** Returns the location of the point which is a given distance along this line
@@ -238,7 +243,7 @@ public:
                                     can be negative or greater than 1.0).
         @see getPointAlongLine
     */
-    Point<ValueType> getPointAlongLineProportionally (ValueType proportionOfLength) const noexcept
+    Point<ValueType> getPointAlongLineProportionally (typename Point<ValueType>::FloatType proportionOfLength) const noexcept
     {
         return start + (end - start) * proportionOfLength;
     }
@@ -254,37 +259,35 @@ public:
         @returns the point's distance from the line
         @see getPositionAlongLineOfNearestPoint
     */
-    ValueType getDistanceFromPoint (const Point<ValueType> targetPoint,
+    ValueType getDistanceFromPoint (Point<ValueType> targetPoint,
                                     Point<ValueType>& pointOnLine) const noexcept
     {
-        const Point<ValueType> delta (end - start);
-        const double length = delta.x * delta.x + delta.y * delta.y;
+        auto delta = end - start;
+        auto length = delta.x * delta.x + delta.y * delta.y;
 
         if (length > 0)
         {
-            const double prop = ((targetPoint.x - start.x) * delta.x
-                               + (targetPoint.y - start.y) * delta.y) / length;
+            auto prop = ((targetPoint.x - start.x) * delta.x
+                       + (targetPoint.y - start.y) * delta.y) / (double) length;
 
             if (prop >= 0 && prop <= 1.0)
             {
-                pointOnLine = start + delta * static_cast<ValueType> (prop);
+                pointOnLine = start + delta * prop;
                 return targetPoint.getDistanceFrom (pointOnLine);
             }
         }
 
-        const float fromStart = targetPoint.getDistanceFrom (start);
-        const float fromEnd = targetPoint.getDistanceFrom (end);
+        auto fromStart = targetPoint.getDistanceFrom (start);
+        auto fromEnd   = targetPoint.getDistanceFrom (end);
 
         if (fromStart < fromEnd)
         {
             pointOnLine = start;
             return fromStart;
         }
-        else
-        {
-            pointOnLine = end;
-            return fromEnd;
-        }
+
+        pointOnLine = end;
+        return fromEnd;
     }
 
     /** Finds the point on this line which is nearest to a given point, and
@@ -295,10 +298,10 @@ public:
                     turn this number into a position, use getPointAlongLineProportionally().
         @see getDistanceFromPoint, getPointAlongLineProportionally
     */
-    ValueType findNearestProportionalPositionTo (const Point<ValueType> point) const noexcept
+    ValueType findNearestProportionalPositionTo (Point<ValueType> point) const noexcept
     {
-        const Point<ValueType> delta (end - start);
-        const double length = delta.x * delta.x + delta.y * delta.y;
+        auto delta = end - start;
+        auto length = delta.x * delta.x + delta.y * delta.y;
 
         return length <= 0 ? 0
                            : jlimit (ValueType(), static_cast<ValueType> (1),
@@ -309,7 +312,7 @@ public:
     /** Finds the point on this line which is nearest to a given point.
         @see getDistanceFromPoint, findNearestProportionalPositionTo
     */
-    Point<ValueType> findNearestPointTo (const Point<ValueType> point) const noexcept
+    Point<ValueType> findNearestPointTo (Point<ValueType> point) const noexcept
     {
         return getPointAlongLineProportionally (findNearestProportionalPositionTo (point));
     }
@@ -320,11 +323,10 @@ public:
         coordinate of this line at the given x (assuming the line extends infinitely
         in both directions).
     */
-    bool isPointAbove (const Point<ValueType> point) const noexcept
+    bool isPointAbove (Point<ValueType> point) const noexcept
     {
         return start.x != end.x
-                && point.y < ((end.y - start.y)
-                                    * (point.x - start.x)) / (end.x - start.x) + start.y;
+                && point.y < ((end.y - start.y) * (point.x - start.x)) / (end.x - start.x) + start.y;
     }
 
     //==============================================================================
@@ -335,7 +337,7 @@ public:
     */
     Line withShortenedStart (ValueType distanceToShortenBy) const noexcept
     {
-        return Line (getPointAlongLine (jmin (distanceToShortenBy, getLength())), end);
+        return { getPointAlongLine (jmin (distanceToShortenBy, getLength())), end };
     }
 
     /** Returns a shortened copy of this line.
@@ -345,13 +347,15 @@ public:
     */
     Line withShortenedEnd (ValueType distanceToShortenBy) const noexcept
     {
-        const ValueType length = getLength();
-        return Line (start, getPointAlongLine (length - jmin (distanceToShortenBy, length)));
+        auto length = getLength();
+        return { start, getPointAlongLine (length - jmin (distanceToShortenBy, length)) };
     }
 
 private:
     //==============================================================================
     Point<ValueType> start, end;
+
+    static bool isZeroToOne (ValueType v) noexcept      { return v >= 0 && v <= static_cast<ValueType> (1); }
 
     static bool findIntersection (const Point<ValueType> p1, const Point<ValueType> p2,
                                   const Point<ValueType> p3, const Point<ValueType> p4,
@@ -363,9 +367,9 @@ private:
             return true;
         }
 
-        const Point<ValueType> d1 (p2 - p1);
-        const Point<ValueType> d2 (p4 - p3);
-        const ValueType divisor = d1.x * d2.y - d2.x * d1.y;
+        auto d1 = p2 - p1;
+        auto d2 = p4 - p3;
+        auto divisor = d1.x * d2.y - d2.x * d1.y;
 
         if (divisor == 0)
         {
@@ -373,27 +377,30 @@ private:
             {
                 if (d1.y == 0 && d2.y != 0)
                 {
-                    const ValueType along = (p1.y - p3.y) / d2.y;
+                    auto along = (p1.y - p3.y) / d2.y;
                     intersection = p1.withX (p3.x + along * d2.x);
-                    return along >= 0 && along <= static_cast<ValueType> (1);
+                    return isZeroToOne (along);
                 }
-                else if (d2.y == 0 && d1.y != 0)
+
+                if (d2.y == 0 && d1.y != 0)
                 {
-                    const ValueType along = (p3.y - p1.y) / d1.y;
+                    auto along = (p3.y - p1.y) / d1.y;
                     intersection = p3.withX (p1.x + along * d1.x);
-                    return along >= 0 && along <= static_cast<ValueType> (1);
+                    return isZeroToOne (along);
                 }
-                else if (d1.x == 0 && d2.x != 0)
+
+                if (d1.x == 0 && d2.x != 0)
                 {
-                    const ValueType along = (p1.x - p3.x) / d2.x;
+                    auto along = (p1.x - p3.x) / d2.x;
                     intersection = p1.withY (p3.y + along * d2.y);
-                    return along >= 0 && along <= static_cast<ValueType> (1);
+                    return isZeroToOne (along);
                 }
-                else if (d2.x == 0 && d1.x != 0)
+
+                if (d2.x == 0 && d1.x != 0)
                 {
-                    const ValueType along = (p3.x - p1.x) / d1.x;
+                    auto along = (p3.x - p1.x) / d1.x;
                     intersection = p3.withY (p1.y + along * d1.y);
-                    return along >= 0 && along <= static_cast<ValueType> (1);
+                    return isZeroToOne (along);
                 }
             }
 
@@ -401,16 +408,15 @@ private:
             return false;
         }
 
-        const ValueType along1 = ((p1.y - p3.y) * d2.x - (p1.x - p3.x) * d2.y) / divisor;
+        auto along1 = ((p1.y - p3.y) * d2.x - (p1.x - p3.x) * d2.y) / divisor;
         intersection = p1 + d1 * along1;
 
-        if (along1 < 0 || along1 > static_cast<ValueType> (1))
+        if (! isZeroToOne (along1))
             return false;
 
-        const ValueType along2 = ((p1.y - p3.y) * d1.x - (p1.x - p3.x) * d1.y) / divisor;
-        return along2 >= 0 && along2 <= static_cast<ValueType> (1);
+        auto along2 = ((p1.y - p3.y) * d1.x - (p1.x - p3.x) * d1.y) / divisor;
+        return isZeroToOne (along2);
     }
 };
 
-
-#endif   // JUCE_LINE_H_INCLUDED
+} // namespace juce

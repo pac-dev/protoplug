@@ -2,34 +2,42 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
+namespace juce
+{
+
 extern int64 getMouseEventTime();
+
+JUCE_DECLARE_UUID_GETTER (IOleObject,       "00000112-0000-0000-C000-000000000046")
+JUCE_DECLARE_UUID_GETTER (IOleWindow,       "00000114-0000-0000-C000-000000000046")
+JUCE_DECLARE_UUID_GETTER (IOleInPlaceSite,  "00000119-0000-0000-C000-000000000046")
 
 namespace ActiveXHelpers
 {
     //==============================================================================
-    class JuceIStorage   : public ComBaseClassHelper <IStorage>
+    struct JuceIStorage   : public ComBaseClassHelper<IStorage>
     {
-    public:
         JuceIStorage() {}
 
         JUCE_COMRESULT CreateStream (const WCHAR*, DWORD, DWORD, DWORD, IStream**)           { return E_NOTIMPL; }
@@ -50,32 +58,38 @@ namespace ActiveXHelpers
     };
 
     //==============================================================================
-    class JuceOleInPlaceFrame   : public ComBaseClassHelper <IOleInPlaceFrame>
+    struct JuceOleInPlaceFrame   : public ComBaseClassHelper<IOleInPlaceFrame>
     {
-    public:
         JuceOleInPlaceFrame (HWND hwnd)   : window (hwnd) {}
 
-        JUCE_COMRESULT GetWindow (HWND* lphwnd)                      { *lphwnd = window; return S_OK; }
-        JUCE_COMRESULT ContextSensitiveHelp (BOOL)                   { return E_NOTIMPL; }
-        JUCE_COMRESULT GetBorder (LPRECT)                            { return E_NOTIMPL; }
-        JUCE_COMRESULT RequestBorderSpace (LPCBORDERWIDTHS)          { return E_NOTIMPL; }
-        JUCE_COMRESULT SetBorderSpace (LPCBORDERWIDTHS)              { return E_NOTIMPL; }
-        JUCE_COMRESULT SetActiveObject (IOleInPlaceActiveObject*, LPCOLESTR)     { return S_OK; }
-        JUCE_COMRESULT InsertMenus (HMENU, LPOLEMENUGROUPWIDTHS)     { return E_NOTIMPL; }
-        JUCE_COMRESULT SetMenu (HMENU, HOLEMENU, HWND)               { return S_OK; }
-        JUCE_COMRESULT RemoveMenus (HMENU)                           { return E_NOTIMPL; }
-        JUCE_COMRESULT SetStatusText (LPCOLESTR)                     { return S_OK; }
-        JUCE_COMRESULT EnableModeless (BOOL)                         { return S_OK; }
-        JUCE_COMRESULT TranslateAccelerator (LPMSG, WORD)            { return E_NOTIMPL; }
+        JUCE_COMRESULT GetWindow (HWND* lphwnd)                                 { *lphwnd = window; return S_OK; }
+        JUCE_COMRESULT ContextSensitiveHelp (BOOL)                              { return E_NOTIMPL; }
+        JUCE_COMRESULT GetBorder (LPRECT)                                       { return E_NOTIMPL; }
+        JUCE_COMRESULT RequestBorderSpace (LPCBORDERWIDTHS)                     { return E_NOTIMPL; }
+        JUCE_COMRESULT SetBorderSpace (LPCBORDERWIDTHS)                         { return E_NOTIMPL; }
+        JUCE_COMRESULT SetActiveObject (IOleInPlaceActiveObject* a, LPCOLESTR)  { activeObject = a; return S_OK; }
+        JUCE_COMRESULT InsertMenus (HMENU, LPOLEMENUGROUPWIDTHS)                { return E_NOTIMPL; }
+        JUCE_COMRESULT SetMenu (HMENU, HOLEMENU, HWND)                          { return S_OK; }
+        JUCE_COMRESULT RemoveMenus (HMENU)                                      { return E_NOTIMPL; }
+        JUCE_COMRESULT SetStatusText (LPCOLESTR)                                { return S_OK; }
+        JUCE_COMRESULT EnableModeless (BOOL)                                    { return S_OK; }
+        JUCE_COMRESULT TranslateAccelerator (LPMSG, WORD)                       { return E_NOTIMPL; }
 
-    private:
+        HRESULT OfferKeyTranslation (LPMSG lpmsg)
+        {
+            if (activeObject != nullptr)
+                return activeObject->TranslateAcceleratorW (lpmsg);
+
+            return S_FALSE;
+        }
+
         HWND window;
+        ComSmartPtr<IOleInPlaceActiveObject> activeObject;
     };
 
     //==============================================================================
-    class JuceIOleInPlaceSite   : public ComBaseClassHelper <IOleInPlaceSite>
+    struct JuceIOleInPlaceSite   : public ComBaseClassHelper<IOleInPlaceSite>
     {
-    public:
         JuceIOleInPlaceSite (HWND hwnd)
             : window (hwnd),
               frame (new JuceOleInPlaceFrame (window))
@@ -113,17 +127,22 @@ namespace ActiveXHelpers
         JUCE_COMRESULT DeactivateAndUndo()           { return E_NOTIMPL; }
         JUCE_COMRESULT OnPosRectChange (LPCRECT)     { return S_OK; }
 
-    private:
+        LRESULT offerEventToActiveXControl (::MSG& msg)
+        {
+            if (frame != nullptr)
+                return frame->OfferKeyTranslation (&msg);
+
+            return S_FALSE;
+        }
+
         HWND window;
         JuceOleInPlaceFrame* frame;
     };
 
     //==============================================================================
-    class JuceIOleClientSite  : public ComBaseClassHelper <IOleClientSite>
+    struct JuceIOleClientSite  : public ComBaseClassHelper<IOleClientSite>
     {
-    public:
-        JuceIOleClientSite (HWND window)
-            : inplaceSite (new JuceIOleInPlaceSite (window))
+        JuceIOleClientSite (HWND window)  : inplaceSite (new JuceIOleInPlaceSite (window))
         {}
 
         ~JuceIOleClientSite()
@@ -133,10 +152,10 @@ namespace ActiveXHelpers
 
         JUCE_COMRESULT QueryInterface (REFIID type, void** result)
         {
-            if (type == IID_IOleInPlaceSite)
+            if (type == __uuidof (IOleInPlaceSite))
             {
                 inplaceSite->AddRef();
-                *result = static_cast <IOleInPlaceSite*> (inplaceSite);
+                *result = static_cast<IOleInPlaceSite*> (inplaceSite);
                 return S_OK;
             }
 
@@ -150,19 +169,26 @@ namespace ActiveXHelpers
         JUCE_COMRESULT OnShowWindow (BOOL)                           { return E_NOTIMPL; }
         JUCE_COMRESULT RequestNewObjectLayout()                      { return E_NOTIMPL; }
 
-    private:
+        LRESULT offerEventToActiveXControl (::MSG& msg)
+        {
+            if (inplaceSite != nullptr)
+                return inplaceSite->offerEventToActiveXControl (msg);
+
+            return S_FALSE;
+        }
+
         JuceIOleInPlaceSite* inplaceSite;
     };
 
     //==============================================================================
     static Array<ActiveXControlComponent*> activeXComps;
 
-    HWND getHWND (const ActiveXControlComponent* const component)
+    static inline HWND getHWND (const ActiveXControlComponent* const component)
     {
-        HWND hwnd = 0;
-        const IID iid = IID_IOleWindow;
+        HWND hwnd = {};
+        const IID iid = __uuidof (IOleWindow);
 
-        if (IOleWindow* const window = (IOleWindow*) component->queryInterface (&iid))
+        if (auto* window = (IOleWindow*) component->queryInterface (&iid))
         {
             window->GetWindow (&hwnd);
             window->Release();
@@ -171,12 +197,8 @@ namespace ActiveXHelpers
         return hwnd;
     }
 
-    void offerActiveXMouseEventToPeer (ComponentPeer* const peer, HWND hwnd, UINT message, LPARAM lParam)
+    static inline void offerActiveXMouseEventToPeer (ComponentPeer* peer, HWND hwnd, UINT message, LPARAM lParam)
     {
-        RECT activeXRect, peerRect;
-        GetWindowRect (hwnd, &activeXRect);
-        GetWindowRect ((HWND) peer->getNativeHandle(), &peerRect);
-
         switch (message)
         {
             case WM_MOUSEMOVE:
@@ -186,11 +208,20 @@ namespace ActiveXHelpers
             case WM_LBUTTONUP:
             case WM_MBUTTONUP:
             case WM_RBUTTONUP:
-                peer->handleMouseEvent (0, Point<int> (GET_X_LPARAM (lParam) + activeXRect.left - peerRect.left,
-                                                       GET_Y_LPARAM (lParam) + activeXRect.top  - peerRect.top).toFloat(),
-                                        ModifierKeys::getCurrentModifiersRealtime(),
+            {
+                RECT activeXRect, peerRect;
+                GetWindowRect (hwnd, &activeXRect);
+                GetWindowRect ((HWND) peer->getNativeHandle(), &peerRect);
+
+                peer->handleMouseEvent (MouseInputSource::InputSourceType::mouse,
+                                        { (float) (GET_X_LPARAM (lParam) + activeXRect.left - peerRect.left),
+                                          (float) (GET_Y_LPARAM (lParam) + activeXRect.top  - peerRect.top) },
+                                        ComponentPeer::getCurrentModifiersRealtime(),
+                                        MouseInputSource::invalidPressure,
+                                        MouseInputSource::invalidOrientation,
                                         getMouseEventTime());
                 break;
+            }
 
             default:
                 break;
@@ -200,16 +231,16 @@ namespace ActiveXHelpers
 
 //==============================================================================
 class ActiveXControlComponent::Pimpl  : public ComponentMovementWatcher
+                                     #if JUCE_WIN_PER_MONITOR_DPI_AWARE
+                                      , public ComponentPeer::ScaleFactorListener
+                                     #endif
 {
 public:
     Pimpl (HWND hwnd, ActiveXControlComponent& activeXComp)
         : ComponentMovementWatcher (&activeXComp),
           owner (activeXComp),
-          controlHWND (0),
           storage (new ActiveXHelpers::JuceIStorage()),
-          clientSite (new ActiveXHelpers::JuceIOleClientSite (hwnd)),
-          control (nullptr),
-          originalWndProc (0)
+          clientSite (new ActiveXHelpers::JuceIOleClientSite (hwnd))
     {
     }
 
@@ -223,12 +254,26 @@ public:
 
         clientSite->Release();
         storage->Release();
+
+       #if JUCE_WIN_PER_MONITOR_DPI_AWARE
+        for (int i = 0; i < ComponentPeer::getNumPeers(); ++i)
+            if (auto* peer = ComponentPeer::getPeer (i))
+                peer->removeScaleFactorListener (this);
+        #endif
     }
 
-    void setControlBounds (const Rectangle<int>& bounds) const
+    void setControlBounds (Rectangle<int> newBounds) const
     {
         if (controlHWND != 0)
-            MoveWindow (controlHWND, bounds.getX(), bounds.getY(), bounds.getWidth(), bounds.getHeight(), TRUE);
+        {
+           #if JUCE_WIN_PER_MONITOR_DPI_AWARE
+            if (auto* peer = owner.getTopLevelComponent()->getPeer())
+                newBounds = (newBounds.toDouble() * peer->getPlatformScaleFactor()).toNearestInt();
+           #endif
+
+            MoveWindow (controlHWND, newBounds.getX(), newBounds.getY(), newBounds.getWidth(), newBounds.getHeight(), TRUE);
+        }
+
     }
 
     void setControlVisible (bool shouldBeVisible) const
@@ -240,13 +285,18 @@ public:
     //==============================================================================
     void componentMovedOrResized (bool /*wasMoved*/, bool /*wasResized*/) override
     {
-        if (ComponentPeer* const peer = owner.getTopLevelComponent()->getPeer())
+        if (auto* peer = owner.getTopLevelComponent()->getPeer())
             setControlBounds (peer->getAreaCoveredBy (owner));
     }
 
     void componentPeerChanged() override
     {
         componentMovedOrResized (true, true);
+
+       #if JUCE_WIN_PER_MONITOR_DPI_AWARE
+        if (auto* peer = owner.getTopLevelComponent()->getPeer())
+            peer->addScaleFactorListener (this);
+       #endif
     }
 
     void componentVisibilityChanged() override
@@ -255,41 +305,46 @@ public:
         componentPeerChanged();
     }
 
+   #if JUCE_WIN_PER_MONITOR_DPI_AWARE
+    void nativeScaleFactorChanged (double /*newScaleFactor*/) override
+    {
+        componentMovedOrResized (true, true);
+    }
+   #endif
+
     // intercepts events going to an activeX control, so we can sneakily use the mouse events
     static LRESULT CALLBACK activeXHookWndProc (HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
     {
-        for (int i = ActiveXHelpers::activeXComps.size(); --i >= 0;)
+        for (auto* ax : ActiveXHelpers::activeXComps)
         {
-            const ActiveXControlComponent* const ax = ActiveXHelpers::activeXComps.getUnchecked(i);
-
             if (ax->control != nullptr && ax->control->controlHWND == hwnd)
             {
                 switch (message)
                 {
-                case WM_MOUSEMOVE:
-                case WM_LBUTTONDOWN:
-                case WM_MBUTTONDOWN:
-                case WM_RBUTTONDOWN:
-                case WM_LBUTTONUP:
-                case WM_MBUTTONUP:
-                case WM_RBUTTONUP:
-                case WM_LBUTTONDBLCLK:
-                case WM_MBUTTONDBLCLK:
-                case WM_RBUTTONDBLCLK:
-                    if (ax->isShowing())
-                    {
-                        if (ComponentPeer* const peer = ax->getPeer())
+                    case WM_MOUSEMOVE:
+                    case WM_LBUTTONDOWN:
+                    case WM_MBUTTONDOWN:
+                    case WM_RBUTTONDOWN:
+                    case WM_LBUTTONUP:
+                    case WM_MBUTTONUP:
+                    case WM_RBUTTONUP:
+                    case WM_LBUTTONDBLCLK:
+                    case WM_MBUTTONDBLCLK:
+                    case WM_RBUTTONDBLCLK:
+                        if (ax->isShowing())
                         {
-                            ActiveXHelpers::offerActiveXMouseEventToPeer (peer, hwnd, message, lParam);
+                            if (auto* peer = ax->getPeer())
+                            {
+                                ActiveXHelpers::offerActiveXMouseEventToPeer (peer, hwnd, message, lParam);
 
-                            if (! ax->areMouseEventsAllowed())
-                                return 0;
+                                if (! ax->areMouseEventsAllowed())
+                                    return 0;
+                            }
                         }
-                    }
-                    break;
+                        break;
 
-                default:
-                    break;
+                    default:
+                        break;
                 }
 
                 return CallWindowProc (ax->control->originalWndProc, hwnd, message, wParam, lParam);
@@ -300,16 +355,15 @@ public:
     }
 
     ActiveXControlComponent& owner;
-    HWND controlHWND;
-    IStorage* storage;
-    IOleClientSite* clientSite;
-    IOleObject* control;
-    WNDPROC originalWndProc;
+    HWND controlHWND = {};
+    IStorage* storage = nullptr;
+    ActiveXHelpers::JuceIOleClientSite* clientSite = nullptr;
+    IOleObject* control = nullptr;
+    WNDPROC originalWndProc = 0;
 };
 
 //==============================================================================
 ActiveXControlComponent::ActiveXControlComponent()
-    : mouseEventsAllowed (true)
 {
     ActiveXHelpers::activeXComps.add (this);
 }
@@ -330,37 +384,37 @@ bool ActiveXControlComponent::createControl (const void* controlIID)
 {
     deleteControl();
 
-    if (ComponentPeer* const peer = getPeer())
+    if (auto* peer = getPeer())
     {
-        const Rectangle<int> bounds (peer->getAreaCoveredBy (*this));
+        auto controlBounds = peer->getAreaCoveredBy (*this);
+        auto hwnd = (HWND) peer->getNativeHandle();
 
-        HWND hwnd = (HWND) peer->getNativeHandle();
+        std::unique_ptr<Pimpl> newControl (new Pimpl (hwnd, *this));
 
-        ScopedPointer<Pimpl> newControl (new Pimpl (hwnd, *this));
+        HRESULT hr = OleCreate (*(const IID*) controlIID, __uuidof (IOleObject), 1 /*OLERENDER_DRAW*/, 0,
+                                newControl->clientSite, newControl->storage,
+                                (void**) &(newControl->control));
 
-        HRESULT hr;
-        if ((hr = OleCreate (*(const IID*) controlIID, IID_IOleObject, 1 /*OLERENDER_DRAW*/, 0,
-                             newControl->clientSite, newControl->storage,
-                             (void**) &(newControl->control))) == S_OK)
+        if (hr == S_OK)
         {
             newControl->control->SetHostNames (L"JUCE", 0);
 
             if (OleSetContainedObject (newControl->control, TRUE) == S_OK)
             {
                 RECT rect;
-                rect.left   = bounds.getX();
-                rect.top    = bounds.getY();
-                rect.right  = bounds.getRight();
-                rect.bottom = bounds.getBottom();
+                rect.left   = controlBounds.getX();
+                rect.top    = controlBounds.getY();
+                rect.right  = controlBounds.getRight();
+                rect.bottom = controlBounds.getBottom();
 
                 if (newControl->control->DoVerb (OLEIVERB_SHOW, 0, newControl->clientSite, 0, hwnd, &rect) == S_OK)
                 {
-                    control = newControl;
+                    control.reset (newControl.release());
                     control->controlHWND = ActiveXHelpers::getHWND (this);
 
                     if (control->controlHWND != 0)
                     {
-                        control->setControlBounds (bounds);
+                        control->setControlBounds (controlBounds);
 
                         control->originalWndProc = (WNDPROC) GetWindowLongPtr ((HWND) control->controlHWND, GWLP_WNDPROC);
                         SetWindowLongPtr ((HWND) control->controlHWND, GWLP_WNDPROC, (LONG_PTR) Pimpl::activeXHookWndProc);
@@ -400,3 +454,34 @@ void ActiveXControlComponent::setMouseEventsAllowed (const bool eventsCanReachCo
 {
     mouseEventsAllowed = eventsCanReachControl;
 }
+
+intptr_t ActiveXControlComponent::offerEventToActiveXControl (void* ptr)
+{
+    if (control != nullptr && control->clientSite != nullptr)
+        return (intptr_t) control->clientSite->offerEventToActiveXControl (*reinterpret_cast<::MSG*> (ptr));
+
+    return S_FALSE;
+}
+
+intptr_t ActiveXControlComponent::offerEventToActiveXControlStatic (void* ptr)
+{
+    for (auto* ax : ActiveXHelpers::activeXComps)
+    {
+        auto result = ax->offerEventToActiveXControl (ptr);
+
+        if (result != S_FALSE)
+            return result;
+    }
+
+    return S_FALSE;
+}
+
+LRESULT juce_offerEventToActiveXControl (::MSG& msg)
+{
+    if (msg.message >= WM_KEYFIRST && msg.message <= WM_KEYLAST)
+        return ActiveXControlComponent::offerEventToActiveXControlStatic (&msg);
+
+    return S_FALSE;
+}
+
+} // namespace juce

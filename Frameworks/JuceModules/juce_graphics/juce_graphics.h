@@ -2,33 +2,62 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_GRAPHICS_H_INCLUDED // %%
+/*******************************************************************************
+ The block below describes the properties of this module, and is read by
+ the Projucer to automatically generate project code that uses it.
+ For details about the syntax and how to create or use a module, see the
+ JUCE Module Format.txt file.
+
+
+ BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               juce_graphics
+  vendor:           juce
+  version:          5.3.2
+  name:             JUCE graphics classes
+  description:      Classes for 2D vector graphics, image loading/saving, font handling, etc.
+  website:          http://www.juce.com/juce
+  license:          GPL/Commercial
+
+  dependencies:     juce_events
+  OSXFrameworks:    Cocoa QuartzCore
+  iOSFrameworks:    CoreGraphics CoreImage CoreText QuartzCore
+  linuxPackages:    x11 xinerama xext freetype2
+
+ END_JUCE_MODULE_DECLARATION
+
+*******************************************************************************/
+
+
+#pragma once
 #define JUCE_GRAPHICS_H_INCLUDED
 
-#include "../juce_core/juce_core.h"
-#include "../juce_events/juce_events.h"
+#include <juce_core/juce_core.h>
+#include <juce_events/juce_events.h>
 
-//=============================================================================
+//==============================================================================
 /** Config: JUCE_USE_COREIMAGE_LOADER
 
     On OSX, enabling this flag means that the CoreImage codecs will be used to load
@@ -48,6 +77,15 @@
  #define JUCE_USE_DIRECTWRITE 1
 #endif
 
+/** Config: JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING
+
+    Setting this flag will turn off CoreGraphics font smoothing, which some people
+    find makes the text too 'fat' for their taste.
+*/
+#ifndef JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING
+ #define JUCE_DISABLE_COREGRAPHICS_FONT_SMOOTHING 0
+#endif
+
 #ifndef JUCE_INCLUDE_PNGLIB_CODE
  #define JUCE_INCLUDE_PNGLIB_CODE 1
 #endif
@@ -60,22 +98,23 @@
  #define USE_COREGRAPHICS_RENDERING 1
 #endif
 
-//=============================================================================
+//==============================================================================
 namespace juce
 {
-
-class Image;
-class AffineTransform;
-class Path;
-class Font;
-class Graphics;
-class FillType;
-class LowLevelGraphicsContext;
+    class Image;
+    class AffineTransform;
+    class Path;
+    class Font;
+    class Graphics;
+    class FillType;
+    class LowLevelGraphicsContext;
+}
 
 #include "geometry/juce_AffineTransform.h"
 #include "geometry/juce_Point.h"
 #include "geometry/juce_Line.h"
 #include "geometry/juce_Rectangle.h"
+#include "geometry/juce_Parallelogram.h"
 #include "placement/juce_Justification.h"
 #include "geometry/juce_Path.h"
 #include "geometry/juce_RectangleList.h"
@@ -91,9 +130,9 @@ class LowLevelGraphicsContext;
 #include "images/juce_ImageCache.h"
 #include "images/juce_ImageConvolutionKernel.h"
 #include "images/juce_ImageFileFormat.h"
-#include "fonts/juce_AttributedString.h"
 #include "fonts/juce_Typeface.h"
 #include "fonts/juce_Font.h"
+#include "fonts/juce_AttributedString.h"
 #include "fonts/juce_GlyphArrangement.h"
 #include "fonts/juce_TextLayout.h"
 #include "fonts/juce_CustomTypeface.h"
@@ -108,6 +147,11 @@ class LowLevelGraphicsContext;
 #include "effects/juce_DropShadowEffect.h"
 #include "effects/juce_GlowEffect.h"
 
-}
+#if JUCE_GRAPHICS_INCLUDE_COREGRAPHICS_HELPERS && (JUCE_MAC || JUCE_IOS)
+ #include "native/juce_mac_CoreGraphicsHelpers.h"
+ #include "native/juce_mac_CoreGraphicsContext.h"
+#endif
 
-#endif   // JUCE_GRAPHICS_H_INCLUDED
+#if JUCE_DIRECT2D && JUCE_WINDOWS
+#include "native/juce_win32_Direct2DGraphicsContext.h"
+#endif

@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_MAC_CARBONVIEWWRAPPERCOMPONENT_H_INCLUDED
-#define JUCE_MAC_CARBONVIEWWRAPPERCOMPONENT_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -32,6 +33,8 @@
 
     This is a handy class that's designed to be inlined where needed, e.g.
     in the audio plugin hosting code.
+
+    @tags{GUI}
 */
 class CarbonViewWrapperComponent  : public Component,
                                     public ComponentMovementWatcher,
@@ -40,9 +43,9 @@ class CarbonViewWrapperComponent  : public Component,
 public:
     CarbonViewWrapperComponent()
         : ComponentMovementWatcher (this),
+          carbonWindow (nil),
           keepPluginWindowWhenHidden (false),
-          wrapperWindow (0),
-          carbonWindow (0),
+          wrapperWindow (nil),
           embeddedView (0),
           recursiveResize (false),
           repaintChildOnCreation (true)
@@ -73,7 +76,7 @@ public:
 
     void createWindow()
     {
-        if (wrapperWindow == 0)
+        if (wrapperWindow == nil)
         {
             Rect r;
             r.left   = (short) getScreenX();
@@ -99,9 +102,10 @@ public:
 
             // Check for the plugin creating its own floating window, and if there is one,
             // we need to reparent it to make it visible..
-            if (NSWindow* floatingChildWindow = [[carbonWindow childWindows] objectAtIndex: 0])
-                [getOwnerWindow() addChildWindow: floatingChildWindow
-                                         ordered: NSWindowAbove];
+            if (carbonWindow.childWindows.count > 0)
+                if (NSWindow* floatingChildWindow = [[carbonWindow childWindows] objectAtIndex: 0])
+                    [getOwnerWindow() addChildWindow: floatingChildWindow
+                                             ordered: NSWindowAbove];
 
             EventTypeSpec windowEventTypes[] =
             {
@@ -134,7 +138,7 @@ public:
         removeView (embeddedView);
         embeddedView = 0;
 
-        if (wrapperWindow != 0)
+        if (wrapperWindow != nil)
         {
             NSWindow* ownerWindow = getOwnerWindow();
 
@@ -146,7 +150,7 @@ public:
 
             RemoveEventHandler (eventHandlerRef);
             DisposeWindow (wrapperWindow);
-            wrapperWindow = 0;
+            wrapperWindow = nil;
         }
     }
 
@@ -191,7 +195,7 @@ public:
                 HIViewSetFrame (embeddedView, &r);
             }
 
-            if (wrapperWindow != 0)
+            if (wrapperWindow != nil)
             {
                 jassert (getTopLevelComponent()->getDesktopScaleFactor() == 1.0f);
                 Rectangle<int> screenBounds (getScreenBounds() * Desktop::getInstance().getGlobalScaleFactor());
@@ -315,11 +319,11 @@ public:
         return ((CarbonViewWrapperComponent*) userData)->carbonEventHandler (nextHandlerRef, event);
     }
 
+    NSWindow* carbonWindow;
     bool keepPluginWindowWhenHidden;
 
 protected:
     WindowRef wrapperWindow;
-    NSWindow* carbonWindow;
     HIViewRef embeddedView;
     bool recursiveResize, repaintChildOnCreation;
     Time creationTime;
@@ -329,4 +333,15 @@ protected:
     NSWindow* getOwnerWindow() const    { return [((NSView*) getWindowHandle()) window]; }
 };
 
-#endif   // JUCE_MAC_CARBONVIEWWRAPPERCOMPONENT_H_INCLUDED
+//==============================================================================
+// Non-public utility function that hosts can use if they need to get hold of the
+// internals of a carbon wrapper window..
+void* getCarbonWindow (Component* possibleCarbonComponent)
+{
+    if (CarbonViewWrapperComponent* cv = dynamic_cast<CarbonViewWrapperComponent*> (possibleCarbonComponent))
+        return cv->carbonWindow;
+
+    return nullptr;
+}
+
+} // namespace juce

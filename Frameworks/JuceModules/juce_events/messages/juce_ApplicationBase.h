@@ -2,29 +2,26 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_APPLICATIONBASE_H_INCLUDED
-#define JUCE_APPLICATIONBASE_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -52,7 +49,7 @@
 
             void initialise (const String& commandLine) override
             {
-                myMainWindow = new MyApplicationWindow();
+                myMainWindow.reset (new MyApplicationWindow());
                 myMainWindow->setBounds (100, 100, 400, 500);
                 myMainWindow->setVisible (true);
             }
@@ -73,7 +70,7 @@
             }
 
         private:
-            ScopedPointer<MyApplicationWindow> myMainWindow;
+            std::unique_ptr<MyApplicationWindow> myMainWindow;
         };
 
         // this generates boilerplate code to launch our app class:
@@ -81,6 +78,8 @@
     @endcode
 
     @see JUCEApplication, START_JUCE_APPLICATION
+
+    @tags{Events}
 */
 class JUCE_API  JUCEApplicationBase
 {
@@ -105,7 +104,7 @@ public:
 
     /** Checks whether multiple instances of the app are allowed.
 
-        If you application class returns true for this, more than one instance is
+        If your application class returns true for this, more than one instance is
         permitted to run (except on the Mac where this isn't possible).
 
         If it's false, the second instance won't start, but it you will still get a
@@ -191,6 +190,22 @@ public:
                                      const String& sourceFilename,
                                      int lineNumber) = 0;
 
+    /** Called by the operating system to indicate that you should reduce your memory
+        footprint.
+
+        You should override this method to free up some memory gracefully, if possible,
+        otherwise the host may forcibly kill your app.
+
+        At the moment this method is only called on iOS.
+    */
+    virtual void memoryWarningReceived()     { jassertfalse; }
+
+    //==============================================================================
+    /** Override this method to be informed when the back button is pressed on a device.
+        This is currently only implemented on Android devices.
+     */
+    virtual void backButtonPressed() {}
+
     //==============================================================================
     /** Signals that the main message loop should stop and the application should terminate.
 
@@ -255,8 +270,12 @@ public:
     static int main (int argc, const char* argv[]);
 
     static void appWillTerminateByForce();
-    typedef JUCEApplicationBase* (*CreateInstanceFunction)();
+    using CreateInstanceFunction = JUCEApplicationBase* (*)();
     static CreateInstanceFunction createInstance;
+
+   #if JUCE_IOS
+    static void* iOSCustomDelegate;
+   #endif
 
     virtual bool initialiseApp();
     int shutdownApp();
@@ -267,16 +286,36 @@ public:
 private:
     //==============================================================================
     static JUCEApplicationBase* appInstance;
-    int appReturnValue;
-    bool stillInitialising;
+    int appReturnValue = 0;
+    bool stillInitialising = true;
 
     struct MultipleInstanceHandler;
-    friend struct MultipleInstanceHandler;
-    friend struct ContainerDeletePolicy<MultipleInstanceHandler>;
-    ScopedPointer<MultipleInstanceHandler> multipleInstanceHandler;
+    std::unique_ptr<MultipleInstanceHandler> multipleInstanceHandler;
 
     JUCE_DECLARE_NON_COPYABLE (JUCEApplicationBase)
 };
 
 
-#endif   // JUCE_APPLICATIONBASE_H_INCLUDED
+//==============================================================================
+#if JUCE_CATCH_UNHANDLED_EXCEPTIONS || defined (DOXYGEN)
+
+ /** The JUCE_TRY/JUCE_CATCH_EXCEPTION wrappers can be used to pass any uncaught exceptions to
+     the JUCEApplicationBase::sendUnhandledException() method.
+     This functionality can be enabled with the JUCE_CATCH_UNHANDLED_EXCEPTIONS macro.
+ */
+ #define JUCE_TRY try
+
+ /** The JUCE_TRY/JUCE_CATCH_EXCEPTION wrappers can be used to pass any uncaught exceptions to
+     the JUCEApplicationBase::sendUnhandledException() method.
+     This functionality can be enabled with the JUCE_CATCH_UNHANDLED_EXCEPTIONS macro.
+ */
+ #define JUCE_CATCH_EXCEPTION \
+    catch (const std::exception& e) { juce::JUCEApplicationBase::sendUnhandledException (&e,      __FILE__, __LINE__); } \
+    catch (...)                     { juce::JUCEApplicationBase::sendUnhandledException (nullptr, __FILE__, __LINE__); }
+
+#else
+ #define JUCE_TRY
+ #define JUCE_CATCH_EXCEPTION
+#endif
+
+} // namespace juce

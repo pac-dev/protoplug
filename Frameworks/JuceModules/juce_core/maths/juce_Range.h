@@ -1,34 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_RANGE_H_INCLUDED
-#define JUCE_RANGE_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /** A general-purpose range object, that simply represents any linear range with
@@ -39,6 +32,8 @@
 
     The templated parameter is expected to be a primitive integer or floating point
     type, though class types could also be used if they behave in a number-like way.
+
+    @tags{Core}
 */
 template <typename ValueType>
 class Range
@@ -46,9 +41,7 @@ class Range
 public:
     //==============================================================================
     /** Constructs an empty range. */
-    Range() noexcept  : start(), end()
-    {
-    }
+    Range() = default;
 
     /** Constructs a range with given start and end values. */
     Range (const ValueType startValue, const ValueType endValue) noexcept
@@ -57,18 +50,10 @@ public:
     }
 
     /** Constructs a copy of another range. */
-    Range (const Range& other) noexcept
-        : start (other.start), end (other.end)
-    {
-    }
+    Range (const Range&) = default;
 
     /** Copies another range object. */
-    Range& operator= (Range other) noexcept
-    {
-        start = other.start;
-        end = other.end;
-        return *this;
-    }
+    Range& operator= (const Range&) = default;
 
     /** Returns the range that lies between two positions (in either order). */
     static Range between (const ValueType position1, const ValueType position2) noexcept
@@ -172,6 +157,15 @@ public:
         return Range (start, start + newLength);
     }
 
+    /** Returns a range which has its start moved down and its end moved up by the
+        given amount.
+        @returns The returned range will be (start - amount, end + amount)
+    */
+    Range expanded (ValueType amount) const noexcept
+    {
+        return Range (start - amount, end + amount);
+    }
+
     //==============================================================================
     /** Adds an amount to the start and end of the range. */
     inline Range operator+= (const ValueType amountToAdd) noexcept
@@ -208,7 +202,10 @@ public:
     bool operator!= (Range other) const noexcept     { return start != other.start || end != other.end; }
 
     //==============================================================================
-    /** Returns true if the given position lies inside this range. */
+    /** Returns true if the given position lies inside this range.
+        When making this comparison, the start value is considered to be inclusive,
+        and the end of the range exclusive.
+    */
     bool contains (const ValueType position) const noexcept
     {
         return start <= position && position < end;
@@ -220,10 +217,7 @@ public:
         return jlimit (start, end, value);
     }
 
-    /** Returns true if the given range lies entirely inside this range.
-        When making this comparison, the start value is considered to be inclusive,
-        and the end of the range exclusive.
-     */
+    /** Returns true if the given range lies entirely inside this range. */
     bool contains (Range other) const noexcept
     {
         return start <= other.start && end >= other.end;
@@ -297,8 +291,7 @@ public:
 
 private:
     //==============================================================================
-    ValueType start, end;
+    ValueType start{}, end{};
 };
 
-
-#endif   // JUCE_RANGE_H_INCLUDED
+} // namespace juce

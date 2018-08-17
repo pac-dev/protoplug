@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_AFFINETRANSFORM_H_INCLUDED
-#define JUCE_AFFINETRANSFORM_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -36,16 +37,18 @@
     These are used for various 2D transformation tasks, e.g. with Path objects.
 
     @see Path, Point, Line
+
+    @tags{Graphics}
 */
-class JUCE_API  AffineTransform
+class JUCE_API  AffineTransform  final
 {
 public:
     //==============================================================================
     /** Creates an identity transform. */
-    AffineTransform() noexcept;
+    AffineTransform() = default;
 
     /** Creates a copy of another transform. */
-    AffineTransform (const AffineTransform& other) noexcept;
+    AffineTransform (const AffineTransform&) = default;
 
     /** Creates a transform from a set of raw matrix values.
 
@@ -59,7 +62,7 @@ public:
                      float mat10, float mat11, float mat12) noexcept;
 
     /** Copies from another AffineTransform object */
-    AffineTransform& operator= (const AffineTransform& other) noexcept;
+    AffineTransform& operator= (const AffineTransform&) = default;
 
     /** Compares two transforms. */
     bool operator== (const AffineTransform& other) const noexcept;
@@ -67,22 +70,12 @@ public:
     /** Compares two transforms. */
     bool operator!= (const AffineTransform& other) const noexcept;
 
-    /** A ready-to-use identity transform, which you can use to append other
-        transformations to.
-
-        e.g. @code
-        AffineTransform myTransform = AffineTransform::identity.rotated (.5f)
-                                                               .scaled (2.0f);
-        @endcode
-    */
-    static const AffineTransform identity;
-
     //==============================================================================
     /** Transforms a 2D coordinate using this matrix. */
     template <typename ValueType>
     void transformPoint (ValueType& x, ValueType& y) const noexcept
     {
-        const ValueType oldX = x;
+        auto oldX = x;
         x = static_cast<ValueType> (mat00 * oldX + mat01 * y + mat02);
         y = static_cast<ValueType> (mat10 * oldX + mat11 * y + mat12);
     }
@@ -96,7 +89,7 @@ public:
     void transformPoints (ValueType& x1, ValueType& y1,
                           ValueType& x2, ValueType& y2) const noexcept
     {
-        const ValueType oldX1 = x1, oldX2 = x2;
+        auto oldX1 = x1, oldX2 = x2;
         x1 = static_cast<ValueType> (mat00 * oldX1 + mat01 * y1 + mat02);
         y1 = static_cast<ValueType> (mat10 * oldX1 + mat11 * y1 + mat12);
         x2 = static_cast<ValueType> (mat00 * oldX2 + mat01 * y2 + mat02);
@@ -113,7 +106,7 @@ public:
                           ValueType& x2, ValueType& y2,
                           ValueType& x3, ValueType& y3) const noexcept
     {
-        const ValueType oldX1 = x1, oldX2 = x2, oldX3 = x3;
+        auto oldX1 = x1, oldX2 = x2, oldX3 = x3;
         x1 = static_cast<ValueType> (mat00 * oldX1 + mat01 * y1 + mat02);
         y1 = static_cast<ValueType> (mat10 * oldX1 + mat11 * y1 + mat12);
         x2 = static_cast<ValueType> (mat00 * oldX2 + mat01 * y2 + mat02);
@@ -236,6 +229,17 @@ public:
                                              float sourceX2, float sourceY2, float targetX2, float targetY2,
                                              float sourceX3, float sourceY3, float targetX3, float targetY3) noexcept;
 
+    /** Returns the transform that will map three specified points onto three target points. */
+    template <typename PointType>
+    static AffineTransform fromTargetPoints (PointType source1, PointType target1,
+                                             PointType source2, PointType target2,
+                                             PointType source3, PointType target3) noexcept
+    {
+        return fromTargetPoints (source1.x, source1.y, target1.x, target1.y,
+                                 source2.x, source2.y, target2.x, target2.y,
+                                 source3.x, source3.y, target3.x, target3.y);
+    }
+
     //==============================================================================
     /** Returns the result of concatenating another transformation after this one. */
     AffineTransform followedBy (const AffineTransform& other) const noexcept;
@@ -266,6 +270,11 @@ public:
     */
     float getScaleFactor() const noexcept;
 
+    /* A ready-to-use identity transform - now depracated.
+       @deprecated If you need an identity transform, just use AffineTransform() or {}.
+    */
+    JUCE_DEPRECATED_STATIC (static const AffineTransform identity;)
+
     //==============================================================================
     /* The transform matrix is:
 
@@ -273,13 +282,8 @@ public:
         (mat10 mat11 mat12)
         (  0     0     1  )
     */
-    float mat00, mat01, mat02;
-    float mat10, mat11, mat12;
-
-
-private:
-    //==============================================================================
-    JUCE_LEAK_DETECTOR (AffineTransform)
+    float mat00 { 1.0f }, mat01 { 0.0f }, mat02 { 0.0f };
+    float mat10 { 0.0f }, mat11 { 1.0f }, mat12 { 0.0f };
 };
 
-#endif   // JUCE_AFFINETRANSFORM_H_INCLUDED
+} // namespace juce

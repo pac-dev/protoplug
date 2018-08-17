@@ -1,34 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_BIGINTEGER_H_INCLUDED
-#define JUCE_BIGINTEGER_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -39,6 +32,8 @@
 
     Negative values are possible, but the value isn't stored as 2s-complement, so
     be careful if you use negative values and look at the values of individual bits.
+
+    @tags{Core}
 */
 class JUCE_API  BigInteger
 {
@@ -67,10 +62,11 @@ public:
     /** Creates a copy of another BigInteger. */
     BigInteger (const BigInteger&);
 
-   #if JUCE_COMPILER_SUPPORTS_MOVE_SEMANTICS
+    /** Move constructor */
     BigInteger (BigInteger&&) noexcept;
+
+    /** Move assignment operator */
     BigInteger& operator= (BigInteger&&) noexcept;
-   #endif
 
     /** Destructor. */
     ~BigInteger();
@@ -106,7 +102,7 @@ public:
 
     //==============================================================================
     /** Resets the value to 0. */
-    void clear();
+    void clear() noexcept;
 
     /** Clears a particular bit in the number. */
     void clearBit (int bitNumber) noexcept;
@@ -181,6 +177,22 @@ public:
     int getHighestBit() const noexcept;
 
     //==============================================================================
+    /** Returns true if the value is less than zero.
+        @see setNegative, negate
+    */
+    bool isNegative() const noexcept;
+
+    /** Changes the sign of the number to be positive or negative.
+        @see isNegative, negate
+    */
+    void setNegative (bool shouldBeNegative) noexcept;
+
+    /** Inverts the sign of the number.
+        @see isNegative, setNegative
+    */
+    void negate() noexcept;
+
+    //==============================================================================
     // All the standard arithmetic ops...
 
     BigInteger& operator+= (const BigInteger&);
@@ -236,6 +248,7 @@ public:
     */
     int compareAbsolute (const BigInteger& other) const noexcept;
 
+    //==============================================================================
     /** Divides this value by another one and returns the remainder.
 
         This number is divided by other, leaving the quotient in this number,
@@ -243,7 +256,7 @@ public:
     */
     void divideBy (const BigInteger& divisor, BigInteger& remainder);
 
-    /** Returns the largest value that will divide both this value and the one passed-in. */
+    /** Returns the largest value that will divide both this value and the argument. */
     BigInteger findGreatestCommonDivisor (BigInteger other) const;
 
     /** Performs a combined exponent and modulo operation.
@@ -256,21 +269,20 @@ public:
     */
     void inverseModulo (const BigInteger& modulus);
 
-    //==============================================================================
-    /** Returns true if the value is less than zero.
-        @see setNegative, negate
+    /** Performs the Montgomery Multiplication with modulo.
+        This object is left containing the result value: ((this * other) * R1) % modulus.
+        To get this result, we need modulus, modulusp and k such as R = 2^k, with
+        modulus * modulusp - R * R1 = GCD(modulus, R) = 1
     */
-    bool isNegative() const noexcept;
+    void montgomeryMultiplication (const BigInteger& other, const BigInteger& modulus,
+                                   const BigInteger& modulusp, int k);
 
-    /** Changes the sign of the number to be positive or negative.
-        @see isNegative, negate
+    /** Performs the Extended Euclidean algorithm.
+        This method will set the xOut and yOut arguments such that (a * xOut) - (b * yOut) = GCD (a, b).
+        On return, this object is left containing the value of the GCD.
     */
-    void setNegative (bool shouldBeNegative) noexcept;
-
-    /** Inverts the sign of the number.
-        @see isNegative, setNegative
-    */
-    void negate() noexcept;
+    void extendedEuclidean (const BigInteger& a, const BigInteger& b,
+                            BigInteger& xOut, BigInteger& yOut);
 
     //==============================================================================
     /** Converts the number to a string.
@@ -309,12 +321,15 @@ public:
 
 private:
     //==============================================================================
-    HeapBlock<uint32> values;
-    size_t numValues;
-    int highestBit;
-    bool negative;
+    enum { numPreallocatedInts = 4 };
+    HeapBlock<uint32> heapAllocation;
+    uint32 preallocated[numPreallocatedInts];
+    size_t allocatedSize;
+    int highestBit = -1;
+    bool negative = false;
 
-    void ensureSize (size_t);
+    uint32* getValues() const noexcept;
+    uint32* ensureSize (size_t);
     void shiftLeft (int bits, int startBit);
     void shiftRight (int bits, int startBit);
 
@@ -324,11 +339,4 @@ private:
 /** Writes a BigInteger to an OutputStream as a UTF8 decimal string. */
 OutputStream& JUCE_CALLTYPE operator<< (OutputStream& stream, const BigInteger& value);
 
-//==============================================================================
-#ifndef DOXYGEN
- // For backwards compatibility, BitArray is defined as an alias for BigInteger.
- typedef BigInteger BitArray;
-#endif
-
-
-#endif   // JUCE_BIGINTEGER_H_INCLUDED
+} // namespace juce

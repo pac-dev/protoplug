@@ -2,29 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_FILEBASEDDOCUMENT_H_INCLUDED
-#define JUCE_FILEBASEDDOCUMENT_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -45,6 +46,8 @@
     ChangeBroadcaster base class.
 
     @see ChangeBroadcaster
+
+    @tags{GUI}
 */
 class JUCE_API FileBasedDocument  : public ChangeBroadcaster
 {
@@ -203,7 +206,7 @@ public:
     //==============================================================================
     /** Returns the file that this document was last successfully saved or loaded from.
 
-        When the document object is created, this will be set to File::nonexistent.
+        When the document object is created, this will be set to File().
 
         It is changed when one of the load or save methods is used, or when setFile()
         is used to explicitly set it.
@@ -249,8 +252,8 @@ protected:
         This method works very well in conjunction with a RecentlyOpenedFilesList
         object to manage your recent-files list.
 
-        As a default value, it's ok to return File::nonexistent, and the document
-        object will use a sensible one instead.
+        As a default value, it's ok to return File(), and the document object will
+        use a sensible one instead.
 
         @see RecentlyOpenedFilesList
     */
@@ -290,5 +293,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileBasedDocument)
 };
 
-
-#endif   // JUCE_FILEBASEDDOCUMENT_H_INCLUDED
+} // namespace juce

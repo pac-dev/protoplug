@@ -2,25 +2,30 @@
   ==============================================================================
 
    This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
+   By using JUCE, you agree to the terms of both the JUCE 5 End-User License
+   Agreement and JUCE 5 Privacy Policy (both updated and effective as of the
+   27th April 2017).
 
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+   End User License Agreement: www.juce.com/juce-5-licence
+   Privacy Policy: www.juce.com/juce-5-privacy-policy
 
-   ------------------------------------------------------------------------------
+   Or: You may also use this code under the terms of the GPL v3 (see
+   www.gnu.org/licenses).
 
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
+
+namespace juce
+{
 
 #if JUCE_MSVC
  #pragma warning (push)
@@ -30,15 +35,23 @@
 namespace jpeglibNamespace
 {
 #if JUCE_INCLUDE_JPEGLIB_CODE || ! defined (JUCE_INCLUDE_JPEGLIB_CODE)
-   #if JUCE_MINGW
-    typedef unsigned char boolean;
-   #endif
+    #if JUCE_MINGW
+     typedef unsigned char boolean;
+    #endif
 
-   #if JUCE_CLANG
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wconversion"
-    #pragma clang diagnostic ignored "-Wdeprecated-register"
-   #endif
+    #if JUCE_CLANG
+     #pragma clang diagnostic push
+     #pragma clang diagnostic ignored "-Wconversion"
+     #pragma clang diagnostic ignored "-Wdeprecated-register"
+     #if __has_warning("-Wcomma")
+      #pragma clang diagnostic ignored "-Wcomma"
+     #endif
+    #endif
+
+    #if JUCE_GCC && __GNUC__ > 5
+     #pragma GCC diagnostic push
+     #pragma GCC diagnostic ignored "-Wshift-negative-value"
+    #endif
 
     #define JPEG_INTERNALS
     #undef FAR
@@ -113,9 +126,13 @@ namespace jpeglibNamespace
     #include "jpglib/jutils.c"
     #include "jpglib/transupp.c"
 
-   #if JUCE_CLANG
-    #pragma clang diagnostic pop
-   #endif
+    #if JUCE_CLANG
+     #pragma clang diagnostic pop
+    #endif
+
+    #if JUCE_GCC && __GNUC__ > 5
+     #pragma GCC diagnostic pop
+    #endif
 #else
     #define JPEG_INTERNALS
     #undef FAR
@@ -135,13 +152,11 @@ namespace JPEGHelpers
 {
     using namespace jpeglibNamespace;
 
-   #if ! JUCE_MSVC
+   #if ! (JUCE_WINDOWS && (JUCE_MSVC || JUCE_CLANG))
     using jpeglibNamespace::boolean;
    #endif
 
-    struct JPEGDecodingFailure {};
-
-    static void fatalErrorHandler (j_common_ptr)            { throw JPEGDecodingFailure(); }
+    static void fatalErrorHandler (j_common_ptr p)          { *((bool*) (p->client_data)) = true; }
     static void silentErrorCallback1 (j_common_ptr)         {}
     static void silentErrorCallback2 (j_common_ptr, int)    {}
     static void silentErrorCallback3 (j_common_ptr, char*)  {}
@@ -188,7 +203,7 @@ namespace JPEGHelpers
 
     static void jpegWriteTerminate (j_compress_ptr cinfo)
     {
-        JuceJpegDest* const dest = static_cast <JuceJpegDest*> (cinfo->dest);
+        JuceJpegDest* const dest = static_cast<JuceJpegDest*> (cinfo->dest);
 
         const size_t numToWrite = jpegBufferSize - dest->free_in_buffer;
         dest->output->write (dest->buffer, numToWrite);
@@ -196,11 +211,11 @@ namespace JPEGHelpers
 
     static boolean jpegWriteFlush (j_compress_ptr cinfo)
     {
-        JuceJpegDest* const dest = static_cast <JuceJpegDest*> (cinfo->dest);
+        JuceJpegDest* const dest = static_cast<JuceJpegDest*> (cinfo->dest);
 
         const int numToWrite = jpegBufferSize;
 
-        dest->next_output_byte = reinterpret_cast <JOCTET*> (dest->buffer);
+        dest->next_output_byte = reinterpret_cast<JOCTET*> (dest->buffer);
         dest->free_in_buffer = jpegBufferSize;
 
         return (boolean) dest->output->write (dest->buffer, (size_t) numToWrite);
@@ -225,13 +240,23 @@ bool JPEGImageFormat::usesFileExtension (const File& f)   { return f.hasFileExte
 
 bool JPEGImageFormat::canUnderstand (InputStream& in)
 {
-    const int bytesNeeded = 10;
+    const int bytesNeeded = 24;
     uint8 header [bytesNeeded];
 
-    return in.read (header, bytesNeeded) == bytesNeeded
+    if (in.read (header, bytesNeeded) == bytesNeeded
             && header[0] == 0xff
             && header[1] == 0xd8
-            && header[2] == 0xff;
+            && header[2] == 0xff)
+        return true;
+
+   #if JUCE_USING_COREIMAGE_LOADER
+    return header[20] == 'j'
+        && header[21] == 'p'
+        && header[22] == '2'
+        && header[23] == ' ';
+   #endif
+
+    return false;
 }
 
 #if JUCE_USING_COREIMAGE_LOADER
@@ -264,76 +289,84 @@ Image JPEGImageFormat::decodeImage (InputStream& in)
         jpegDecompStruct.src = (jpeg_source_mgr*)(jpegDecompStruct.mem->alloc_small)
             ((j_common_ptr)(&jpegDecompStruct), JPOOL_PERMANENT, sizeof (jpeg_source_mgr));
 
+        bool hasFailed = false;
+        jpegDecompStruct.client_data = &hasFailed;
+
         jpegDecompStruct.src->init_source       = dummyCallback1;
         jpegDecompStruct.src->fill_input_buffer = jpegFill;
         jpegDecompStruct.src->skip_input_data   = jpegSkip;
         jpegDecompStruct.src->resync_to_restart = jpeg_resync_to_restart;
         jpegDecompStruct.src->term_source       = dummyCallback1;
 
-        jpegDecompStruct.src->next_input_byte   = static_cast <const unsigned char*> (mb.getData());
+        jpegDecompStruct.src->next_input_byte   = static_cast<const unsigned char*> (mb.getData());
         jpegDecompStruct.src->bytes_in_buffer   = mb.getDataSize();
 
-        try
-        {
-            jpeg_read_header (&jpegDecompStruct, TRUE);
+        jpeg_read_header (&jpegDecompStruct, TRUE);
 
+        if (! hasFailed)
+        {
             jpeg_calc_output_dimensions (&jpegDecompStruct);
 
-            const int width  = (int) jpegDecompStruct.output_width;
-            const int height = (int) jpegDecompStruct.output_height;
-
-            jpegDecompStruct.out_color_space = JCS_RGB;
-
-            JSAMPARRAY buffer
-                = (*jpegDecompStruct.mem->alloc_sarray) ((j_common_ptr) &jpegDecompStruct,
-                                                         JPOOL_IMAGE,
-                                                         (JDIMENSION) width * 3, 1);
-
-            if (jpeg_start_decompress (&jpegDecompStruct))
+            if (! hasFailed)
             {
-                image = Image (Image::RGB, width, height, false);
-                image.getProperties()->set ("originalImageHadAlpha", false);
-                const bool hasAlphaChan = image.hasAlphaChannel(); // (the native image creator may not give back what we expect)
+                const int width  = (int) jpegDecompStruct.output_width;
+                const int height = (int) jpegDecompStruct.output_height;
 
-                const Image::BitmapData destData (image, Image::BitmapData::writeOnly);
+                jpegDecompStruct.out_color_space = JCS_RGB;
 
-                for (int y = 0; y < height; ++y)
+                JSAMPARRAY buffer
+                    = (*jpegDecompStruct.mem->alloc_sarray) ((j_common_ptr) &jpegDecompStruct,
+                                                             JPOOL_IMAGE,
+                                                             (JDIMENSION) width * 3, 1);
+
+                if (jpeg_start_decompress (&jpegDecompStruct) && ! hasFailed)
                 {
-                    jpeg_read_scanlines (&jpegDecompStruct, buffer, 1);
+                    image = Image (Image::RGB, width, height, false);
+                    image.getProperties()->set ("originalImageHadAlpha", false);
+                    const bool hasAlphaChan = image.hasAlphaChannel(); // (the native image creator may not give back what we expect)
 
-                    const uint8* src = *buffer;
-                    uint8* dest = destData.getLinePointer (y);
+                    const Image::BitmapData destData (image, Image::BitmapData::writeOnly);
 
-                    if (hasAlphaChan)
+                    for (int y = 0; y < height; ++y)
                     {
-                        for (int i = width; --i >= 0;)
+                        jpeg_read_scanlines (&jpegDecompStruct, buffer, 1);
+
+                        if (hasFailed)
+                            break;
+
+                        const uint8* src = *buffer;
+                        uint8* dest = destData.getLinePointer (y);
+
+                        if (hasAlphaChan)
                         {
-                            ((PixelARGB*) dest)->setARGB (0xff, src[0], src[1], src[2]);
-                            ((PixelARGB*) dest)->premultiply();
-                            dest += destData.pixelStride;
-                            src += 3;
+                            for (int i = width; --i >= 0;)
+                            {
+                                ((PixelARGB*) dest)->setARGB (0xff, src[0], src[1], src[2]);
+                                ((PixelARGB*) dest)->premultiply();
+                                dest += destData.pixelStride;
+                                src += 3;
+                            }
+                        }
+                        else
+                        {
+                            for (int i = width; --i >= 0;)
+                            {
+                                ((PixelRGB*) dest)->setARGB (0xff, src[0], src[1], src[2]);
+                                dest += destData.pixelStride;
+                                src += 3;
+                            }
                         }
                     }
-                    else
-                    {
-                        for (int i = width; --i >= 0;)
-                        {
-                            ((PixelRGB*) dest)->setARGB (0xff, src[0], src[1], src[2]);
-                            dest += destData.pixelStride;
-                            src += 3;
-                        }
-                    }
+
+                    if (! hasFailed)
+                        jpeg_finish_decompress (&jpegDecompStruct);
+
+                    in.setPosition (((char*) jpegDecompStruct.src->next_input_byte) - (char*) mb.getData());
                 }
-
-                jpeg_finish_decompress (&jpegDecompStruct);
-
-                in.setPosition (((char*) jpegDecompStruct.src->next_input_byte) - (char*) mb.getData());
             }
-
-            jpeg_destroy_decompress (&jpegDecompStruct);
         }
-        catch (...)
-        {}
+
+        jpeg_destroy_decompress (&jpegDecompStruct);
     }
 
     return image;
@@ -357,7 +390,7 @@ bool JPEGImageFormat::writeImageToStream (const Image& image, OutputStream& out)
     jpegCompStruct.dest = &dest;
 
     dest.output = &out;
-    HeapBlock <char> tempBuffer (jpegBufferSize);
+    HeapBlock<char> tempBuffer (jpegBufferSize);
     dest.buffer = tempBuffer;
     dest.next_output_byte = (JOCTET*) dest.buffer;
     dest.free_in_buffer = jpegBufferSize;
@@ -428,3 +461,5 @@ bool JPEGImageFormat::writeImageToStream (const Image& image, OutputStream& out)
 
     return true;
 }
+
+} // namespace juce

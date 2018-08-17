@@ -2,6 +2,7 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include "ProtoplugDir.h"
+#include <stdarg.h>
 #include <map>
 
 // exports for scripts
@@ -278,7 +279,7 @@ int LuaLink::startVarargOverride(const char *fname, va_list _args)
 			ls->pushstring(va_arg(_args, char*));
 			break;
 		default:
-			juce_breakDebugger;
+			JUCE_BREAK_IN_DEBUGGER;
 		}
 	}
 	return numArgs;
@@ -392,7 +393,7 @@ double LuaLink::getTailLengthSeconds()
 void LuaLink::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages, AudioPlayHead* ph)
 {
 	bool res = callVoidOverride("plugin_processBlock"	, LUA_TNUMBER, (double)buffer.getNumSamples(),
-									LUA_TLIGHTUSERDATA, buffer.getArrayOfChannels(),
+									LUA_TLIGHTUSERDATA, buffer.getArrayOfReadPointers(),
 									LUA_TLIGHTUSERDATA, &midiMessages,
 									LUA_TLIGHTUSERDATA, ph,
 									LUA_TNUMBER, pfx->getSampleRate(),

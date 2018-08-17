@@ -1,33 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_UNITTEST_H_INCLUDED
-#define JUCE_UNITTEST_H_INCLUDED
+namespace juce
+{
 
 class UnitTestRunner;
 
@@ -44,7 +38,7 @@ class UnitTestRunner;
     public:
         MyTest()  : UnitTest ("Foobar testing") {}
 
-        void runTest()
+        void runTest() override
         {
             beginTest ("Part 1");
 
@@ -69,19 +63,24 @@ class UnitTestRunner;
     To run a test, use the UnitTestRunner class.
 
     @see UnitTestRunner
+
+    @tags{Core}
 */
 class JUCE_API  UnitTest
 {
 public:
     //==============================================================================
-    /** Creates a test with the given name. */
-    explicit UnitTest (const String& name);
+    /** Creates a test with the given name and optionally places it in a category. */
+    explicit UnitTest (const String& name, const String& category = String());
 
     /** Destructor. */
     virtual ~UnitTest();
 
     /** Returns the name of the test. */
     const String& getName() const noexcept       { return name; }
+
+    /** Returns the category of the test. */
+    const String& getCategory() const noexcept   { return category; }
 
     /** Runs the test, using the specified UnitTestRunner.
         You shouldn't need to call this method directly - use
@@ -91,6 +90,12 @@ public:
 
     /** Returns the set of all UnitTest objects that currently exist. */
     static Array<UnitTest*>& getAllTests();
+
+    /** Returns the set of UnitTests in a specified category. */
+    static Array<UnitTest*> getTestsInCategory (const String& category);
+
+    /** Returns a StringArray containing all of the categories of UnitTests that have been registered. */
+    static StringArray getAllCategories();
 
     //==============================================================================
     /** You can optionally implement this method to set up your test.
@@ -136,26 +141,122 @@ public:
         If testResult is true, a pass is logged; if it's false, a failure is logged.
         If the failure message is specified, it will be written to the log if the test fails.
     */
-    void expect (bool testResult, const String& failureMessage = String::empty);
+    void expect (bool testResult, const String& failureMessage = String());
 
-    /** Compares two values, and if they don't match, prints out a message containing the
-        expected and actual result values.
+    //==============================================================================
+    /** Compares a value to an expected value.
+        If they are not equal, prints out a message containing the expected and actual values.
     */
     template <class ValueType>
-    void expectEquals (ValueType actual, ValueType expected, String failureMessage = String::empty)
+    void expectEquals (ValueType actual, ValueType expected, String failureMessage = String())
     {
-        const bool result = (actual == expected);
+        bool result = actual == expected;
+        expectResultAndPrint (actual, expected, result, "", failureMessage);
+    }
 
-        if (! result)
-        {
-            if (failureMessage.isNotEmpty())
-                failureMessage << " -- ";
+    /** Checks whether a value is not equal to a comparison value.
+        If this check fails, prints out a message containing the actual and comparison values.
+    */
+    template <class ValueType>
+    void expectNotEquals (ValueType value, ValueType valueToCompareTo, String failureMessage = String())
+    {
+        bool result = value != valueToCompareTo;
+        expectResultAndPrint (value, valueToCompareTo, result, "unequal to", failureMessage);
+    }
 
-            failureMessage << "Expected value: " << expected << ", Actual value: " << actual;
+    /** Checks whether a value is greater than a comparison value.
+        If this check fails, prints out a message containing the actual and comparison values.
+    */
+    template <class ValueType>
+    void expectGreaterThan (ValueType value, ValueType valueToCompareTo, String failureMessage = String())
+    {
+        bool result = value > valueToCompareTo;
+        expectResultAndPrint (value, valueToCompareTo, result, "greater than", failureMessage);
+    }
+
+    /** Checks whether a value is less than a comparison value.
+        If this check fails, prints out a message containing the actual and comparison values.
+    */
+    template <class ValueType>
+    void expectLessThan (ValueType value, ValueType valueToCompareTo, String failureMessage = String())
+    {
+        bool result = value < valueToCompareTo;
+        expectResultAndPrint (value, valueToCompareTo, result, "less than", failureMessage);
+    }
+
+    /** Checks whether a value is greater or equal to a comparison value.
+        If this check fails, prints out a message containing the actual and comparison values.
+    */
+    template <class ValueType>
+    void expectGreaterOrEqual (ValueType value, ValueType valueToCompareTo, String failureMessage = String())
+    {
+        bool result = value >= valueToCompareTo;
+        expectResultAndPrint (value, valueToCompareTo, result, "greater or equal to", failureMessage);
+    }
+
+    /** Checks whether a value is less or equal to a comparison value.
+        If this check fails, prints out a message containing the actual and comparison values.
+    */
+    template <class ValueType>
+    void expectLessOrEqual (ValueType value, ValueType valueToCompareTo, String failureMessage = String())
+    {
+        bool result = value <= valueToCompareTo;
+        expectResultAndPrint (value, valueToCompareTo, result, "less or equal to", failureMessage);
+    }
+
+    /** Computes the difference between a value and a comparison value, and if it is larger than a
+        specified maximum value, prints out a message containing the actual and comparison values
+        and the maximum allowed error.
+    */
+    template <class ValueType>
+    void expectWithinAbsoluteError (ValueType actual, ValueType expected, ValueType maxAbsoluteError, String failureMessage = String())
+    {
+        const ValueType diff = std::abs (actual - expected);
+        const bool result = diff <= maxAbsoluteError;
+
+        expectResultAndPrint (actual, expected, result, " within " + String (maxAbsoluteError) + " of" , failureMessage);
+    }
+
+    //==============================================================================
+    /** Checks that the result of an expression does not throw an exception. */
+    #define expectDoesNotThrow(expr)         \
+        try                                  \
+        {                                    \
+            (expr);                          \
+            expect (true);                   \
+        }                                    \
+        catch (...)                          \
+        {                                    \
+            expect (false, "Expected: does not throw an exception, Actual: throws."); \
         }
 
-        expect (result, failureMessage);
-    }
+    /** Checks that the result of an expression throws an exception. */
+    #define expectThrows(expr)               \
+        try                                  \
+        {                                    \
+            (expr);                          \
+            expect (false, "Expected: throws an exception, Actual: does not throw."); \
+        }                                    \
+        catch (...)                          \
+        {                                    \
+            expect (true);                   \
+        }
+
+    /** Checks that the result of an expression throws an exception of a certain type. */
+    #define expectThrowsType(expr, type)     \
+        try                                  \
+        {                                    \
+            (expr);                          \
+            expect (false, "Expected: throws an exception of type " #type ", Actual: does not throw."); \
+        }                                    \
+        catch (type&)                        \
+        {                                    \
+            expect (true);                   \
+        }                                    \
+        catch (...)                          \
+        {                                    \
+            expect (false, "Expected: throws an exception of type " #type ", Actual: throws another type."); \
+        }
 
     //==============================================================================
     /** Writes a message to the test log.
@@ -181,8 +282,26 @@ public:
 
 private:
     //==============================================================================
-    const String name;
-    UnitTestRunner* runner;
+    template <class ValueType>
+    void expectResultAndPrint (ValueType value, ValueType valueToCompareTo, bool result,
+                               String compDescription, String failureMessage)
+    {
+        if (! result)
+        {
+            if (failureMessage.isNotEmpty())
+                failureMessage << " -- ";
+
+            failureMessage << "Expected value" << (compDescription.isEmpty() ? "" : " ")
+                           << compDescription << ": " << valueToCompareTo
+                           << ", Actual value: " << value;
+        }
+
+        expect (result, failureMessage);
+    }
+
+    //==============================================================================
+    const String name, category;
+    UnitTestRunner* runner = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE (UnitTest)
 };
@@ -199,6 +318,8 @@ private:
     perform custom behaviour when each test completes.
 
     @see UnitTest
+
+    @tags{Core}
 */
 class JUCE_API  UnitTestRunner
 {
@@ -227,6 +348,14 @@ public:
         the randomSeed argument, or pass 0 to have a randomly-generated seed chosen.
     */
     void runAllTests (int64 randomSeed = 0);
+
+    /** Runs all the UnitTest objects within a specified category.
+        This calls runTests() for all the objects listed in UnitTest::getTestsInCategory().
+
+        If you want to run the tests with a predetermined seed, you can pass that into
+        the randomSeed argument, or pass 0 to have a randomly-generated seed chosen.
+    */
+    void runTestsInCategory (const String& category, int64 randomSeed = 0);
 
     /** Sets a flag to indicate whether an assertion should be triggered if a test fails.
         This is true by default.
@@ -292,10 +421,10 @@ private:
     //==============================================================================
     friend class UnitTest;
 
-    UnitTest* currentTest;
+    UnitTest* currentTest = nullptr;
     String currentSubCategory;
-    OwnedArray <TestResult, CriticalSection> results;
-    bool assertOnFailure, logPasses;
+    OwnedArray<TestResult, CriticalSection> results;
+    bool assertOnFailure = true, logPasses = false;
     Random randomForTest;
 
     void beginNewTest (UnitTest* test, const String& subCategory);
@@ -307,5 +436,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE (UnitTestRunner)
 };
 
-
-#endif   // JUCE_UNITTEST_H_INCLUDED
+} // namespace juce

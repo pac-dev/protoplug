@@ -1,34 +1,27 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_JSON_H_INCLUDED
-#define JUCE_JSON_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
@@ -39,6 +32,8 @@
     object to JSON-formatted text.
 
     @see var
+
+    @tags{Core}
 */
 class JUCE_API  JSON
 {
@@ -52,7 +47,7 @@ public:
         it will contain an error message.
 
         If you're not interested in the error message, you can use one of the other
-        shortcut parse methods, which simply return a var::null if the parsing fails.
+        shortcut parse methods, which simply return a var() if the parsing fails.
 
         Note that this will only parse valid JSON, which means that the item given must
         be either an object or an array definition. If you want to also be able to parse
@@ -62,7 +57,7 @@ public:
 
     /** Attempts to parse some JSON-formatted text, and returns the result as a var object.
 
-        If the parsing fails, this simply returns var::null - if you need to find out more
+        If the parsing fails, this simply returns var() - if you need to find out more
         detail about the parse error, use the alternative parse() method which returns a Result.
 
         Note that this will only parse valid JSON, which means that the item given must
@@ -77,7 +72,7 @@ public:
         Note that this is just a short-cut for reading the entire file into a string and
         parsing the result.
 
-        If the parsing fails, this simply returns var::null - if you need to find out more
+        If the parsing fails, this simply returns var() - if you need to find out more
         detail about the parse error, use the alternative parse() method which returns a Result.
     */
     static var parse (const File& file);
@@ -88,7 +83,7 @@ public:
         Note that this is just a short-cut for reading the entire stream into a string and
         parsing the result.
 
-        If the parsing fails, this simply returns var::null - if you need to find out more
+        If the parsing fails, this simply returns var() - if you need to find out more
         detail about the parse error, use the alternative parse() method which returns a Result.
     */
     static var parse (InputStream& input);
@@ -97,10 +92,12 @@ public:
     /** Returns a string which contains a JSON-formatted representation of the var object.
         If allOnOneLine is true, the result will be compacted into a single line of text
         with no carriage-returns. If false, it will be laid-out in a more human-readable format.
+        The maximumDecimalPlaces parameter determines the precision of floating point numbers.
         @see writeToStream
     */
     static String toString (const var& objectToFormat,
-                            bool allOnOneLine = false);
+                            bool allOnOneLine = false,
+                            int maximumDecimalPlaces = 20);
 
     /** Parses a string that was created with the toString() method.
         This is slightly different to the parse() methods because they will reject primitive
@@ -112,11 +109,13 @@ public:
     /** Writes a JSON-formatted representation of the var object to the given stream.
         If allOnOneLine is true, the result will be compacted into a single line of text
         with no carriage-returns. If false, it will be laid-out in a more human-readable format.
+        The maximumDecimalPlaces parameter determines the precision of floating point numbers.
         @see toString
     */
     static void writeToStream (OutputStream& output,
                                const var& objectToFormat,
-                               bool allOnOneLine = false);
+                               bool allOnOneLine = false,
+                               int maximumDecimalPlaces = 20);
 
     /** Returns a version of a string with any extended characters escaped. */
     static String escapeString (StringRef);
@@ -129,8 +128,7 @@ public:
 
 private:
     //==============================================================================
-    JSON() JUCE_DELETED_FUNCTION; // This class can't be instantiated - just use its static methods.
+    JSON() = delete; // This class can't be instantiated - just use its static methods.
 };
 
-
-#endif   // JUCE_JSON_H_INCLUDED
+} // namespace juce

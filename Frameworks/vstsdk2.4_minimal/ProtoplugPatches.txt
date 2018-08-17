@@ -1,0 +1,18 @@
+The VST SDK is patched !
+
+The very idea seems ridiculous, but it won't compile on XCode without patching it.
+
+in audioeffect.cpp :
+
+void AudioEffect::int2string (VstInt32 value, char* text, VstInt32 maxLen)
+{
+	...
+
+		if (state || digit > 0)
+		{
+			char temp[2] = {(char)('0' + (char)digit), '\0'};
+			vst_strncat (text, temp, maxLen);
+			state = true;
+		}
+	...
+}

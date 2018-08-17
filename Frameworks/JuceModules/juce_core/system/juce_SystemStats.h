@@ -1,40 +1,35 @@
 /*
   ==============================================================================
 
-   This file is part of the juce_core module of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+   This file is part of the JUCE library.
+   Copyright (c) 2017 - ROLI Ltd.
 
-   Permission to use, copy, modify, and/or distribute this software for any purpose with
-   or without fee is hereby granted, provided that the above copyright notice and this
-   permission notice appear in all copies.
+   JUCE is an open source library subject to commercial or open-source
+   licensing.
 
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-   TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-   NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-   DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-   IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+   The code included in this file is provided under the terms of the ISC license
+   http://www.isc.org/downloads/software-support-policy/isc-license. Permission
+   To use, copy, modify, and/or distribute this software for any purpose with or
+   without fee is hereby granted provided that the above copyright notice and
+   this permission notice appear in all copies.
 
-   ------------------------------------------------------------------------------
-
-   NOTE! This permissive ISC license applies ONLY to files within the juce_core module!
-   All other JUCE modules are covered by a dual GPL/commercial license, so if you are
-   using any other modules, be sure to check that you also comply with their license.
-
-   For more details, visit www.juce.com
+   JUCE IS PROVIDED "AS IS" WITHOUT ANY WARRANTY, AND ALL WARRANTIES, WHETHER
+   EXPRESSED OR IMPLIED, INCLUDING MERCHANTABILITY AND FITNESS FOR PURPOSE, ARE
+   DISCLAIMED.
 
   ==============================================================================
 */
 
-#ifndef JUCE_SYSTEMSTATS_H_INCLUDED
-#define JUCE_SYSTEMSTATS_H_INCLUDED
-
+namespace juce
+{
 
 //==============================================================================
 /**
     Contains methods for finding out about the current hardware and OS configuration.
+
+    @tags{Core}
 */
-class JUCE_API  SystemStats
+class JUCE_API  SystemStats  final
 {
 public:
     //==============================================================================
@@ -64,6 +59,8 @@ public:
         MacOSX_10_8     = MacOSX | 8,
         MacOSX_10_9     = MacOSX | 9,
         MacOSX_10_10    = MacOSX | 10,
+        MacOSX_10_11    = MacOSX | 11,
+        MacOSX_10_12    = MacOSX | 12,
 
         Win2000         = Windows | 1,
         WinXP           = Windows | 2,
@@ -134,30 +131,54 @@ public:
     */
     static String getDeviceDescription();
 
+    /** This will attempt to return the manufacturer of the device.
+        If no description is available, it'll just return an empty string.
+    */
+    static String getDeviceManufacturer();
+
+    /** This method calculates some IDs to uniquely identify the device.
+
+        The first choice for an ID is a filesystem ID for the user's home folder or
+        windows directory. If that fails then this function returns the MAC addresses.
+    */
+    static StringArray getDeviceIdentifiers();
+
     //==============================================================================
     // CPU and memory information..
 
-    /** Returns the number of CPU cores. */
+    /** Returns the number of logical CPU cores. */
     static int getNumCpus() noexcept;
+
+    /** Returns the number of physical CPU cores. */
+    static int getNumPhysicalCpus() noexcept;
 
     /** Returns the approximate CPU speed.
         @returns    the speed in megahertz, e.g. 1500, 2500, 32000 (depending on
                     what year you're reading this...)
     */
-    static int getCpuSpeedInMegaherz();
+    static int getCpuSpeedInMegahertz();
 
     /** Returns a string to indicate the CPU vendor.
         Might not be known on some systems.
     */
     static String getCpuVendor();
 
-    static bool hasMMX() noexcept;   /**< Returns true if Intel MMX instructions are available. */
-    static bool has3DNow() noexcept; /**< Returns true if AMD 3DNOW instructions are available. */
-    static bool hasSSE() noexcept;   /**< Returns true if Intel SSE instructions are available. */
-    static bool hasSSE2() noexcept;  /**< Returns true if Intel SSE2 instructions are available. */
-    static bool hasSSE3() noexcept;  /**< Returns true if Intel SSE2 instructions are available. */
-    static bool hasSSSE3() noexcept; /**< Returns true if Intel SSSE3 instructions are available. */
-    static bool hasAVX() noexcept;   /**< Returns true if Intel AVX instructions are available. */
+    /** Attempts to return a string describing the CPU model.
+        May not be available on some systems.
+    */
+    static String getCpuModel();
+
+    static bool hasMMX() noexcept;    /**< Returns true if Intel MMX instructions are available. */
+    static bool has3DNow() noexcept;  /**< Returns true if AMD 3DNOW instructions are available. */
+    static bool hasSSE() noexcept;    /**< Returns true if Intel SSE instructions are available. */
+    static bool hasSSE2() noexcept;   /**< Returns true if Intel SSE2 instructions are available. */
+    static bool hasSSE3() noexcept;   /**< Returns true if Intel SSE3 instructions are available. */
+    static bool hasSSSE3() noexcept;  /**< Returns true if Intel SSSE3 instructions are available. */
+    static bool hasSSE41() noexcept;  /**< Returns true if Intel SSE4.1 instructions are available. */
+    static bool hasSSE42() noexcept;  /**< Returns true if Intel SSE4.2 instructions are available. */
+    static bool hasAVX() noexcept;    /**< Returns true if Intel AVX instructions are available. */
+    static bool hasAVX2() noexcept;   /**< Returns true if Intel AVX2 instructions are available. */
+    static bool hasNeon() noexcept;   /**< Returns true if ARM NEON instructions are available. */
 
     //==============================================================================
     /** Finds out how much RAM is in the machine.
@@ -178,8 +199,10 @@ public:
     */
     static String getStackBacktrace();
 
-    /** A void() function type, used by setApplicationCrashHandler(). */
-    typedef void (*CrashHandlerFunction)();
+    /** A function type for use in setApplicationCrashHandler().
+        When called, its void* argument will contain platform-specific data about the crash.
+    */
+    using CrashHandlerFunction = void(*)(void*);
 
     /** Sets up a global callback function that will be called if the application
         executes some kind of illegal instruction.
@@ -189,12 +212,19 @@ public:
     */
     static void setApplicationCrashHandler (CrashHandlerFunction);
 
-private:
-    //==============================================================================
-    SystemStats();
+    /** Returns true if this code is running inside an app extension sandbox.
+        This function will always return false on windows, linux and android.
+    */
+    static bool isRunningInAppExtensionSandbox() noexcept;
 
+
+    //==============================================================================
+    // This method was spelt wrong! Please change your code to use getCpuSpeedInMegahertz() instead
+    JUCE_DEPRECATED_WITH_BODY (static int getCpuSpeedInMegaherz(), { return getCpuSpeedInMegahertz(); })
+
+private:
+    SystemStats() = delete; // uses only static methods
     JUCE_DECLARE_NON_COPYABLE (SystemStats)
 };
 
-
-#endif   // JUCE_SYSTEMSTATS_H_INCLUDED
+} // namespace juce

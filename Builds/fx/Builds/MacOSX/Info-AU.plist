@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist>
+  <dict>
+    <key>CFBundleExecutable</key>
+    <string>${EXECUTABLE_NAME}</string>
+    <key>CFBundleIconFile</key>
+    <string>Icon.icns</string>
+    <key>CFBundleIdentifier</key>
+    <string>com.pac.protoplugfx</string>
+    <key>CFBundleName</key>
+    <string>protoplug_fx</string>
+    <key>CFBundleDisplayName</key>
+    <string>protoplug_fx</string>
+    <key>CFBundlePackageType</key>
+    <string>BNDL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.3.0</string>
+    <key>CFBundleVersion</key>
+    <string>1.3.0</string>
+    <key>NSHumanReadableCopyright</key>
+    <string></string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+    <key>AudioComponents</key>
+    <array>
+      <dict>
+        <key>name</key>
+        <string>pac: Lua Protoplug Fx</string>
+        <key>description</key>
+        <string>Lua Protoplug Effect</string>
+        <key>factoryFunction</key>
+        <string>protoplug_fxAUFactory</string>
+        <key>manufacturer</key>
+        <string>_PAC</string>
+        <key>type</key>
+        <string>aumf</string>
+        <key>subtype</key>
+        <string>ppgf</string>
+        <key>version</key>
+        <integer>66304</integer>
+        <key>resourceUsage</key>
+        <dict>
+          <key>network.client</key>
+          <true/>
+          <key>temporary-exception.files.all.read-write</key>
+          <true/>
+        </dict>
+      </dict>
+    </array>
+  </dict>
+</plist>
