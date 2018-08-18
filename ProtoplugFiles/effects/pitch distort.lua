@@ -11,7 +11,7 @@ require "include/Pickle"
 
 stereoFx.init()
 
-fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3")
+fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3", "libfftw3.3.dylib")
 
 
 ffi.cdef[[

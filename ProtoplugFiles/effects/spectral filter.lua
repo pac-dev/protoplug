@@ -15,7 +15,7 @@ local xPixels = 400
 local yPixels = 300
 
 -- open FFTW and define the stuff we need
-fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3")
+fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3", "libfftw3.3.dylib")
 
 ffi.cdef[[
 typedef double fftw_complex[2];

@@ -8,7 +8,7 @@ require "include/protoplug"
 
 stereoFx.init()
 
-fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3")
+fftlib = script.ffiLoad("libfftw3.so.3", "libfftw3-3", "libfftw3.3.dylib")
 
 -- params
 local shift = 1			-- param=0.5 -> shift=1.0 (no shift)
