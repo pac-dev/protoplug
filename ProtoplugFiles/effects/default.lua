@@ -1,3 +1,3 @@
 require "include/protoplug"
 
---Welcome to Lua Protoplug effect (version 1.3.0)
+--Welcome to Lua Protoplug effect (version 1.4.0)

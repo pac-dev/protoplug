@@ -18,6 +18,7 @@
 
 // (You can add your own code in this section, and the Introjucer will not overwrite it)
 #define JUCE_USE_DIRECTWRITE 0 // testing
+#define JUCE_WEB_BROWSER 0
 
 // [END_USER_CODE_SECTION]
 
@@ -271,7 +272,7 @@
 // juce_gui_extra flags:
 
 #ifndef    JUCE_WEB_BROWSER
- #define JUCE_WEB_BROWSER 0
+ //#define JUCE_WEB_BROWSER 1
 #endif
 
 #ifndef    JUCE_ENABLE_LIVE_CONSTANT_EDITOR
@@ -353,13 +354,13 @@
  #define JucePlugin_EditorRequiresKeyboardFocus  1
 #endif
 #ifndef  JucePlugin_Version
- #define JucePlugin_Version                1.3.0
+ #define JucePlugin_Version                1.4.0
 #endif
 #ifndef  JucePlugin_VersionCode
- #define JucePlugin_VersionCode            0x10300
+ #define JucePlugin_VersionCode            0x10400
 #endif
 #ifndef  JucePlugin_VersionString
- #define JucePlugin_VersionString          "1.3.0"
+ #define JucePlugin_VersionString          "1.4.0"
 #endif
 #ifndef  JucePlugin_VSTUniqueID
  #define JucePlugin_VSTUniqueID            JucePlugin_PluginCode

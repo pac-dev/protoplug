@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="RZMZHd" name="protoplug_gen" projectType="audioplug" version="1.3.0"
+<JUCERPROJECT id="RZMZHd" name="protoplug_gen" projectType="audioplug" version="1.4.0"
               bundleIdentifier="com.pac.protopluggen" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="1" pluginName="Lua Protoplug Gen" pluginDesc="Lua Protoplug Generator (Instrument)"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgg"

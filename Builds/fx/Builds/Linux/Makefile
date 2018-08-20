@@ -35,7 +35,7 @@ ifeq ($(CONFIG),Debug)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCER_LINUX_MAKE_7346DA2A=1 -DJUCE_APP_VERSION=1.3.0 -DJUCE_APP_VERSION_HEX=0x10300 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama gtk+-x11-3.0 libcurl) -pthread -I$(HOME)/SDKs/VST_SDK/VST3_SDK -I../../JuceLibraryCode -I../../../../Frameworks/JuceModules $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DDEBUG=1 -D_DEBUG=1 -DJUCER_LINUX_MAKE_7346DA2A=1 -DJUCE_APP_VERSION=1.4.0 -DJUCE_APP_VERSION_HEX=0x10400 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama gtk+-x11-3.0 libcurl) -pthread -I$(HOME)/SDKs/VST_SDK/VST3_SDK -I../../JuceLibraryCode -I../../../../Frameworks/JuceModules $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden
@@ -62,7 +62,7 @@ ifeq ($(CONFIG),Release)
     TARGET_ARCH := -march=native
   endif
 
-  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCER_LINUX_MAKE_7346DA2A=1 -DJUCE_APP_VERSION=1.3.0 -DJUCE_APP_VERSION_HEX=0x10300 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama gtk+-x11-3.0 libcurl) -pthread -I$(HOME)/SDKs/VST_SDK/VST3_SDK -I../../JuceLibraryCode -I../../../../Frameworks/JuceModules $(CPPFLAGS)
+  JUCE_CPPFLAGS := $(DEPFLAGS) -DLINUX=1 -DNDEBUG=1 -DJUCER_LINUX_MAKE_7346DA2A=1 -DJUCE_APP_VERSION=1.4.0 -DJUCE_APP_VERSION_HEX=0x10400 $(shell pkg-config --cflags alsa freetype2 x11 xext xinerama gtk+-x11-3.0 libcurl) -pthread -I$(HOME)/SDKs/VST_SDK/VST3_SDK -I../../JuceLibraryCode -I../../../../Frameworks/JuceModules $(CPPFLAGS)
 
   JUCE_CPPFLAGS_VST := -DJucePlugin_Build_VST=1 -DJucePlugin_Build_VST3=0 -DJucePlugin_Build_AU=0 -DJucePlugin_Build_AUv3=0 -DJucePlugin_Build_RTAS=0 -DJucePlugin_Build_AAX=0 -DJucePlugin_Build_Standalone=0 -DJucePlugin_Build_Unity=0
   JUCE_CFLAGS_VST := -fPIC -fvisibility=hidden

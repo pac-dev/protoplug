@@ -1,10 +1,14 @@
 #!/bin/bash
 
-# exit if any command fails
+# Updates the version in source files, projects, etc.
+# example usage:
+# 	export JUCER_PATH="~/JUCE/Projucer"
+# 	printf "6.66.0" > resources/version.txt
+# 	./update_version.sh
+
 set -e
 
 VERSION=`cat resources/version.txt`
-JUCER="../../JUCE/extras/Introjucer/Builds/Linux/build/Introjucer"
 
 echo "Setting protoplug version $VERSION"
 
@@ -15,8 +19,8 @@ perl -0777 -pi -e 's/(<JUCERPROJECT[\S\s]*?version=)".*?"/\1"'"$VERSION"'"/g' fx
 perl -0777 -pi -e 's/(<JUCERPROJECT[\S\s]*?version=)".*?"/\1"'"$VERSION"'"/g' gen/protoplug_gen.jucer
 
 echo "Generating projects and makefiles..."
-$JUCER --resave fx/protoplug_fx.jucer
-$JUCER --resave gen/protoplug_gen.jucer
+$JUCER_PATH --resave fx/protoplug_fx.jucer
+$JUCER_PATH --resave gen/protoplug_gen.jucer
 
 cd ../ProtoplugFiles
 echo "Updating default scripts..."

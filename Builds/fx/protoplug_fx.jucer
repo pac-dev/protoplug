@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.3.0"
+<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.4.0"
               bundleIdentifier="com.pac.protoplugfx" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="1" pluginName="Lua Protoplug Fx" pluginDesc="Lua Protoplug Effect"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgf"
