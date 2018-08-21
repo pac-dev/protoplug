@@ -1,17 +1,17 @@
 #!/bin/bash
 VERSION=`cat resources/version.txt`
 FOLDERLIST="../ProtoplugFiles
-../Bin/mac/Release/Lua Protoplug Fx.vst
-../Bin/mac/Release/Lua Protoplug Fx.component
-../Bin/mac/Release/Lua Protoplug Gen.vst
-../Bin/mac/Release/Lua Protoplug Gen.component"
+../Bin/mac/Lua Protoplug Fx.vst
+../Bin/mac/Lua Protoplug Fx.component
+../Bin/mac/Lua Protoplug Gen.vst
+../Bin/mac/Lua Protoplug Gen.component"
 TDMG_SRC="resources/protoplug_template.dmg"
 TDMG_MOUNT="/Volumes/Lua Protoplug"
 TDMG_TMP="/tmp/protoplug_temp.dmg"
 TDMG_DST="../Bin/packaged/protoplug-$VERSION-osx.dmg"
 
 PACKAGELIBDIR="$HOME/Documents/ProtoplugFiles/lib/"
-PACKAGELIBS="libluajit-5.1.so libfftw3-3.so"
+PACKAGELIBS="libluajit-5.1.so libfftw3.3.dylib"
 
 echo "Packaging libs..."
 mkdir -p ../ProtoplugFiles/lib
