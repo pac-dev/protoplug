@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="RZMZHd" name="Lua Protoplug Gen" projectType="audioplug"
-              version="1.4.0m" bundleIdentifier="com.pac.protopluggen" includeBinaryInAppConfig="1"
-              buildVST="1" buildAU="1" pluginName="Lua Protoplug Gen" pluginDesc="Lua Protoplug Generator (Instrument)"
+<JUCERPROJECT id="RZMZHd" name="Lua Protoplug Mfx" projectType="audioplug"
+              version="1.4.0m" bundleIdentifier="com.pac.protoplugmfx" includeBinaryInAppConfig="1"
+              buildVST="0" buildAU="1" pluginName="Lua Protoplug AUmfx" pluginDesc="Lua Protoplug Midi FX"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgg"
-              pluginChannelConfigs=" {2, 2}" pluginIsSynth="1" pluginWantsMidiIn="1"
-              pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
-              pluginAUExportPrefix="protoplug_genAU" pluginRTASCategory=""
-              aaxIdentifier="com.yourcompany.protoplug_gen" pluginAAXCategory="2"
-              jucerVersion="5.4.5" companyName="osar.fr" pluginAUMainType="'aumu'"
-              buildVST3="0" buildRTAS="0" buildAAX="0" pluginFormats="buildVST,buildAU"
-              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn,pluginProducesMidiOut,pluginEditorRequiresKeys">
-  <MAINGROUP id="Blif9d" name="Lua Protoplug Gen">
+              pluginIsSynth="0" pluginWantsMidiIn="1" pluginProducesMidiOut="1"
+              pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
+              pluginRTASCategory="" pluginAAXCategory="2" jucerVersion="5.4.5"
+              companyName="osar.fr" pluginAUMainType="'aumi'" buildVST3="0"
+              buildRTAS="0" buildAAX="0" pluginFormats="buildAU" pluginCharacteristicsValue="pluginWantsMidiIn,pluginProducesMidiOut,pluginIsMidiEffectPlugin,pluginEditorRequiresKeys"
+              pluginIsMidiEffectPlugin="1" pluginRTASDisableBypass="0" pluginRTASDisableMultiMono="0"
+              pluginAAXDisableBypass="0" pluginAAXDisableMultiMono="0" buildAUv3="0"
+              buildStandalone="0" enableIAA="0">
+  <MAINGROUP id="Blif9d" name="Lua Protoplug Mfx">
     <GROUP id="{14A58A55-62AB-895C-44B4-A814F95BEEB9}" name="Source">
       <GROUP id="{FEABF009-6C32-593B-3434-77AE0069A212}" name="GUI Classes">
         <FILE id="tTGvbq" name="AboutBox.h" compile="0" resource="0" file="../../Source/guiclasses/AboutBox.h"/>
@@ -101,8 +102,8 @@
                smallIcon="kqUkD4" bigIcon="ZKX0WG" extraDefs="_PROTOGEN=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Release" osxSDK="10.5 SDK" isDebug="0" optimisation="3"
-                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/mac"/>
-        <CONFIGURATION name="Debug" osxSDK="10.5 SDK" isDebug="1" optimisation="1" targetName="Lua Protoplug Gen"
+                       targetName="Lua Protoplug Mfx" binaryPath="../../Bin/mac"/>
+        <CONFIGURATION name="Debug" osxSDK="10.5 SDK" isDebug="1" optimisation="1" targetName="Lua Protoplug Mfx"
                        binaryPath="../../Bin/mac"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
@@ -123,9 +124,9 @@
                 smallIcon="kqUkD4" bigIcon="ZKX0WG" extraDefs="_PROTOGEN=1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" libraryPath="/usr/X11R6/lib/" isDebug="1" optimisation="1"
-                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/linux"/>
+                       targetName="Lua Protoplug Mfx" binaryPath="../../Bin/linux"/>
         <CONFIGURATION name="Release" libraryPath="/usr/X11R6/lib/" isDebug="0" optimisation="3"
-                       targetName="Lua Protoplug Gen" binaryPath="../../Bin/linux"/>
+                       targetName="Lua Protoplug Mfx" binaryPath="../../Bin/linux"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../Frameworks/JuceModules"/>
@@ -144,11 +145,11 @@
     <VS2017 targetFolder="Builds/VisualStudio2017" vstFolder="..\..\Frameworks\vstsdk2.4_minimal"
             extraDefs="_PROTOGEN=1" windowsTargetPlatformVersion="8.1">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Lua Protoplug Gen" binaryPath="../../Bin/win32"
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Lua Protoplug Mfx" binaryPath="../../Bin/win32"
                        winArchitecture="Win32"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="Lua Protoplug Gen" binaryPath="../../Bin/win32"
+        <CONFIGURATION isDebug="0" name="Release" targetName="Lua Protoplug Mfx" binaryPath="../../Bin/win32"
                        winArchitecture="Win32"/>
-        <CONFIGURATION isDebug="0" name="Release_x64" targetName="Lua Protoplug Gen (x64)"
+        <CONFIGURATION isDebug="0" name="Release_x64" targetName="Lua Protoplug Mfx (x64)"
                        binaryPath="../../Bin/win64" winArchitecture="x64"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

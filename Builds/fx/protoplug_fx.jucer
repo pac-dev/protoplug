@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="DVRNRz" name="protoplug_fx" projectType="audioplug" version="1.4.0"
+<JUCERPROJECT id="DVRNRz" name="Lua Protoplug FX" projectType="audioplug" version="1.4.0m"
               bundleIdentifier="com.pac.protoplugfx" includeBinaryInAppConfig="1"
               buildVST="1" buildAU="1" pluginName="Lua Protoplug Fx" pluginDesc="Lua Protoplug Effect"
               pluginManufacturer="pac" pluginManufacturerCode="_PAC" pluginCode="ppgf"
               pluginChannelConfigs="{2, 2}" pluginIsSynth="0" pluginWantsMidiIn="1"
               pluginProducesMidiOut="1" pluginSilenceInIsSilenceOut="0" pluginEditorRequiresKeys="1"
               pluginAUExportPrefix="protoplug_fxAU" pluginRTASCategory="" aaxIdentifier="com.yourcompany.protoplug_fx"
-              pluginAAXCategory="2" jucerVersion="5.3.2" companyName="osar.fr"
+              pluginAAXCategory="2" jucerVersion="5.4.5" companyName="osar.fr"
               buildVST3="0" buildRTAS="0" buildAAX="0" pluginFormats="buildVST,buildAU"
               pluginCharacteristicsValue="pluginWantsMidiIn,pluginProducesMidiOut,pluginEditorRequiresKeys">
-  <MAINGROUP id="urQWd4" name="protoplug_fx">
+  <MAINGROUP id="urQWd4" name="Lua Protoplug FX">
     <GROUP id="{1FCED3FA-32ED-7781-CAD3-EF328350EB7D}" name="Source">
       <GROUP id="{4CF632D6-F70A-6A7F-9D89-874B01728E9A}" name="GUI Classes">
         <FILE id="AvMm8S" name="AboutBox.h" compile="0" resource="0" file="../../Source/guiclasses/AboutBox.h"/>
@@ -181,5 +181,6 @@
   <JUCEOPTIONS JUCE_QUICKTIME="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
+    <OSX/>
   </LIVE_SETTINGS>
 </JUCERPROJECT>
