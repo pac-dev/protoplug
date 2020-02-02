@@ -157,7 +157,7 @@ midi.Event = setmetatable ({}, {
 			local n = ffi.new("MidiEvent", o.dataSize, o.time, o.dataSize)
 			ffi.copy(n.data, o.data, o.dataSize)
 			return n
-		elseif select("#", ...)==2 then
+		elseif select("#", ...)>=2 then
 			local time, dataSize, data = ...
 			local n = ffi.new("MidiEvent", dataSize, time, dataSize)
 			if data then 
