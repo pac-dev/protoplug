@@ -40,6 +40,16 @@ self-contained, supporting LV2 there would either require duplicating
 installer/resource-location convention just for LV2. The macOS and Windows
 builds therefore focus on AUv2, VST3, and CLAP.
 
+macOS keyboard shortcuts
+------------------------
+On macOS, DAWs may reserve command-key shortcuts for the host application while
+a plugin editor is open. This is a platform and host safety behavior intended
+to prevent plugin windows from accidentally triggering project-level DAW actions.
+As a result, editor shortcuts such as Cmd+A, Cmd+C, Cmd+X, and Cmd+V may not
+work in Protoplug when it is hosted inside a DAW on macOS, even though the same
+shortcuts can work on Windows and Linux. Mouse selection and context-menu
+editing remain available.
+
 Building from source
 --------------------
 The modern build uses CMake and JUCE 8. CMake fetches JUCE and clap-juce-extensions automatically unless you set `PROTOPLUG_JUCE_DIR` or `PROTOPLUG_CLAP_JUCE_EXTENSIONS_DIR`.

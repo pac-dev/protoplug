@@ -180,17 +180,12 @@ void ProtoWindow::readTheme(File f)
 void ProtoWindow::readPrefs()
 {
 	File f = ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml");
-	if (f.exists()) {
-		std::unique_ptr<XmlElement> e (XmlDocument(f).getDocumentElement());
-		if (e) {
-			commMgr.getKeyMappings()->restoreFromXml(*e);
-		}
+	if (!f.exists())
+		return;
+	std::unique_ptr<XmlElement> e (XmlDocument(f).getDocumentElement());
+	if (e) {
+		commMgr.getKeyMappings()->restoreFromXml(*e);
 	}
-
-	const CommandID editorCommands[] = { cmdUndo, cmdRedo, cmdCut, cmdCopy, cmdPaste, cmdSelectAll };
-	for (int i=0; i<numElementsInArray(editorCommands); ++i)
-		commMgr.getKeyMappings()->resetToDefaultMapping(editorCommands[i]);
-
 	/*	// writePrefs()
 	XmlElement *e = commMgr.getKeyMappings()->createXml(false);
 	e->writeToFile(ProtoplugDir::Instance()->getDir().getChildFile("prefs.xml"), {});
@@ -280,7 +275,6 @@ PopupMenu ProtoWindow::getMenuForIndex (int menuIndex, const String& /*menuName*
 		menu.addCommandItem(&commMgr, cmdCut);
 		menu.addCommandItem(&commMgr, cmdCopy);
 		menu.addCommandItem(&commMgr, cmdPaste);
-		menu.addCommandItem(&commMgr, cmdSelectAll);
 		menu.addSeparator();
 		menu.addCommandItem(&commMgr, cmdFindSelected);
 		menu.addCommandItem(&commMgr, cmdFindNext);
@@ -328,8 +322,7 @@ void ProtoWindow::getAllCommands (Array <CommandID>& commands)
 	const CommandID ids[] = {cmdCompile, cmdStackDump, cmdLiveMode, cmdFindSelected, cmdFindNext, 
 							cmdFindPrev, cmdShow0, cmdShow1, cmdShow2, cmdShowNext, cmdShowPrev, 
 							cmdOpen, cmdSaveAs, cmdOpenProto, cmdPopout, cmdAlwaysOnTop, cmdWebsite, 
-							cmdAPI, cmdAbout, cmdUndo, cmdRedo, cmdCut, cmdCopy, cmdPaste,
-							cmdSelectAll};
+							cmdAPI, cmdAbout, cmdUndo, cmdRedo, cmdCut, cmdCopy, cmdPaste};
 	commands.addArray (ids, numElementsInArray (ids));
 }
 
@@ -454,11 +447,6 @@ void ProtoWindow::getCommandInfo (CommandID commandID, ApplicationCommandInfo& r
         result.setInfo ("Paste", "Paste", cat, 0);
 		result.addDefaultKeypress ('v', ModifierKeys::commandModifier);
         break;
-	case cmdSelectAll:
-        result.setInfo ("Select All", "Select All", cat, 0);
-		result.setActive(activePanelComponent==&editor);
-		result.addDefaultKeypress ('a', ModifierKeys::commandModifier);
-        break;
 		
     default:
         break;
@@ -484,7 +472,6 @@ bool ProtoWindow::perform (const InvocationInfo& info)
 	case cmdCut:		editor.cutToClipboard(); break;
 	case cmdCopy:		editor.copyToClipboard(); break;
 	case cmdPaste:		editor.pasteFromClipboard(); break;
-	case cmdSelectAll:	editor.selectAll(); break;
 	case cmdOpen: {
 		FileChooser fileOpen("Open", File(processor->luli->libFolder));
 		if (fileOpen.browseForFileToOpen())

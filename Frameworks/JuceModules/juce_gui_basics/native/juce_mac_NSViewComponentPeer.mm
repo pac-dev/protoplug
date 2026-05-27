@@ -702,10 +702,9 @@ public:
         ignoreUnused (ev);
     }
 
-    void redirectCopy      (NSObject*) { handleKeyPress (KeyPress ('c', ModifierKeys (ModifierKeys::commandModifier), 'c')); }
-    void redirectPaste     (NSObject*) { handleKeyPress (KeyPress ('v', ModifierKeys (ModifierKeys::commandModifier), 'v')); }
-    void redirectCut       (NSObject*) { handleKeyPress (KeyPress ('x', ModifierKeys (ModifierKeys::commandModifier), 'x')); }
-    void redirectSelectAll (NSObject*) { handleKeyPress (KeyPress ('a', ModifierKeys (ModifierKeys::commandModifier), 'a')); }
+    void redirectCopy  (NSObject*) { handleKeyPress (KeyPress ('c', ModifierKeys (ModifierKeys::commandModifier), 'c')); }
+    void redirectPaste (NSObject*) { handleKeyPress (KeyPress ('v', ModifierKeys (ModifierKeys::commandModifier), 'v')); }
+    void redirectCut   (NSObject*) { handleKeyPress (KeyPress ('x', ModifierKeys (ModifierKeys::commandModifier), 'x')); }
 
     void redirectWillMoveToWindow (NSWindow* newWindow)
     {
@@ -1581,7 +1580,6 @@ struct JuceNSViewClass   : public ObjCClass<NSView>
         addMethod (@selector (viewDidMoveToWindow),           viewDidMoveToWindow,        "v@:");
         addMethod (@selector (keyDown:),                      keyDown,                    "v@:@");
         addMethod (@selector (keyUp:),                        keyUp,                      "v@:@");
-        addMethod (@selector (performKeyEquivalent:),         performKeyEquivalent,       "c@:@");
         addMethod (@selector (insertText:),                   insertText,                 "v@:@");
         addMethod (@selector (doCommandBySelector:),          doCommandBySelector,        "v@::");
         addMethod (@selector (setMarkedText:selectedRange:),  setMarkedText,              "v@:@", @encode (NSRange));
@@ -1611,7 +1609,6 @@ struct JuceNSViewClass   : public ObjCClass<NSView>
         addMethod (@selector (paste:),                        paste,                      "v@:@");
         addMethod (@selector (copy:),                         copy,                       "v@:@");
         addMethod (@selector (cut:),                          cut,                        "v@:@");
-        addMethod (@selector (selectAll:),                    selectAll,                  "v@:@");
 
         addMethod (@selector (viewWillMoveToWindow:),         willMoveToWindow,           "v@:@");
 
@@ -1663,7 +1660,6 @@ private:
     static void copy             (id self, SEL, NSObject* s)   { if (auto* p = getOwner (self)) p->redirectCopy       (s);  }
     static void paste            (id self, SEL, NSObject* s)   { if (auto* p = getOwner (self)) p->redirectPaste      (s);  }
     static void cut              (id self, SEL, NSObject* s)   { if (auto* p = getOwner (self)) p->redirectCut        (s);  }
-    static void selectAll        (id self, SEL, NSObject* s)   { if (auto* p = getOwner (self)) p->redirectSelectAll  (s);  }
     static void willMoveToWindow (id self, SEL, NSWindow* w)   { if (auto* p = getOwner (self)) p->redirectWillMoveToWindow (w); }
 
     static BOOL acceptsFirstMouse (id, SEL, NSEvent*)          { return YES; }
@@ -1736,17 +1732,6 @@ private:
             objc_super s = { self, [NSView class] };
             getMsgSendSuperFn() (&s, @selector (keyUp:), ev);
         }
-    }
-
-    static BOOL performKeyEquivalent (id self, SEL s, NSEvent* ev)
-    {
-        if (([ev modifierFlags] & NSEventModifierFlagCommand) != 0)
-            if (auto* owner = getOwner (self))
-                if (owner->redirectKeyDown (ev))
-                    return YES;
-
-        objc_super superInfo = { self, [NSView class] };
-        return ObjCMsgSendSuper<BOOL> (&superInfo, s, ev);
     }
 
     //==============================================================================
